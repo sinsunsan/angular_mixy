@@ -1,0 +1,24 @@
+@mixin avatar-placeholder(
+  $background: #EEE,
+  $color: #CCC,
+  $height: 150px,
+  $width: 150px
+) {
+  & {
+    background: $background;
+    width: $width;
+    height: $height;
+    text-align: center;
+    i.fa {
+      color: $color;
+      line-height: $height;
+    }
+  }
+}
+
+@mixin elements-css {
+  .avatar-placeholder {
+    @include avatar-placeholder;
+  }
+}
+

@@ -1,0 +1,71 @@
+mixin fieldInputTag(form, field)
+  input(  type=field.type,
+          name=field.id,
+          id=field.id
+          placeholder=field.placeholder,
+          class='input-#{fieldId} #{form.inputsClass} #{field.inputsClass}',
+          ng-model=field.ngModel,
+          ng-minlength="2",
+          ng-maxlength="50",
+          ng-bind=field.id,
+          required=field.required,
+          translate,
+          disabled=field.disabled)
+
+//- Generic input field (types text, password, email...)
+mixin fieldInput(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModel = util.setDefaultNgModel(field, form);
+  - // console.log('the field input form ///', form);
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldInputTag(form, field)
+        +inputErrors(formId, fieldId, field.errors, stateId)
+    else
+      +fieldInputTag(form, field)
+      +inputErrors(formId, fieldId, field.errors, stateId)
+
+//- Generic button field (submit...)
+mixin formButton (formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - var formStateId = util.setFormStateId(formId, stateId);
+  - form.cssCommonClass = (util.checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
+  - var ngDisabled = !(field.ngDisabled) ? field.ngDisabled : formStateId + ".$invalid";
+  //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
+
+  button( type="submit",
+          class="btn-block btn btn-lg btn-default btn-primary button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
+          ng-disabled=ngDisabled,
+          ng-click=field.ngClick,
+          ng-bind=field.ngBind,
+          translate)=field.label
+
+//- simple image uploader
+mixin imageUploadWidget(field)
+  input(  class="",
+          type="file",
+          name=field.id,
+          accept="image/*",
+          ng-file-select,
+          ng-file-change=field.ngFileChange,
+          ng-model=field.ngModel)=field.submit.label
+
+
+
+
+//- Generic link
+mixin link(link)
+  - var translate = (link.translate) ? link.translate : true;
+  a(
+      href=link.href,
+      ng-href=link.ngHref,
+      ui-sref=link.uiSref
+      translate=translate
+  )=link.text

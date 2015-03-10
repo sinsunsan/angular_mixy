@@ -1,0 +1,39 @@
+mixin fieldGroup(field)
+  - field = field || {};
+  - field.css = field.css || {};
+  //- console.log('\nthe field data are \n', field);
+  //- display error style if one of the field is not valid inside
+  div(class="form-group #{field.css.group}",
+      ng-class="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }")
+    block
+
+//- Form wrapper with the form tag
+//- Properties are set with a 3 levels order state specific > form specific > form default
+//- state specific example : edit, create, delete state
+//- form specific : member creation form, circle creation form
+//- form default : all form default settings
+mixin formWrapper(formId, stateId)
+  - var formStateId = util.setFormStateId(formId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - //console.log('\nthe form data are \n', form);
+  div(
+      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass}",
+      ng-class=form.ngClass
+    )
+    //- globale form error wrapper
+    div(class="form-errors #{form.css.formErrors}",
+        ng-bind=form.errors.ngBinds,
+        ng-show=form.errors.ngBinds)
+    form(
+      name="#{formStateId}",
+      ng-submit="#{form.ngSubmit}(#{formStateId}.$valid)",
+      novalidate)
+      block
+
+//- standard wrapper of a block element
+//- don't use "block" as argument name
+//- https://github.com/jadejs/jade/issues/1875
+mixin blockWrapper(blockData)
+  - //console.log("received in the wrapper ", blockData);
+  div(class="block block-#{blockData.id} #{blockData.wrapperClass}")
+    block

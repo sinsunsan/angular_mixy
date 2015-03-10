@@ -1,0 +1,66 @@
+//- 2 click sort order
+mixin sortIcon(data)
+  span(class="fa fa-sort #{data.class} ml0 cpointer"
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = !#{data.sortOrderModel}")
+
+mixin sortAscIcon(data)
+  - data.class = data.class || '';
+  span( class="fa fa-sort-asc #{data.class} ml0 cpointer",
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = true")
+
+mixin sortDescIcon(data)
+  - data.class = data.class || '';
+  span( class="fa fa-sort-desc #{data.class} ml-2 cpointer",
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = false")
+
+mixin tableWrapper
+  //- h1(ng-bind="main.title", translate)
+  div(class="row")
+    div(class="table-list")
+      block
+
+//- http://l-lin.github.io/angular-datatables/#/zeroConfig
+mixin angularTables(tableId)
+  - var table = util.setTableDefaults(tableId);
+  - // console.log('\n\n\n\n\n\n\nthe current table data is ', table.cols);
+
+  - var itemName = (itemName) ? itemName : 'cell';
+  - var ngModelCur, cssClass, col = '';
+
+  //- table class make the table boostrap styles
+  //-h ttp://getbootstrap.com/css/#tables
+  table(
+    datatable="",
+    class="table  table-striped table-bordered table-hover"
+  )
+    thead
+      tr
+        each colsInstance, i in table.colsInstance
+          - col = table['cols'][colsInstance];
+          - var translate = (col.header !== '') ? 'translate' : false;
+          th()
+            span(translate=translate)=col.header
+            if col.sortable
+              - sortObj = {'field': col.field, 'sortOrderModel': table.sortOrder, 'fieldOrderModel': table.fieldOrder};
+              +sortIcon(sortObj)
+    tbody
+      tr(ng-repeat="item in main.items.#{tableId} | orderBy:'email':main.is.filter.sortOrder ")
+        each colsInstance, i in table.colsInstance
+          - col = table['cols'][colsInstance];
+          - cssClass = (col.textAlign) ? "text-" + col.textAlign : '';
+
+
+          if !col.actionsButtons && !col.rawHtml
+            //- Normal item
+            td(ng-bind!="#{table.listItem}['#{col.field}']", class="#{cssClass}")
+          else if col.actionsButtons
+            //- Action items
+            td
+              each btn, i in col.actionsButtons
+                div(class="#{gData.settings.buttons[btn.id].icon} #{btn.class}",
+                    ng-click='#{btn.ngClick}',
+                    title="#{gData.settings.buttons[btn.id].label}")
+          else if col.rawHtml
+            //- Raw html item
+            td!=col.rawHtml
+

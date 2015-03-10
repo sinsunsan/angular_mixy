@@ -1,0 +1,9 @@
+//- on hover button
+mixin editHoverBtn(config)
+  div(class="edit-hover-btn",
+      ng-mouseover="'btnDisplay = true'",
+      ng-mouseout="'btnDisplay = false'",
+      ng-click="edit.fn(edit.item)",
+      ng-show="btnDisplay")
+    i(class="fa fa-edit")
+

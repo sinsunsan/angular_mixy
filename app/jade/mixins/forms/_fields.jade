@@ -1,0 +1,113 @@
+//- Reusable field type
+
+//- @todo use @default with lodash to allow partial overrides of forms settings
+- var fieldId = ""; //- unique identifier of the field
+
+//- name of the user field
+mixin nameField(formId, stateId)
+  +fieldInput(formId, 'name', stateId)
+
+mixin firstNameField(formId, stateId)
+  +fieldInput(formId, 'firstName', stateId)
+
+mixin lastNameField(formId, stateId)
+  +fieldInput(formId, 'lastName', stateId)
+
+mixin usernameField(formId, stateId)
+  +fieldInput(formId, 'username', stateId)
+
+mixin emailField(formId, stateId, fieldId)
+  - fieldId = (fieldId) ? fieldId : 'email';
+  +fieldInput(formId, fieldId, stateId)
+
+//- User Password
+mixin passwordField(formId, stateId)
+  +fieldInput(formId, 'password', stateId)
+
+mixin passwordConfirmField(formId, stateId)
+  +fieldInput(formId, 'passwordConfirm', stateId)
+
+//- Phone number field
+mixin phoneField(formId, stateId)
+  +fieldInput(formId, 'phone', stateId)
+
+//- Organisation field
+mixin orgField(formId, stateId)
+  +fieldInput(formId, 'org', stateId)
+
+//- submit the current form
+mixin submitBtn(formId, stateId)
+  +formButton(formId, 'submit', stateId)
+
+//- Alternate Submit Button for the current form that allow the creation of a new item just after
+mixin submitAndNewBtn(formId, stateId)
+  +formButton(formId, 'submitAndNew', stateId)
+
+//- photo that represent the user
+mixin avatarField1(formId, stateId)
+  - fieldId = "avatar";
+  - var field = setFieldDefaults(formId, fieldId, stateId);
+  - var form = setFormDefaults(formId, stateId);
+  div(class="avatar-field")
+    img(src="http://placehold.it/250x250",
+        class="img-responsive mb1")
+    button( class="btn btn-block",
+            ng-file-select,
+            ng-model=field.ngModel)=field.submit.label
+
+//- generic upload file
+//- this file use the following angular lib
+//- https://github.com/danialfarid/ng-file-upload
+mixin avatarField(formId, stateId)
+  - fieldId = "avatar";
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModel = util.setDefaultNgModel(field, form);
+  - console.log('\n The image upload file ', field, ' from form ' + formId + ' and fieldId ' + fieldId + ' and stateId ' + stateId);
+  +fieldGroup(field)
+    //- placeholder user icon when no user icon has been uploaded
+    div(class="avatar-placeholder",
+      ng-hide=field.placeholderImg.ngHide)
+      i(class="fa fa-user fs5")
+
+    div(class="mt0",
+      ng-show=field.thumb.ngShow)
+      img(
+        class="img-responsive",
+        ng-src=field.ngSrc)
+  div(edit-hover-btn, edit-fn=field.edit.fn, edit-item=field.edit.item)
+  +imageUploadWidget(field)
+  //- on hover edit button > use a directive instead
+
+//- basic html select list
+//- http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/
+//- choice.id as choice.name for choice in #{field.choices}
+//- display choice.name but store as a model choice.id (eg lang.id)
+mixin langFieldSimple(formId, stateId, fieldId)
+  - fieldId = (fieldId) ? fieldId : 'lang';
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  +fieldGroup(field)
+    select(
+      name='field.id',
+      ng-model="#{field.ngModel}",
+      ng-options="choice.id as choice.name for choice in #{field.choices}")
+
+
+//- lang of the user
+mixin langField(formId, stateId)
+  - fieldId = "lang";
+  - var field = setFieldDefaults(formId, fieldId, stateId);
+  - field.cssCommonClass = (checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
+  ui-select(
+    ng-model='address.selected',
+    theme='selectize',
+    ng-disabled='disabled',
+    reset-search-input='false',
+    style='width: 300px;')
+    ui-select-match(placeholder='Enter an address...') {{$select.selected.formatted_address}}
+    ui-select-choices(
+      repeat='language in languages track by $index',
+      refresh='refreshAddresses($select.search)',
+      refresh-delay='0')
+      div(ng-bind-html='address.formatted_address | highlight: $select.search')
+

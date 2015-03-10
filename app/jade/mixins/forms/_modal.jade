@@ -1,0 +1,18 @@
+mixin modalForm(data)
+  - data = data || {};
+  - data.ngBinds = data.ngBinds || {}
+  .modal-inner(class="p2 #{data.id}")
+    .modal-header.row
+      h3(class="modal-title pull-left", ng-bind=data.ngBinds.title)=data.title
+      div(class="pull-right cpointer #{data.closeIcon}", ng-click="modal.fn.cancel()")
+    .modal-body
+      block
+    //- .modal-footer
+    //-   button.btn.btn-primary(ng-click="modal.ok()") OK
+    //-   button.btn.btn-warning(ng-click="modal.cancel()") Cancel
+
+//- multi state form where the state is displayed only when
+//- the state is current
+mixin modalStateWrapper(state)
+  div(class="", ng-show="modal.fn.isState('#{state}')")
+    block
