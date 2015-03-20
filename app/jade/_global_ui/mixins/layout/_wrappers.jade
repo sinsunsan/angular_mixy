@@ -20,13 +20,19 @@ mixin formWrapper(formId, stateId)
       class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass}",
       ng-class=form.ngClass
     )
-    //- globale form error wrapper
-    div(class="form-errors #{form.css.formErrors}",
-        ng-bind=form.errors.ngBinds,
-        ng-show=form.errors.ngBinds)
+    //- global form error wrapper
+    if (form.errors && form.errors.ngBind)
+      div(class="form-errors #{form.css.formErrors}",
+          ng-bind=form.errors.ngBind,
+          ng-show=form.errors.ngBind)
+    if (form.confirm && form.confirm.ngBind)
+      div(class="form-confirm text-success text-center mb1",
+          ng-show=form.confirm.ngBind,
+          ng-bind=form.confirm.ngBind)
+
     form(
       name="#{formStateId}",
-      ng-submit="#{form.ngSubmit}(#{formStateId}.$valid)",
+      ng-submit="#{form.ngSubmit}(#{formStateId}, #{form.ngModel})",
       novalidate)
       block
 

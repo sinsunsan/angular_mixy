@@ -2,7 +2,8 @@
 // of jade loaded by the grunt process
 var _ = require('lodash');
 // var gData1 = require('gData');
-var gData = require('./../../../../../data/hola.json');
+// @todo replace by a config to change that easily
+var gData = require('./../../../data/hola.json');
 // ######
 // there is a potential problem with _.defaults, that don't merge nested object.
 //  var g = {test: {blue: "road"}}
@@ -31,6 +32,9 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   stateType = (stateId && self.checkNested(formsData, 'forms', formId, 'states', stateId, 'fields', fieldId)) ? formsData['forms'][formId]['states'][stateId]['fields'][fieldId] : {};
   // field id settings defined at the form level
   formType = (formId && self.checkNested(formsData, 'forms', formId, 'fields', fieldId)) ? formsData['forms'][formId]['fields'][fieldId] : {};
+  // default field settings defined at the state level
+  // May be useful for example to state all fields in the "delete" state is disabled
+  //
   // default field settings defined at the form level
   formTypeDefaults = (formId && self.checkNested(formsData, 'forms', formId, 'fields')) ? formsData['forms'][formId]['field'] : {};
   // global field id settings
@@ -38,14 +42,17 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // gloval field settings
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
 
-  if (fieldId === 'avatar') {
+  var field = _.defaults(stateType, formType, formTypeDefaults, fieldType, defaults);
+
+  if (fieldId === 'email' && formId === 'signup') {
     console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
     console.log('\nState settings', stateType);
     console.log('\nForm settings', formType);
     console.log('\nField settings', fieldType);
     console.log('\nDefaults settings', defaults);
+    console.log('\nThe combined field settings are : ', field);
   }
-   return _.defaults(stateType, formType, formTypeDefaults, fieldType, defaults);
+  return field;
 };
 
 //- 3 levels override for global form data : stateType, formType, formsDefaults
@@ -85,9 +92,17 @@ exports.setTableDefaults = function(tableId) {
 // set default ng model when no field specific ngModel is set
 // ngModel can be set to false, to disable ngModel
 // for fields like password confirm, that don't need it
+// field.ngModel override field id if for example
+// an api require a field be named  in a specific way
 exports.setDefaultNgModel = function(field, form) {
-  //console.log('\n\n\nthe ngModel use the data ', field.ngModel, form.ngModel);
-  var ngModel = (!(field.ngModel === false)) ? field.ngModel = form.ngModel + '.' + field.id : false;
+  var ngModel = '';
+  if (!(field.ngModel === false)) {
+    ngModel = form.ngModel + '.';
+    ngModel += (field.ngModel) ? field.ngModel : field.id;
+  } else {
+    ngModel = false;
+  }
+  // console.log('\n\n\nthe ngModel use the data ', field.ngModel, form.ngModel, 'and is ', ngModel);
   return ngModel;
 };
 
@@ -102,3 +117,4 @@ exports.setFormStateId = function(formId, stateId) {
   //console.log('the formStateId is ', formStateId);
   return  formStateId;
 };
+

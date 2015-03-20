@@ -1,6 +1,0 @@
-mixin tabsActions(data)
-  div(class="pull-#{data.align}")
-    each tab, i in data.tabs
-      button( class='btn btn-default',
-              translate,
-              ng-click="#{tab.ngClick}") #{tab.name}

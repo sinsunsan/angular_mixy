@@ -1,0 +1,11 @@
+//- Simple alert that display at the top of the page
+mixin twbsTopAlert(data)
+  - console.log('\n \n the alart binds are ', data);
+  if data
+    .alert.alert-success.alert-dismissible(role="alert")
+      button.close(type="button", data-dismiss="alert", aria-label="Close")
+        span(aria-hidden="true") &#215;
+        if (data.ngBinds && data.ngBinds.message)
+          span(ng-bind=data.ngBinds.message)
+
+

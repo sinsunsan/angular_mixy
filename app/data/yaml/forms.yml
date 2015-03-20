@@ -1,0 +1,373 @@
+# Form settings
+forms:
+  defaults:
+    #
+    # Default fields settings
+    # Is overriden by profiles.fields.fieldName.properties if set
+    # Errors key trigger the html code in the jade mixin
+    #
+
+    # Default form value, that is used if no formId is found
+    # for the given form being outputed with formWrapper mixin
+    form:
+      id: "" # Required
+      title: "" # Visible title that show at the top of the form
+      wrapperClass: "form-horizontal" # css classes to the div wrapper outside of the form tag
+      ngSubmit: "" # function that is triggered when the form is submitted
+      # Fields overrides
+      # An object of all field whose default value should be overriden
+      errors:
+        ngBind: "main.forms.errors"
+      css:
+        formErrors: "mb1 text-center"
+        inputsClass: "form-control"
+        submitBtn: "btn-block btn btn-default btn-primary"
+        fieldGroup: "mb1"
+        commonClass: "form-control mb1"
+    # Default universal field settings
+    field:
+      ngClick: false
+      # label are useful to identify the field name when the placeholder is hidden
+      # when some datas has been filled
+      label:
+        display: false # is there a label at the left of the field
+        size: "col-xs-3" # css class for the labels
+        position: "left" # The position of the label relative to the field
+      inputsClass: "input-lg form-control"
+      buttonsClass: "btn-lg"
+      css:
+        group: "mb1"
+    # Default field specific settings
+    fields:
+      lang:
+        id: "lang"
+        type: "select"
+        label: "Language"
+        required: false
+        options:
+          - "fr"
+          - "en"
+      email:
+        id: "email"
+        type: "email"
+        placeholder: "Email"
+        required: true
+        errors:
+          invalid: "Enter a valid email"
+      #
+      # Passwords fields
+      #
+      name:
+        id: "name"
+        type: "text"
+        placeholder: "User Name"
+        required: true
+        errors:
+          invalid: "Your user name is required"
+      firstName:
+        id: "firstName"
+        type: "text"
+        placeholder: "First name"
+        required: false
+      lastName:
+        id: "lastName"
+        type: "text"
+        placeholder: "Last name"
+        required: false
+      username:
+        id: "username"
+        type: "text"
+        placeholder: "User name"
+        required: true
+      #
+      # Passwords fields
+      #
+      password:
+        id: "password"
+        type: "password"
+        placeholder: "Password"
+        required: true
+        errors:
+          invalid: "invalid"
+          minLength: "The password is too short"
+          tooshort: "The password is too long"
+      passwordConfirm:
+        id: "passwordConfirm"
+        type: "password"
+        placeholder: "The password (confirm)"
+        required: true
+        ngModel: false
+        errors:
+          invalid: "You have typed different passwords"
+      makeAdmin:
+        id: "makeAdmin"
+        label: "Set as an administrator"
+        ngModel: "privilege"
+        ngFalseValue: "member"
+        ngTrueValue: "admin"
+      #
+      # Submit buttons
+      submit:
+        id: "submit"
+        type: "submit"
+        label: "Submit"
+        required: false
+        # locked if one validation error trigger
+        # override at form level if you want to be more liberal
+        ngDisabled: true
+      submitAndNew:
+        id: "submitAndNew"
+        type: "submit"
+        label: "Submit and Create new"
+        required: false
+        ngDisabled: true
+      #
+      #
+      phone:
+        id: "phone"
+        type: "text"
+        placeholder: "Phone number"
+        required: false
+      avatar:
+        id: "avatar"
+        type: "bundle"
+        submit:
+          label: "Change the photo"
+        required: false
+      # should rename organization
+      org:
+        id: "org"
+        type: "text"
+        placeholder: "Organisation"
+        errors:
+          invalid: "An organisation is required"
+          maxLength: "The organisation name is too short"
+          minLength: "The organisation name is too long"
+        required: true
+  # @todo Deprecated move to defaults.form.css
+  forms:
+    #
+    # Form specific field settings
+    # --------------------------
+    # Signin form
+    signin:
+      id: "signin"
+      title: "Signin"
+      ngModel: "main.ngModel.user"
+      ngSubmit: "main.fn.signin"
+      # Fields overrides
+      fields:
+        submit:
+          label: "Let's go !"
+    # --------------------------
+    # Signup form
+    signup:
+      id: "signup"
+      title: "Signup"
+      ngModel: "main.ngModel.newAccount"
+      ngSubmit: "main.fn.signup"
+      ngMessages: true # Is the ngMessages is used to display errors in this form
+      # Fields overrides
+      fields:
+        email:
+          errors:
+            email_not_unique: 'This email is already used.'
+            email: 'This email is not valid.' # the wrong email error Id is email, as it's core html5 <input type="email" > validation
+        submit:
+          label: "Let's go !"
+    # --------------------------
+    # Password recover form
+    forgotPassword:
+      id: "forgotPassword"
+      title: "Have an access problem ?"
+      ngModel: "main.ngModel.forgetPassword"
+      ngSubmit: "main.fn.requestPasswordResetSubmit"
+      confirm:
+        ngBind: "main.ngModel.forgetPassword.confirmMessage"
+      # Fields overrides
+      fields:
+        submit:
+          label: "Recover my password"
+    # --------------------------
+    # Profile edit page
+    profile:
+      id: "profile"
+      title: "Profile"
+      wrapperClass: "col-xs-12 col-md-6"
+      ngModel: "userProfile.profile"
+      ngSubmit: "editProfile"
+      # Fields overrides
+      fields:
+        admin:
+          label: "Make an admin"
+          ngModel: "userProfile.admin"
+        lang:
+          choices: "main.data.gData.settings.languages"
+          ngModel: "userProfile.lang"
+        submit:
+          label: "Save"
+          ngClick: "modal.fn.submit()"
+        avatar:
+          ngFileChange: "uploadAvatar(userProfile.profile.avatar)"
+    #
+    # --------------------------
+    # Account edit page
+    accountEdit:
+      id: "accountEdit"
+      title: "Account"
+      wrapperClass: "col-xs-12 col-md-6"
+      ngModel: "account.user"
+      ngSubmit: "editAccount"
+
+    # Properties common to all modal forms
+    # @todo this 5th level of override
+    modalFormsDefaults:
+      ngBinds:
+        title: "modal.gData.title.states[modal.state].title"
+        ngModel: "modal.listItem"
+        ngSubmit: "modal.fn.submit"
+    #
+    # --------------------------
+    # User account
+    accountModal:
+      id: "accountModal"
+      title: "Change your password"
+      ngModel: "modal.item"
+      ngSubmit: "modal.fn.submit"
+      fields:
+        submit:
+          label: "Save"
+    # --------------------------
+    # User create and edit modal
+    membersModal:
+      id: "membersModal"
+      parent: "modalFormsDefaults"
+      # default title that could be overriden by ng-bind values
+      title: "Create a member"
+      ## List of all ng-binded value, with the scope variable to get them in angular
+      ngBinds:
+        title: "modal.modal.title"
+      ngModel: "modal.item"
+      ngSubmit: "modal.fn.submit"
+      fields:
+        label:
+          display: true
+        avatar:
+          ngModel: "modal.avatar"
+          ngFileChange: "modal.fn.uploadAvatar(modal.item.modal.avatar)"
+          ngSrc: '{{ modal.data.gData.settings.path.avatar + modal.item.avatarUrl }}' # ngSrc need this syntax
+          # Thumbnail to display the member avatar image
+          thumb:
+            ngShow: "modal.item.avatarUrl"
+          # widget to select an image and upload it
+          upload:
+            ngShow: "modal.is.uploading"
+          # Text to change the image of an avatar
+          replaceBtn:
+            text: "Change your avatarUrl"
+          # Default image to be shown when no specicic image is uploaded
+          placeholderImg:
+            ngHide: "modal.item.avatarUrl"
+          # Icon to trigger an avatar replacement
+          edit:
+            fn: 'modal.fn.chooseFile()'
+            item: 'modal.item'
+
+      # Multi mode modal
+      # Override global modal settings
+      # For example global title, can be overriden with the angular binding if a state is passe
+      states:
+        delete:
+          id: "memberCreate--delete"
+          title: "Do you want to delete this member ?"
+          # @todo state level field settings don't works yet
+          # field:
+          #   disabled: true
+          fields:
+            # @todo move to state level field settings
+            email:
+              disabled: true
+            username:
+              disabled: true
+            firstName:
+              disabled: true
+            lastName:
+              disabled: true
+            phone:
+              disabled: true
+            submit:
+              label: "Delete"
+        create:
+          id: "memberCreate--add"
+          title: "Create a member"
+          # Fields overrides
+          fields:
+            email:
+              required: true
+            username:
+              required: false
+            firstName:
+              required: false
+            lastName:
+              required: false
+            phone:
+              required: false
+            submit:
+              label: "Create"
+            submitAndNew:
+              label: "Create and New"
+              # the submit function will change a variable to tell what to do after
+              # but will not submit twice the api call
+              ngClick: "modal.fn.submitAndNew()"
+        edit:
+          id: "memberCreate--edit"
+          title: "Edit a member"
+          fields:
+            submit:
+              label: "Save"
+              ngDisabled: false
+        editself:
+          id: "memberCreate--selfedit"
+          title: "Edit your profile"
+          fields:
+            lang:
+              choices: "modal.data.gData.settings.languages"
+              ngModel: "modal.item.lang"
+            submit:
+              ngDisabled: false
+              # ngModel: "userProfile.lang"
+    #
+    # --------------------------
+    # Organization create and edit modal
+    organizationsModal:
+      id: 'organizationsModal'
+      parent: "modalFormsDefaults"
+      title: 'Edit the organization'
+      ngBinds:
+        title: 'modal.gData.title.states[modal.state].title'
+      ngModel: 'modal.item'
+      ngSubmit: 'modal.fn.submit'
+      modal:
+        size: 'sm'
+      fields:
+        org:
+          id: "name"
+      states:
+        add:
+          id: "organization--add"
+          title: "Create a new organization"
+          # Fields overrides
+          fields:
+            submit:
+              label: "Create"
+              ngClick: "modal.fn.submit()"
+        edit:
+          id: "organization--add"
+          title: "Edit an organization"
+          fields:
+            submit:
+              label: "Save"
+              ngClick: "modal.fn.submit()"
+
+
+

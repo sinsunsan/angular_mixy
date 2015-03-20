@@ -1,0 +1,9 @@
+//- tab like button at the top of list view
+mixin tabsActions(data)
+  if data && data.tabs
+    div(class="pull-#{data.align}")
+      if data.tabs
+        each tab, i in data.tabs
+          button( class='btn btn-default',
+                  translate,
+                  ng-click="#{tab.ngClick}") #{tab.name}

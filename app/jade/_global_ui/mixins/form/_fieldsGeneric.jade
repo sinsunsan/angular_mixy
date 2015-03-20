@@ -1,4 +1,8 @@
 mixin fieldInputTag(form, field)
+  //- if (field.id === 'phone') {
+  //-  console.log('\n the field in the input mixin ' , field);
+  //-  console.log('\n the field disabled state is ///////', field.disabled);
+  //- }
   input(  type=field.type,
           name=field.id,
           id=field.id
@@ -23,16 +27,23 @@ mixin fieldInput(formId, fieldId, stateId)
   +fieldGroup(field)
     //- a field label
     if field.label.display
+      //- side label to configure (don't work yet)
       label(for=field.id, class="col-xs-3")=field.placeholder
       div(class="col-xs-9")
         +fieldInputTag(form, field)
-        +inputErrors(formId, fieldId, field.errors, stateId)
+        if (form.ngMessages)
+          +errorNgMessages(formId, fieldId, field.errors, stateId)
+        else
+          +inputErrors(formId, fieldId, field.errors, stateId)
     else
       +fieldInputTag(form, field)
-      +inputErrors(formId, fieldId, field.errors, stateId)
+      if (form.ngMessages)
+        +errorNgMessages(formId, fieldId, field.errors, stateId)
+      else
+        +inputErrors(formId, fieldId, field.errors, stateId)
 
 //- Generic button field (submit...)
-mixin formButton (formId, fieldId, stateId)
+mixin formButton(formId, fieldId, stateId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
   - var formStateId = util.setFormStateId(formId, stateId);
@@ -47,25 +58,48 @@ mixin formButton (formId, fieldId, stateId)
           ng-bind=field.ngBind,
           translate)=field.label
 
+//- https://github.com/sebastianha/angular-bootstrap-checkbox
+//- ngTrueValue displayed text if the checkbox is checked
+//- ngFalseValue displayed text if the checkbox is checked
+mixin niceCheckbox(formId, fieldId, stateId)
+
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - if (field.id === 'makeAdmin') {
+  -  console.log('\n the field in the input mixin ' , field);
+  -  console.log('\n the field disabled state is ///////', field.disabled);
+  - }
+  - field.ngModel = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    checkbox(
+      ng-model=field.ngModel,
+      name=field.name,
+      ng-true-value=field.ngTrueValue,
+      ng-false-value=field.ngFalseValue,
+      ng-change=field.ngChange,
+    )
+    span(class="ml0")=field.label
+
 //- simple image uploader
 mixin imageUploadWidget(field)
-  input(  class="",
-          type="file",
-          name=field.id,
-          accept="image/*",
-          ng-file-select,
-          ng-file-change=field.ngFileChange,
-          ng-model=field.ngModel)=field.submit.label
-
-
-
+  if field
+    input(  class="",
+            type="file",
+            name=field.id,
+            accept="image/*",
+            ng-file-select,
+            ng-file-change=field.ngFileChange,
+            ng-model=field.ngModel)=field.submit.label
 
 //- Generic link
 mixin link(link)
-  - var translate = (link.translate) ? link.translate : true;
-  a(
-      href=link.href,
-      ng-href=link.ngHref,
-      ui-sref=link.uiSref
-      translate=translate
-  )=link.text
+  if link
+    - var translate = (link.translate) ? link.translate : true;
+    a(
+        href=link.href,
+        ng-href=link.ngHref,
+        ui-sref=link.uiSref,
+        ng-click=link.ngClick,
+        translate=translate
+    )=link.text
+

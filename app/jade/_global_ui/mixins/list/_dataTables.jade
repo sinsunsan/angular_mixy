@@ -44,7 +44,7 @@ mixin angularTables(tableId)
               - sortObj = {'field': col.field, 'sortOrderModel': table.sortOrder, 'fieldOrderModel': table.fieldOrder};
               +sortIcon(sortObj)
     tbody
-      tr(ng-repeat="item in main.items.#{tableId} | orderBy:'email':main.is.filter.sortOrder ")
+      tr(ng-repeat="item in main.items.#{tableId} | orderBy:main.is.filter.fieldOrder:main.is.filter.sortOrder ")
         each colsInstance, i in table.colsInstance
           - col = table['cols'][colsInstance];
           - cssClass = (col.textAlign) ? "text-" + col.textAlign : '';
@@ -52,7 +52,7 @@ mixin angularTables(tableId)
 
           if !col.actionsButtons && !col.rawHtml
             //- Normal item
-            td(ng-bind!="#{table.listItem}['#{col.field}']", class="#{cssClass}")
+            td(ng-bind!="#{table.listItem}.#{col.field}", class="#{cssClass}")
           else if col.actionsButtons
             //- Action items
             td
@@ -63,4 +63,3 @@ mixin angularTables(tableId)
           else if col.rawHtml
             //- Raw html item
             td!=col.rawHtml
-

@@ -35,6 +35,10 @@ mixin phoneField(formId, stateId)
 mixin orgField(formId, stateId)
   +fieldInput(formId, 'org', stateId)
 
+//- Checkbox to make a user an admin of it's organization
+mixin makeAdminField(formId, stateId)
+  +niceCheckbox(formId, 'makeAdmin', stateId)
+
 //- submit the current form
 mixin submitBtn(formId, stateId)
   +formButton(formId, 'submit', stateId)

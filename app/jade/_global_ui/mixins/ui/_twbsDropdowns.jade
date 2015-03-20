@@ -1,0 +1,12 @@
+//- http://angular-ui.github.io/bootstrap/#/dropdown
+
+mixin twbsDropdowns(data)
+  div(class="btn-group", dropdown)
+    div(class="button btn btn-danger", type="button", ngBinds=data.ngBinds.itemVisible.title) Action
+    button.btn.btn-danger.dropdown-toggle(type="button", dropdown-toggle="")
+      span.caret
+      //- for screen reader
+      span.sr-only Split button!
+    ul(class="dropdown-menu", role="menu")
+      li(ng-repeat="item in #{data.ngBinds.items}")
+        a(href="#", ng-bind="item.#{data.ngBinds.item.title}")
