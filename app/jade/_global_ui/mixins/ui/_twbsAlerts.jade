@@ -1,11 +1,24 @@
-//- Simple alert that display at the top of the page
-mixin twbsTopAlert(data)
-  - console.log('\n \n the alart binds are ', data);
-  if data
-    .alert.alert-success.alert-dismissible(role="alert")
-      button.close(type="button", data-dismiss="alert", aria-label="Close")
-        span(aria-hidden="true") &#215;
-        if (data.ngBinds && data.ngBinds.message)
-          span(ng-bind=data.ngBinds.message)
+//- https://angular-ui.github.io/bootstrap/#/alert
+//-
+  alerts: "alerts" # the array that store all alerts message: # [{type: "sucess", message: "Well done, the page is saved !"}, {type: "error", message: "there was a problem"}]
+  closeFn: "closeAlert" function to be called when closing the alert
+mixin twbsUiAlert(data)
+  - console.log('\n debuging twbs alerts !!! ', data);
+  if (data && data.alerts)
+    - var closeFn = (data.closeFn) ? data.closeFn + '($index)' : null;
+    //- @hack to remove
+    alert(
+      ng-repeat="alert in #{data.alerts}", type="{{ alert.type }}",
+      close=closeFn,
+      ng-bind="alert.msg",
+      ng-hide=data.ngHide
+    )
 
+mixin twbsUiAlertPage
+  +twbsUiAlert(gData.settings.alerts.page)
 
+mixin twbsUiAlertTables
+  +twbsUiAlert(gData.settings.alerts.tables)
+
+mixin twbsUiAlertModals
+  +twbsUiAlert(gData.settings.alerts.modals)

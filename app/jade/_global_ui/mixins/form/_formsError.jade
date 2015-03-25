@@ -31,5 +31,6 @@ mixin inputErrors(formId, fieldId, errors, stateId)
 mixin errorNgMessages(formId, fieldId, errors)
   - console.log('\n\n the errors are ', errors);
   div(ng-messages="#{formId}.#{fieldId}.$error")
-    each errorMessage, errorId in errors
-      div(ng-message=errorId, class="mt1")=errorMessage
+    if errors
+      each errorMessage, errorId in errors
+        div(ng-message=errorId, class="mt1")=errorMessage

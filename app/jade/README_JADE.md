@@ -127,6 +127,10 @@ phantomjs --webdriver==4444
 # How to create a new menu item 
 * add the menu entry in menu.yml in the specific menu zone 
 
+# How to create a new public page 
+Public pages are pages that don't require you to be signed in
+* add the page state name in APP.PUBLIC_PAGE Constant, this list of pages is used to determined if you ought to redirect to signin if the user is not conneceted or not 
+
 # Grunt plugins 
 
 * **wiredep**: Autofill html js and css with information coming from bower.json

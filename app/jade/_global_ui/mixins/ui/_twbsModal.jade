@@ -1,12 +1,10 @@
 mixin modalForm(data)
   - data = data || {};
   - data.ngBinds = data.ngBinds || {}
-  - if (data.id === 'memberModal') {
-  -   console.log('\n the member modal data is ', data);
-  - }
+
   .modal-inner(class="p2 #{data.id}")
     .modal-header.row
-      h3(class="modal-title pull-left", ng-bind=data.ngBinds.title)=data.title
+      h3(class="modal-title text-center", ng-bind=data.ngBinds.title)=data.title
       div(class="pull-right cpointer #{data.closeIcon}", ng-click="modal.fn.cancel()")
     .modal-body
       block

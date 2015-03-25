@@ -1,0 +1,11 @@
+//- Generic link
+mixin link(link)
+  if link
+    - var translate = (link.translate) ? link.translate : true;
+    a(
+        href=link.href,
+        ng-href=link.ngHref,
+        ui-sref=link.uiSref,
+        ng-click=link.ngClick,
+        translate=translate
+    )=link.text
