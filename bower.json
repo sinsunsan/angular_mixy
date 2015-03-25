@@ -1,6 +1,10 @@
 {
   "author": "Sébastien Lucas",
   "name": "angular-mixy",
+  "repository": {
+    "type": "git",
+    "url": "https://archiref@bitbucket.org/archiref/angular_mixy.git"
+  },
   "description": "Library of UI components based on Twitter Bootstrap & using JADE, SASS & ANGULAR",
   "version": "0.0.5",
   //"main": "./dist/scripts",
