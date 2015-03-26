@@ -61,6 +61,7 @@ mixin angularTables(tableId)
                     ng-show=btn.ngShow,
                     ng-hide=btn.ngHide,
                     title=gData.settings.buttons[btn.id].label)
+
           else if col.rawHtml
             //- Raw html item
             td!=col.rawHtml
