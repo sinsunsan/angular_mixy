@@ -51,46 +51,103 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
 
   // forms.yml / global field settings (the lowest level default settings for all fields)
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
+  var field = {};
+  _.defaults(field, stateType, formType, formTypeDefaults, fieldType, defaults);
 
-  var field = _.defaults(stateType, formType, formTypeDefaults, fieldType, defaults);
-
-  // if (fieldId === 'email' && formId === 'signup') {
-  //   console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
-  //   console.log('\nState settings', stateType);
-  //   console.log('\nForm settings', formType);
-  //   console.log('\nField settings', fieldType);
-  //   console.log('\nDefaults settings', defaults);
-  //   console.log('\nThe combined field settings are : ', field);
-  // }
+  if (fieldId === 'email') {
+    console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
+    console.log('\nState settings', stateType);
+    console.log('\nForm settings', formType);
+    console.log('\nField settings', fieldType);
+    console.log('\nDefaults settings', defaults);
+    console.log('\nThe combined field settings are : ', field);
+  }
   return field;
+};
+
+// Create the cache folder if it doesn't exist
+exports.isCached = function(cacheType) {
+  if (! gData.cache) {
+    gData.cache = {};
+  }
+  if (gData.cache && ! gData.cache[cacheType]) {
+    gData.cache[cacheType] = {};
+    //console.log('the cache is created', gData.cache[cacheType])
+    return false;
+  }
+  return true;
+};
+
+exports.setFormCache = function(formId, stateId, formData) {
+  if (!gData.cache.forms[formId]) {
+    gData.cache.forms[formId] = {};
+  }
+  gData.cache.forms[formId][stateId] = formData;
+  //console.log('the CACHE is SAVED !!! ', gData.cache);
+};
+
+exports.getFormCache = function(formId, stateId) {
+  var self = this;
+  if (!self.isCached('forms')) {
+    return false;
+  }
+  else if (formId && stateId) {
+    if (gData.cache.forms[formId] && gData.cache.forms[formId][stateId]) {
+      //console.log('there is cached data for this ids');
+      return gData.cache.forms[formId][stateId];
+    }
+    else {
+      return false;
+    }
+  }
+};
+
+exports.getFieldCache = function(formId, stateId, fieldId) {
+  //console.log('HEEELAAA');
 };
 
 //- 3 levels override for global form data : stateType, formType, formsDefaults
 exports.setFormDefaults = function(formId, stateId) {
-  console.log('\n\n\n the forms options ARE ', formsInstancesData);
+
   var self = this;
   var stateType, formType, fieldType, defaults = {};
+  var formDefaults = {};
 
-  // formsInstances.yml / form id settings overrides for the state
-  stateType = (stateId && self.checkNested(formsInstancesData, formId, 'states', stateId)) ? formsInstancesData[formId]['states'][stateId] : {};
+  formDefaults = self.getFormCache(formId, stateId);
+  if (formDefaults) {
+    //console.log('RETURN FROM CACHE for ', formId, stateId);
+    return formDefaults;
+  } else {
+    //console.log('THE CACHE FOLDER IS ', gData.cache);
+    formDefaults = {};
+    // formsInstances.yml / form id settings overrides for the state
+    stateType = (stateId && self.checkNested(formsInstancesData, formId, 'states', stateId)) ? formsInstancesData[formId]['states'][stateId] : {};
+    // formsInstances.yml / form id settings
+    formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
 
-  // formsInstances.yml / form id settings
-  formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
+    // forms.yml / default form settings
+    defaults = (self.checkNested(formsData, 'defaults', 'form')) ? formsData['defaults']['form'] : {};
 
-  // forms.yml / default form settings
-  defaults = (self.checkNested(formsData, 'defaults', 'form')) ? formsData['defaults']['form'] : {};
+    _.defaults(formDefaults, stateType, formType, defaults);
 
-  // console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
-  // console.log('\nState settings', stateType);
-  // console.log('\nForm settings', formType);
-  // console.log('\nDefaults settings', defaults);
-  return _.defaults(stateType, formType, defaults);
+    // if (fieldId === 'email') {
+      // console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
+      // console.log('\nState settings', stateType);
+      // console.log('\nForm settings', formType);
+      // console.log('\nDefaults settings', defaults);
+      // console.log('\nCombination settings', formDefaults);
+    // }
+
+    self.setFormCache(formId, stateId, formDefaults);
+    return formDefaults;
+  }
 };
 
 //- 2 levels override for global tables : tableType, default
 exports.setTableDefaults = function(tableId) {
+
   var self = this;
-  // console.log('\n\n\nthe table object is ', tableId);
+  //console.log('\n\n\nthe table object is ', tableId);
   var tablesData = gData['tables'];
   var tablesInstancesData = gData['tablesInstances'];
 
@@ -106,6 +163,12 @@ exports.setTableDefaults = function(tableId) {
   // console.log('\n\n\nmerge settings are ', returnDefaults);
   return returnDefaults;
 };
+
+//- 2 levels override for global lists
+exports.setListDefaults = function(listId) {
+  return gData['listsInstances'][listId];
+};
+
 
 // set default ng model when no field specific ngModel is set
 // ngModel can be set to false, to disable ngModel

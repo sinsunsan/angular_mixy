@@ -1,0 +1,118 @@
+//- List of element displayed as a table
+mixin tableViewHeader(pageId)
+  - var page = gData.pages[pageId];
+  if page
+    +mainContainer({pageId: pageId})
+      //- list title
+      if page.title
+        +pageWrapperHeader
+          +pageTitle(page)
+      //- Messages about the last changes performed on element of the list
+      +twbsUiAlertTables
+      div(class="row mb2 table-header")
+        //- actions tabs that display on top of the list page
+        +tabsActions(page.menuTop)
+      div(class="row")
+        block
+  else
+    - console.log('The page configuration has not been set for ' + pageId + ' in mixin tableViewHeader');
+
+//- Insertable block with a header
+mixin tableView(pageId)
+  +tableViewHeader(pageId)
+    div(class="table-list")
+      +angularTables(pageId)
+
+//- 2 click sort order
+mixin sortIcon(data)
+  span(class="fa fa-sort #{data.class} ml0 cpointer"
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = !#{data.sortOrderModel}")
+
+mixin sortAscIcon(data)
+  - data.class = data.class || '';
+  span( class="fa fa-sort-asc #{data.class} ml0 cpointer",
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = true")
+
+mixin sortDescIcon(data)
+  - data.class = data.class || '';
+  span( class="fa fa-sort-desc #{data.class} ml-2 cpointer",
+        ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = false")
+
+
+//- http://l-lin.github.io/angular-datatables/#/zeroConfig
+mixin angularTables(tableId)
+  - var table = util.setTableDefaults(tableId);
+  - console.log('\n\n\n\n\n\n\nthe current table data is ', table);
+
+  - var itemName = (itemName) ? itemName : 'cell';
+  - var ngModelCur, cssClass, col = '';
+  //- Where the columns info is stored
+  - var columns = gData.tablesColumns;
+
+  //- table class make the table boostrap styles
+  //-h ttp://getbootstrap.com/css/#tables
+
+  +defaultTextngRepeat(table, table.ngModel)
+  table(
+    datatable="",
+    class="table table-striped table-bordered table-hover table-#{tableId}",
+    ng-if='(#{table.ngModel}).length>0'
+  )
+    if (typeof(table.noHeader) ==='undefined')
+      thead
+        tr
+          each colsInstance, i in table.colsInstances
+            - col = columns[colsInstance];
+            - var translate = (col.header !== '') ? 'translate' : false;
+            th(ng-show=col.ngShow)
+              span(translate=translate)=col.header
+              if col.sortable
+                - sortObj = {'field': col.field, 'sortOrderModel': table.sortOrder, 'fieldOrderModel': table.fieldOrder};
+                +sortIcon(sortObj)
+    tbody
+      tr(ng-repeat="item in #{table.ngModel} | orderBy:main.is.filter.fieldOrder:main.is.filter.sortOrder ")
+        if (table.colsInstances)
+          each colsInstance, i in table.colsInstances
+            - col = columns[colsInstance];
+            - cssClass = (col.textAlign) ? "text-" + col.textAlign : '';
+            - col.tooltip = col.tooltip || {};
+            - var thisValue = (col.value) ? '{{ ' + col.value + ' }}' : '';
+            - var valueDetails = (col.valueDetails) ? '{{ ' + col.valueDetails + ' }}' : '';
+            - var field = (col.field && !col.value) ? table.listItem + '.' + col.field : null;
+
+            if !col.actionsButtons && !col.rawHtml && !col.listInstance
+              //- Normal item
+              td(
+                class=cssClass,
+                ng-show=col.ngShow,
+                )
+                  if(col.uiSref || col.ngClick)
+                    a(ng-bind!=field, title=thisValue, ui-sref=col.uiSref, ng-click=col.ngClick, tooltip-placement=col.tooltip.position, tooltip=col.tooltip.value)=thisValue
+                  else if col.href
+                    span(class="fa fa-external-link")
+                    a(ng-bind!=field, target='_blank', title=thisValue, href=col.href, tooltip-placement=col.tooltip.position, tooltip=col.tooltip.value)=thisValue
+
+                  else
+                    span(ng-bind!=field, tooltip-placement=col.tooltip.position, tooltip=col.tooltip.value)=thisValue
+                  if(col.valueDetails)
+                    a(data-toggle="collapse" data-target="#details{{$index}}", ng-click="(class=='fa-rotate-180-p') ? class='' : class='fa-rotate-180-p'")
+                      span(class="fa fa-caret-down", ng-class="class")
+                    p(id="details{{$index}}", class="collapse")=valueDetails
+
+            else if col.actionsButtons
+              //- Action items
+              td(ng-show=col.ngShow, class="tableTools")
+                each btn, i in col.actionsButtons
+                  a(  class="#{btn.class}",
+                      ng-click=btn.ngClick,
+                      ng-show=btn.ngShow,
+                      ng-hide=btn.ngHide,
+                      ui-sref=btn.uiSref,
+                      title=gData.settings.buttons[btn.id].label)
+                    span(class="#{gData.settings.buttons[btn.id].icon}")
+            else if col.rawHtml
+              //- Raw html item
+              td!=col.rawHtml
+            else if col.listInstance
+              td
+                +angularLists(col.listInstance.id)

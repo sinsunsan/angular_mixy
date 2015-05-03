@@ -6,8 +6,19 @@ mixin mainWrapper
 
 //- The container of the ui-view loaded main template
 mixin mainContainer(page)
+  - page = page || {};
   - page.wrapperClass = page.wrapperClass || '';
-  section(class="page-#{page.id} container main-container #{page.wrapperClass}")
+  - var pageId = (page.id) ? 'page-' + page.id : '';
+  // UI view main container
+  section(class="#{page.id} main-container #{page.wrapperClass}")
     //- global page wide alert zone
     +twbsUiAlertPage
+    block
+
+//- The containers of the ui-view nested states
+mixin subContainer(section)
+  - section = section || {};
+  - var sectionId = (section.id) ? 'section-' + section.id : '';
+  // UI view sub container
+  section(class="sub-container #{sectionId}")
     block

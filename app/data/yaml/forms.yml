@@ -23,6 +23,8 @@ forms:
         submitBtn: "btn-block btn btn-default btn-primary"
         fieldGroup: "mb1"
         commonClass: "form-control mb1"
+      ngModel: 'modal.item'
+      ngSubmit: 'modal.fn.submit'
       modal:
         size: 'sm'
     # Default universal field settings

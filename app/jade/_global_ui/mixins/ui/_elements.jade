@@ -7,3 +7,25 @@ mixin editHoverBtn(config)
       ng-show="btnDisplay")
     i(class="fa fa-edit")
 
+mixin angularParaBlock(data)
+  div(ng-if="#{data.content.title} || #{data.content.body}")
+    h4(ng-bind=data.content.title)
+    p(ng-bind=data.content.body)
+  span(ng-if="!#{data.content.title} && !#{data.content.body}", class="text-muted")
+    i #{data.content.defaultTxt}
+    if (data.content.defaultButton)
+      +defaultButton(data.content.defaultButton)
+
+mixin defaultTextngRepeat(data, condition)
+  span(ng-if='(#{condition}).length==0', class="text-muted") 
+    i #{data.defaultTxt}
+  if (data.defaultButton)
+    +defaultButton(data)
+
+mixin defaultButton(data)
+  - var buttons = gData.buttons[data]
+  
+
+  button(class='#{buttons.class}')
+    i(class=buttons.icon)
+    span(title=buttons.title)=buttons.label

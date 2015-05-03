@@ -22,7 +22,7 @@ npm install -g bower
 * ruby 
 https://www.ruby-lang.org/en/documentation/installation/
 Sous Debian
-`apt-get install ruby1.9.1 ruby1.9.1-dev`
+`apt-get install ruby1.9.1 ruby1.9.1-dev
 
 Sass and compass need to installed with sudo 
 * sass (dependent of ruby)
@@ -90,7 +90,7 @@ npm install -g phantomjs
 
 * Run phantom as webdriver 
 ```shell
-phantomjs --webdriver==4444
+phantomjs --webdriver=4444
 ```
 
 * Run test
@@ -107,11 +107,13 @@ phantomjs --webdriver==4444
 * If the page is public (don't need authentication)
     * add it's states id in APP.PUBLIC_PAGES in "APP" angular service
     * add this settings to the state (@todo find other solution to exploit APP.PUBLIC_PAGES Service)
+
     ```js
     data: {
         publicPage: true
     }
-    ``
+    ```
+
 # How to create a modal page 
 
 # How to create a table page 
@@ -145,4 +147,4 @@ Public pages are pages that don't require you to be signed in
 
 ### [Angular app and js](./app/scripts/README.md)
 
-### [JAde Templating](./app/jade/README.md) 
+### [Jade Templating](./app/jade/README.md) 

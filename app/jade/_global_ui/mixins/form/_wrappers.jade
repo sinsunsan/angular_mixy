@@ -11,6 +11,13 @@ mixin fieldGroup(field)
       )
     block
 
+mixin formTag(form, stateId)
+  form(
+      name="#{stateId}",
+      ng-submit="#{form.ngSubmit}(#{stateId}, #{form.ngModel})",
+      novalidate)
+    block
+
 //- Form wrapper with the form tag
 //- Properties are set with a 3 levels order state specific > form specific > form default
 //- state specific example : edit, create, delete state
@@ -18,11 +25,12 @@ mixin fieldGroup(field)
 //- form default : all form default settings
 mixin formWrapper(formId, stateId)
   - var formStateId = util.setFormStateId(formId, stateId);
-  - console.log('\nthe form data are !!!!!!! \n', formId, stateId);
+  - //console.log('\nthe form data are !!!!!!! \n', formId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
-  - //console.log('\nthe form data are \n', form);
+  - //console.log('\nRTRT the form data are \n', form);
+  - var formWrapperTypeClass = (form.type === 'twbsPanel') ? 'panel panel-default' : '';
   div(
-      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass}",
+      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass}",
       ng-class=form.ngClass
     )
     //- global form error wrapper
@@ -35,11 +43,27 @@ mixin formWrapper(formId, stateId)
           ng-show=form.confirm.ngBind,
           ng-bind=form.confirm.ngBind)
 
-    form(
-      name="#{formStateId}",
-      ng-submit="#{form.ngSubmit}(#{formStateId}, #{form.ngModel})",
-      novalidate)
-      block
+    if (form.type === 'twbsPanel')
+      - console.log('THE CASE!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+      //- Twitter boostrap panel classes
+      div(class="panel-heading")=form.title
+      div(class="panel-body")
+        +formTag(form, formStateId)
+          block
+    else
+      //- No type
+      +formTag(form, formStateId)
+        block
+
+//- Build a form from the field instances sub keys
+mixin formBuilder(formId, stateId)
+  - var formData = util.setFormDefaults(formId, stateId);
+  - //console.log('\n\n\n\nFormBuilder', formData)
+  +formWrapper(formId, stateId)
+    if formData.fieldsInstances
+      //- we ouput all fields that belongs to this form
+      each fieldId in formData.fieldsInstances
+        +fieldById(formId, stateId, fieldId)
 
 //- standard wrapper of a block element
 //- don't use "block" as argument name

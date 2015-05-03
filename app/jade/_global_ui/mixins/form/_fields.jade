@@ -1,3 +1,26 @@
+
+
+//- Generic field insertion
+mixin fieldById(formId, stateId, fieldId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var formData = util.setFormDefaults(formId, stateId);
+  - if (stateId === 'delete') field.disabled = true
+
+  - //console.log('\nWORKING on the field ', field);
+  //- @todo complete the available types are only those in fieldsGeneric.jade
+  case field.type
+    when 'text'
+      +fieldInput(formId, fieldId, stateId)
+    when 'textarea'
+      +fieldTextarea(formId, fieldId, stateId)
+    when 'submit'
+      +formButton(formId, fieldId, stateId)
+    when 'select'
+      +fieldSelect(formId, fieldId, stateId)
+    default
+      +fieldInput(formId, fieldId, stateId)
+
+
 //- Reusable field type
 
 //- @todo use @default with lodash to allow partial overrides of forms settings
@@ -67,7 +90,7 @@ mixin avatarField(formId, stateId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
   - field.ngModel = util.setDefaultNgModel(field, form);
-  - console.log('\n The image upload file ', field, ' from form ' + formId + ' and fieldId ' + fieldId + ' and stateId ' + stateId);
+  - // console.log('\n The image upload file ', field, ' from form ' + formId + ' and fieldId ' + fieldId + ' and stateId ' + stateId);
   +fieldGroup(field)
     //- placeholder user icon when no user icon has been uploaded
     div(class="avatar-placeholder",

@@ -4,21 +4,48 @@
   $height: 150px,
   $width: 150px
 ) {
-  & {
+  background: $background;
+  width: $width;
+  height: $height;
+  text-align: center;
+  i.fa {
+    color: $color;
+    line-height: $height;
+  }
+}
+
+@mixin org-switcher(
+  $background: transparent,
+  $height: $org-switcher-height,
+  $dropdown-separator: $dropdown-separator
+) {
+  .btn:active:hover {
     background: $background;
-    width: $width;
-    height: $height;
-    text-align: center;
-    i.fa {
-      color: $color;
-      line-height: $height;
-    }
+  }
+  &,
+  & .btn,
+  .dropdown-toggle {
+    background: transparent;
+    height: $org-switcher-height;
+    line-height: $org-switcher-height;
+  }
+  .btn-group.open .dropdown-toggle {
+    background: transparent;
+  }
+  .dropdown-toggle {
+    padding: 0 10px;
+  }
+  .dropdown-menu {
+    margin-top: $dropdown-separator;
   }
 }
 
 @mixin elements-css {
   .avatar-placeholder {
     @include avatar-placeholder;
+  }
+  .org-switcher {
+    @include org-switcher;
   }
 }
 

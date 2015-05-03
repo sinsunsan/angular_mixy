@@ -1,11 +1,13 @@
 mixin modalForm(data)
   - data = data || {};
-  - data.ngBinds = data.ngBinds || {}
-
+  - data.ngBinds = data.ngBinds || {};
+  - data.ngBinds.title = data.ngBinds.title || 'modal.modal.title';
+  - data.closeIcon = data.closeIcon || 'fa fa-times';
+  
   .modal-inner(class="p2 #{data.id}")
     .modal-header.row
-      h3(class="modal-title text-center", ng-bind=data.ngBinds.title)=data.title
-      div(class="pull-right cpointer #{data.closeIcon}", ng-click="modal.fn.cancel()")
+      h3(class="modal-title text-center", ng-bind=data.ngBinds.title)
+      div(class="pull-right cpointer close-modal #{data.closeIcon}", ng-click="modal.fn.cancel()")
     .modal-body
       block
     //- .modal-footer
@@ -17,3 +19,20 @@ mixin modalForm(data)
 mixin modalStateWrapper(state)
   div(class="", ng-show="modal.fn.isState('#{state}')")
     block
+
+//- automatic modal, that output the crud states sub forms
+mixin modalCrud(formId)
+  //- we list the available states in a simple crud modal
+  - var states = ['create', 'delete', 'edit'];
+  //- not used but could be useful to set common properties to all crud modals
+  - var modalSettings = gData.blocks.modalCrud;
+  +modalForm(formData)
+    //- We output all cruds states
+    each stateId in states
+      - var formData = util.setFormDefaults(formId, stateId);
+      - console.log('\n the MODAL FORM DATA are', formData);
+      +modalStateWrapper(stateId)
+        //- form state sub title disabled
+        //- if (formData.title)
+        //-   h3(class="modal-title text-center")=formData.title
+        +formBuilder(formId, stateId)

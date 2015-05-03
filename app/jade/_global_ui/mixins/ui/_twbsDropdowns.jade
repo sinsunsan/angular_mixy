@@ -18,27 +18,29 @@
 
 //- version with a button that make link and a caret to toggle the dropdown open
 mixin twbsDropdowns(data)
-  - console.log('the DATATAAAAA are ', data, data.visibleItem, data.visibleItem.ngBind);
+  - var wrapperClass = data.wrapperClass || '';
   if (data.visibleItem && data.dropdownItems)
-    li(class="btn-group", dropdown)
-      //- link to the visibleItem
-      div(
-        class="button btn btn-danger",
-        type="button",
-        ng-bind=data.visibleItem.ngBind)
+    ul(class="#{wrapperClass}")
+      li(class="btn-group ", dropdown)
+        //- link to the visibleItem
+        div(
+          class="button btn btn-danger",
+          type="button",
+          ng-bind=data.visibleItem.ngBind)
 
-      button( class="btn btn-danger dropdown-toggle",
-              type="button",
-              dropdown-toggle="")
-        span.caret
-        //- for screen reader
-        span.sr-only Split button!
+          button( class="btn btn-danger dropdown-toggle",
+                  type="button",
+                  dropdown-toggle=""
+                  ng-if='(#{data.dropdownItems.ngRepeat}).length > 1')
+            span.caret
+            //- for screen reader
+            span.sr-only Split button!
 
-      //- Dropdown items (listed with a new repeat)
-      if (data.dropdownItems.ngBind  && data.dropdownItems.ngRepeat )
-        ul(class="dropdown-menu", role="menu")
-          li(ng-repeat="item in #{data.dropdownItems.ngRepeat}")
-            a(
-              href="#",
-              ng-bind="item.#{data.dropdownItems.ngBind}",
-              ng-click=data.dropdownItems.ngClick)
+          //- Dropdown items (listed with a new repeat)
+          if (data.dropdownItems.ngBind  && data.dropdownItems.ngRepeat)
+            ul(class="dropdown-menu", role="menu", ng-if='(#{data.dropdownItems.ngRepeat}).length > 1')
+              li(ng-repeat="item in #{data.dropdownItems.ngRepeat}")
+                a(
+                  href="#",
+                  ng-bind="item.#{data.dropdownItems.ngBind}",
+                  ng-click=data.dropdownItems.ngClick)

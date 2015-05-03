@@ -28,3 +28,29 @@ blocks:
       text: "Have an access problem ? "
       ngClick: "main.fn.askPasswordReset()"
 ```
+
+## List of yaml data files 
+
+The data in the yaml are exploited by the jade mixins and
+sometimes at by angular, it the central place to set the specific content of the app
+
+* **settings** Global settings of the app
+
+* **Forms**
+* **fields** : form individual fields 
+* **forms** : generic forms defaut settings 
+* **formsInstances** Specicic Form using a specific set of fields 
+
+* **Page, blocks and menus**
+* **blocks** : small element of the page 
+* **pages** Pages composition
+* **menus** Menus item
+
+* **buttons** : actions buttons 
+
+* **listInstances** Specific List
+
+* **Tables**
+* **tables** Generic table default settings
+* **tablesColumns** Individual column of a data table 
+* **tablesInstances** Specific table using a specific set of columns
