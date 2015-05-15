@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('angularMixy')
 .factory('mixyUtil', function() {
 

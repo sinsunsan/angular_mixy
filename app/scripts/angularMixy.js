@@ -1,4 +1,3 @@
-angular.module('angularMixy', function() [
+'use strict';
 
-
-]);
+angular.module('angularMixy',[]);
