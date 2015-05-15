@@ -195,9 +195,8 @@ mixin link(link)
     - var translate = (link.translate) ? link.translate : true;
     a(
         href=link.href,
-        ng-href=link.ngHref,
+        ng-href=link.nghref,
         ui-sref=link.uiSref,
         ng-click=link.ngClick,
         translate=translate
     )=link.text
-

@@ -1,6 +1,11 @@
 // Utility functions to be used in the context
 // of jade loaded by the grunt process
 var _ = require('lodash');
+
+// https://github.com/balderdashy/merge-defaults
+// Or you can add it as a new method
+_.mergeDefaults = require('merge-defaults');
+
 // var gData1 = require('gData');
 // @todo replace by a config to change that easily
 var gData = require('./../../../data/hola.json');
@@ -54,6 +59,10 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   var field = {};
   _.defaults(field, stateType, formType, formTypeDefaults, fieldType, defaults);
 
+  //  delete fields are disabled by default
+  if (stateId === 'delete' && (typeof(field.disabled) === 'undefined'))  {
+    field.disabled = true
+  }
   if (fieldId === 'email') {
     console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
     console.log('\nState settings', stateType);
@@ -118,17 +127,29 @@ exports.setFormDefaults = function(formId, stateId) {
     //console.log('RETURN FROM CACHE for ', formId, stateId);
     return formDefaults;
   } else {
+
+
     //console.log('THE CACHE FOLDER IS ', gData.cache);
     formDefaults = {};
+
+
+    formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
+
+    // We first merge the current form and it's possible parent
+    if (formType.parent && self.checkNested(formsInstancesData, formType.parent)) {
+      formTypeParent = formsInstancesData[formType.parent];
+      _.mergeDefaults(formType, formTypeParent)
+    }
+
+    // Then we retrieve state and global form defaults
     // formsInstances.yml / form id settings overrides for the state
     stateType = (stateId && self.checkNested(formsInstancesData, formId, 'states', stateId)) ? formsInstancesData[formId]['states'][stateId] : {};
     // formsInstances.yml / form id settings
-    formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
 
     // forms.yml / default form settings
     defaults = (self.checkNested(formsData, 'defaults', 'form')) ? formsData['defaults']['form'] : {};
 
-    _.defaults(formDefaults, stateType, formType, defaults);
+    _.mergeDefaults(formDefaults, stateType, formType, defaults);
 
     // if (fieldId === 'email') {
       // console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
@@ -166,9 +187,50 @@ exports.setTableDefaults = function(tableId) {
 
 //- 2 levels override for global lists
 exports.setListDefaults = function(listId) {
-  return gData['listsInstances'][listId];
+  if (gData['listsInstances'][listId]) {
+    return gData['listsInstances'][listId];
+  }
+  else if (gData['buttonsInstances'][listId]) {
+    return gData['buttonsInstances'][listId];
+  }
+  return {};
 };
 
+//- 2 leveles overrides for buttons  : buttons and parent button
+//- @todo create a third function and a common function to this process
+exports.setInstancesDefaults = function(instanceId, instancesData) {
+  var self = this;
+  if (instancesData) {
+    console.log('\n\n\n we ask for instance ', instanceId);
+    console.log('\n\n\n the instanceData defs ', instancesData);
+
+    var instance = (instanceId && self.checkNested(instancesData, instanceId)) ? instancesData[instanceId] : {};
+
+    // We use parent button as a default button
+    if (instance.parent) {
+      var instanceParent = (self.checkNested(instancesData, instance.parent)) ? instancesData[instance.parent] : {};
+      var returnDefaults = _.mergeDefaults(instance, instanceParent);
+      console.log('\n\n\n Instance combined properties for ' + instanceId + ' with parent ' + instanceParent + ' : ', returnDefaults);
+      return returnDefaults;
+    }
+    else {
+      return instance;
+    }
+  }
+  return {};
+};
+
+exports.setButtonsDefaults = function(buttonId) {
+  var self = this;
+  var buttonsData = gData['buttons'];
+  return self.setInstancesDefaults(buttonId, buttonsData);
+};
+
+exports.setColumnsDefaults = function(columnId) {
+  var self = this;
+  var columnsData = gData['tablesColumns'];
+  return self.setInstancesDefaults(columnId, columnsData);
+};
 
 // set default ng model when no field specific ngModel is set
 // ngModel can be set to false, to disable ngModel
@@ -180,7 +242,8 @@ exports.setDefaultNgModel = function(field, form) {
   if (!(field.ngModel === false)) {
     ngModel = form.ngModel + '.';
     ngModel += (field.ngModel) ? field.ngModel : field.id;
-  } else {
+  }
+  else {
     ngModel = false;
   }
   // console.log('\n\n\nthe ngModel use the data ', field.ngModel, form.ngModel, 'and is ', ngModel);

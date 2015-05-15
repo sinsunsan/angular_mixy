@@ -4,7 +4,6 @@
 mixin fieldById(formId, stateId, fieldId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var formData = util.setFormDefaults(formId, stateId);
-  - if (stateId === 'delete') field.disabled = true
 
   - //console.log('\nWORKING on the field ', field);
   //- @todo complete the available types are only those in fieldsGeneric.jade

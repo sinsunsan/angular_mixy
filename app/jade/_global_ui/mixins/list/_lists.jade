@@ -1,40 +1,74 @@
-//- Angular ngRepeat based nestable lists
-mixin angularLists(listId)
-  - //console.log('asking for list ' + listId);
+mixin listsWrapper(listId)
   - var list = util.setListDefaults(listId);
   - var listClass = list.class || '';
+  ul(class="list-#{listId} list list-unstyled #{listClass} ui-angular-lists")
+    block
+
+mixin toolbarButton(btnId, buttonClass)
+  - var btnObj = util.setButtonsDefaults(btnId);
+  - buttonClass = buttonClass || '';
+  li( class='cpointer btn btn-fit-height #{buttonClass}',
+      ui-sref=btnObj.uiSref,
+      ng-click=btnObj.ngClick,
+      ng-show=btnObj.ngShow)
+    i(class=btnObj.icon)
+    if (btnObj.label)
+      span(title=btnObj.title)=btnObj.label
+
+//- list of buttons : toolbar
+mixin toolbarLists(listId)
+  - var list = util.setListDefaults(listId);
   - var buttonClass = list.buttonClass || '';
-  - list.tooltip = list.tooltip || {};
-  //- Value has priority on ngBind
-  - var ngRepeatValue = (list.value) ? '{{ ' + list.value + ' }}' : '';
-  - var ngBind = (list.ngBind && !list.value) ? list.ngBind: null;
-  - var buttons = gData.buttons
-
-  ul(class="list-#{listId} list list-unstyled #{listClass}")
-
+  +listsWrapper(listId)
     if list.buttonsInstances
-      //- Special type of list : the toolbars (a list of icons)
       each btnId in list.buttonsInstances
-        - var btnObj = buttons[btnId];
-        li( class='cpointer btn btn-fit-height #{buttonClass}',
-            ui-sref=btnObj.uiSref,
-            ng-click=btnObj.ngClick,
-            ng-show=btnObj.ngShow)
-          i(class=btnObj.icon)
-          if (btnObj.label)
-            span(title=btnObj.title)=btnObj.label
-    else
-      //- common list display
-      +defaultTextngRepeat(list, list.ngRepeat)
-      // @todo not useful ? if
-      li(ng-if='(#{list.ngRepeat}).length > 0', ng-repeat='item in #{list.ngRepeat}' )
-        if(list.link)
-          a(ui-sref=list.link,
-            tooltip-placement=list.tooltip.position, tooltip=list.tooltip.value,
-            ng-bind=ngBind)=ngRepeatValue
-        else
-          span(
-            tooltip-placement=list.tooltip.position, tooltip=list.tooltip.value,
-            ng-bind=ngBind)=ngRepeatValue
-        if (list.listInstance && list.listInstance.id)
-          +angularLists(list.listInstance.id)
+        +toolbarButton(btnId, buttonClass)
+
+//- Angular ngRepeat based nestable lists
+mixin angularLists(listId)
+  - console.log('asking for list ' + listId);
+  - var list = util.setListDefaults(listId);
+  if(list)
+    - var listClass = list.class || '';
+    - var buttonClass = list.buttonClass || '';
+    - list.tooltip = list.tooltip || {};
+    //- Value has priority on ngBind
+    - var ngRepeatValue = (list.value) ? '{{ ' + list.value + ' }}' : '';
+    - var ngBind = (list.ngBind && !list.value) ? list.ngBind: null;
+    - var buttons = gData.buttons
+
+    ul(class="list-#{listId} list list-unstyled #{listClass} ui-angular-lists")
+
+      //- List of buttons
+      //- @todo probably better as an independant mixins
+      if list.buttonsInstances
+        //- Special type of list : the toolbars (a list of icons)
+        each btnId in list.buttonsInstances
+          - var btnObj = buttons[btnId];
+          li( class='cpointer btn btn-fit-height #{buttonClass}',
+              ui-sref=btnObj.uiSref,
+              ng-click=btnObj.ngClick,
+              ng-show=btnObj.ngShow)
+            i(class=btnObj.icon)
+            if (btnObj.label)
+              span(title=btnObj.title)=btnObj.label
+
+      else
+        //- common list display
+        +defaultTextngRepeat(list, list.ngRepeatItems)
+        li(ng-repeat='item in #{list.ngRepeatItems}')
+          if (list.uiSref)
+            a(ui-sref=list.uiSref)
+              span(
+                tooltip-placement=list.tooltip.position,
+                tooltip=list.tooltip.value,
+                ng-bind=ngBind)=ngRepeatValue
+          else
+            span(
+              tooltip-placement=list.tooltip.position,
+              tooltip=list.tooltip.value,
+              ng-bind=ngBind)=ngRepeatValue
+
+          if (list.listInstance)
+            // sub list : another listInstance
+            +angularLists(list.listInstance.id)

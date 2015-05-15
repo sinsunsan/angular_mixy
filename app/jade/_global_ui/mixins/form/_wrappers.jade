@@ -44,7 +44,6 @@ mixin formWrapper(formId, stateId)
           ng-bind=form.confirm.ngBind)
 
     if (form.type === 'twbsPanel')
-      - console.log('THE CASE!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
       //- Twitter boostrap panel classes
       div(class="panel-heading")=form.title
       div(class="panel-body")
@@ -59,6 +58,7 @@ mixin formWrapper(formId, stateId)
 mixin formBuilder(formId, stateId)
   - var formData = util.setFormDefaults(formId, stateId);
   - //console.log('\n\n\n\nFormBuilder', formData)
+  //h1(class="form-title")=formData.title
   +formWrapper(formId, stateId)
     if formData.fieldsInstances
       //- we ouput all fields that belongs to this form

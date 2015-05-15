@@ -1,11 +1,21 @@
 //- Generic link
-mixin link(link)
-  if link
-    - var translate = (link.translate) ? link.translate : true;
-    a(
-        href=link.href,
-        ng-href=link.ngHref,
-        ui-sref=link.uiSref,
-        ng-click=link.ngClick,
-        translate=translate
-    )=link.text
+mixin tableLink(link)
+  - var translate = (link.translate) ? link.translate : false;
+  - var label = link.field || "Link";
+  - var target = (link.ngHref) ? "_blank" : "_self";
+
+  if link.ngHref
+      span(class="fa fa-external-link")
+
+  a(
+      ng-href="{{ #{link.ngHref} }}",
+      ui-sref=link.uiSref,
+      ng-click=link.ngClick,
+      translate=translate,
+      target=target,
+      title=label,
+      tooltip-placement=link.tooltip.position,
+      tooltip=link.tooltip.value
+      ng-bind!=label
+  ) 
+    

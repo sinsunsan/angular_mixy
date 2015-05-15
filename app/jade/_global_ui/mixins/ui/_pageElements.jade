@@ -6,7 +6,7 @@
 //-     icon: ""
 //-     ngClick: action to be triggered to favorite
 
-mixin pageWrapperHeader()
+mixin pageWrapperHeader
   div(class="page-header")
     block
 
@@ -20,6 +20,8 @@ mixin pageHeaderBar(data)
       h3(ng-bind=data.subtitle)
 
 //- repetitible page element
+//- portlet are a metronic theme class
+//- portlet or pageBLock is similar to twbs panels
 mixin pageBlock(data)
   if data
     div(class="m1 block-#{data.id} portlet light")
@@ -34,12 +36,20 @@ mixin pageBlock(data)
           //- top of the block toolbars (buttons)
           if data.toolbar
             div(class="actions")
-              +toolbar(data.toolbar)
+              - data.itemType = data.itemType || null;
+              +toolbar(data.toolbar, data.itemType)
       div(class="portlet-body")
         block
 
 mixin pageTitle(data)
-  h1(class='page-title', ng-bind=data.ngBind)=data.title
+  - console.log(data);
+  if data
+    h1(class='page-title', ng-bind=data.ngBind)=data.title
 
 mixin pageDynamicTitle(data)
   h1(class='page-title', ng-bind=data)
+
+mixin pageHeader(data)
+  //+pageWrapper
+  +pageWrapperHeader
+    +pageTitle(data.header)

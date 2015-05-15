@@ -1,7 +1,3 @@
-//- generic toolbar (list of buttons)
-mixin toolbar(data)
-  +angularLists(data)
-
 //- add an element in a list
 mixin addButton(data)
   - data = data || {};
@@ -9,3 +5,14 @@ mixin addButton(data)
   - data.icon = data.icon || 'fa fa-plus-circle';
   - data.title = data.title || 'Add';
   div(class="add-btn")
+
+mixin defaultButton(btnId)
+  - var buttons = util.setButtonsDefaults(btnId);
+
+  button(class='#{buttons.class}')
+    i(class=buttons.icon)
+    span(title=buttons.title)=buttons.label
+
+//- generic toolbar (list of buttons)
+mixin toolbar(toolbarId)
+  +toolbarLists(toolbarId)
