@@ -1,1 +1,1 @@
-angular.module('globalUI',[]);
+angular.module('globalUI', []);

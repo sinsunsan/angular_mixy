@@ -1,5 +1,3 @@
-
-
 //- Generic field insertion
 mixin fieldById(formId, stateId, fieldId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
@@ -10,15 +8,43 @@ mixin fieldById(formId, stateId, fieldId)
   case field.type
     when 'text'
       +fieldInput(formId, fieldId, stateId)
+
     when 'textarea'
       +fieldTextarea(formId, fieldId, stateId)
+
     when 'submit'
       +formButton(formId, fieldId, stateId)
+
+    when 'cancel'
+      +formButtonCancel(formId, fieldId, stateId)
+
     when 'select'
       +fieldSelect(formId, fieldId, stateId)
+
+    when 'uiselect'
+      +fieldUiSelect(formId, fieldId, stateId)
+
+    when 'multiselect'
+      +fieldMultiSelect(formId, fieldId, stateId)
+
+    when 'niceCheckbox'
+      +niceCheckbox(formId, fieldId, stateId)
+
+    when 'datepicker'
+      +datepicker(formId, fieldId, stateId)
+
+    when 'fieldGroup'
+      div(class='clearfix #{field.class}')
+        each fieldId in field.fieldsInstances
+          +fieldById(formId, stateId, fieldId)
+
     default
       +fieldInput(formId, fieldId, stateId)
 
+mixin fieldInTable(field)
+  case field.type
+    when 'checkbox'
+      +checkboxTable(field)
 
 //- Reusable field type
 
@@ -79,7 +105,7 @@ mixin avatarField1(formId, stateId)
         class="img-responsive mb1")
     button( class="btn btn-block",
             ng-file-select,
-            ng-model=field.ngModel)=field.submit.label
+            ng-model=field.ngModelField)=field.submit.label
 
 //- generic upload file
 //- this file use the following angular lib
@@ -88,7 +114,7 @@ mixin avatarField(formId, stateId)
   - fieldId = "avatar";
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
-  - field.ngModel = util.setDefaultNgModel(field, form);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
   - // console.log('\n The image upload file ', field, ' from form ' + formId + ' and fieldId ' + fieldId + ' and stateId ' + stateId);
   +fieldGroup(field)
     //- placeholder user icon when no user icon has been uploaded
@@ -114,26 +140,7 @@ mixin langFieldSimple(formId, stateId, fieldId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   +fieldGroup(field)
     select(
-      name='field.id',
-      ng-model="#{field.ngModel}",
-      ng-options="choice.id as choice.name for choice in #{field.choices}")
-
-
-//- lang of the user
-mixin langField(formId, stateId)
-  - fieldId = "lang";
-  - var field = setFieldDefaults(formId, fieldId, stateId);
-  - field.cssCommonClass = (checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
-  ui-select(
-    ng-model='address.selected',
-    theme='selectize',
-    ng-disabled='disabled',
-    reset-search-input='false',
-    style='width: 300px;')
-    ui-select-match(placeholder='Enter an address...') {{$select.selected.formatted_address}}
-    ui-select-choices(
-      repeat='language in languages track by $index',
-      refresh='refreshAddresses($select.search)',
-      refresh-delay='0')
-      div(ng-bind-html='address.formatted_address | highlight: $select.search')
+      name='choice.id',
+      ng-model=field.ngModelField)
+      option(ng-repeat='choice in #{field.choices}', ng-bind='choice.name')
 

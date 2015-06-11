@@ -1,14 +1,17 @@
 mixin fieldGroup(field)
   - field = field || {};
   - field.css = field.css || {};
-  //- console.log('\nthe field data are \n', field);
+  - field.class = field.class || {};
+  - var optClasses =+ (field.multiple) ? ' multiple ' : '';
+  - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
+  - console.log('\nthe field data are \n', field);
   //- display error style if one of the field is not valid inside
   div(
-      class="form-group #{field.css.group}",
-      ng-class="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
+      class="form-group #{field.css.group} #{field.class}",
+      ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
       ng-show=field.ngShow,
       ng-hide=field.ngHide
-      )
+      )&attributes(wrapperCustomAttributes)
     block
 
 mixin formTag(form, stateId)
@@ -31,7 +34,8 @@ mixin formWrapper(formId, stateId)
   - var formWrapperTypeClass = (form.type === 'twbsPanel') ? 'panel panel-default' : '';
   div(
       class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass}",
-      ng-class=form.ngClass
+      ng-class=form.ngClass,
+      ng-show=form.ngShow
     )
     //- global form error wrapper
     if (form.errors && form.errors.ngBind)
@@ -58,7 +62,7 @@ mixin formWrapper(formId, stateId)
 mixin formBuilder(formId, stateId)
   - var formData = util.setFormDefaults(formId, stateId);
   - //console.log('\n\n\n\nFormBuilder', formData)
-  //h1(class="form-title")=formData.title
+  //- h1(class="form-title")=formData.title
   +formWrapper(formId, stateId)
     if formData.fieldsInstances
       //- we ouput all fields that belongs to this form

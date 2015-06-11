@@ -49,7 +49,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // May be useful for example to state all fields in the "delete" state is disabled
 
   // formsInstances.yml / formsInstances default field settings defined at the form id level
-  formTypeDefaults = (formId && self.checkNested(formsInstancesData, formId, 'fields')) ? formsInstancesData[formId]['field'] : {};
+  formTypeDefaults = (formId && self.checkNested(formsInstancesData, formId, 'field')) ? formsInstancesData[formId]['field'] : {};
 
   // fields.yml / global field id settings : the settings for all fields of a given type
   fieldType = (fieldId && self.checkNested(fieldsData, fieldId)) ? fieldsData[fieldId] : {};
@@ -57,7 +57,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // forms.yml / global field settings (the lowest level default settings for all fields)
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
   var field = {};
-  _.defaults(field, stateType, formType, formTypeDefaults, fieldType, defaults);
+  _.mergeDefaults(field, stateType, formType, formTypeDefaults, fieldType, defaults);
 
   //  delete fields are disabled by default
   if (stateId === 'delete' && (typeof(field.disabled) === 'undefined'))  {
@@ -232,13 +232,10 @@ exports.setColumnsDefaults = function(columnId) {
   return self.setInstancesDefaults(columnId, columnsData);
 };
 
-// set default ng model when no field specific ngModel is set
-// ngModel can be set to false, to disable ngModel
-// for fields like password confirm, that don't need it
-// field.ngModel override field id if for example
-// an api require a field be named  in a specific way
-exports.setDefaultNgModel = function(field, form) {
+exports.setNgModel = function(field, form) {
   var ngModel = '';
+  console.log('******* The field ', field.ngModel);
+  console.log('******* The form ', form.ngModel);
   if (!(field.ngModel === false)) {
     ngModel = form.ngModel + '.';
     ngModel += (field.ngModel) ? field.ngModel : field.id;
@@ -246,7 +243,27 @@ exports.setDefaultNgModel = function(field, form) {
   else {
     ngModel = false;
   }
-  // console.log('\n\n\nthe ngModel use the data ', field.ngModel, form.ngModel, 'and is ', ngModel);
+  console.log('******* The No Model is ', ngModel);
+
+  return ngModel;
+};
+
+// set default ng model when no field specific ngModel is set
+// ngModel can be set to false, to disable ngModel
+// for fields like password confirm, that don't need it
+// field.ngModel override field id if for example
+// an api require a field be named  in a specific way
+exports.setDefaultNgModel = function(field, form) {
+  var self = this;
+
+  var ngModel = self.setNgModel(field, form);
+
+  // for field that are object, where the ngModel is only a single of its properties
+  // The case for accoutabilities and domains
+  if (field.ngModelObjectProperties) {
+    if (field.multiple) { ngModel += '[$index]'; }
+    ngModel += '.' + field.ngModelObjectProperties;
+  }
   return ngModel;
 };
 

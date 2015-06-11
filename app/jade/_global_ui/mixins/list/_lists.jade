@@ -7,13 +7,15 @@ mixin listsWrapper(listId)
 mixin toolbarButton(btnId, buttonClass)
   - var btnObj = util.setButtonsDefaults(btnId);
   - buttonClass = buttonClass || '';
+  - btnObj.title = btnObj.title || btnObj.label;
   li( class='cpointer btn btn-fit-height #{buttonClass}',
       ui-sref=btnObj.uiSref,
       ng-click=btnObj.ngClick,
-      ng-show=btnObj.ngShow)
+      ng-show=btnObj.ngShow,
+      ng-hide=btnObj.ngHide)
     i(class=btnObj.icon)
     if (btnObj.label)
-      span(title=btnObj.title)=btnObj.label
+      span(title=btnObj.title, translate)=btnObj.label
 
 //- list of buttons : toolbar
 mixin toolbarLists(listId)
@@ -53,10 +55,20 @@ mixin angularLists(listId)
             if (btnObj.label)
               span(title=btnObj.title)=btnObj.label
 
+      else if list.groupBy
+        li(ng-repeat="(key, value) in #{list.ngRepeatItems} | countBy:'#{list.groupBy}'")
+          span {{ key }} ({{ value }})
+
+          li(ng-repeat="item in value | concat:array track by $index")
+            a(ui-sref=list.uiSref) {{ value }}
+            span(
+              tooltip-placement=list.tooltip.position,
+              tooltip=list.tooltip.value) {{ item }}
+
       else
         //- common list display
         +defaultTextngRepeat(list, list.ngRepeatItems)
-        li(ng-repeat='item in #{list.ngRepeatItems}')
+        li(ng-repeat='item in #{list.ngRepeatItems} track by $index')
           if (list.uiSref)
             a(ui-sref=list.uiSref)
               span(

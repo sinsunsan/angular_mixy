@@ -1,4 +1,6 @@
-# holafront : Holaspirit Frontend
+# holafront
+
+Holaspirit Frontend
 
 * [Fresh install](./docs/install.md)
 * [Main dependencies](./docs/dependencies.md)
@@ -7,9 +9,9 @@
 * [HOW TOS](./docs/howtos.md) List of how to Guide to do common tasks
 
 ## Architecture 
-
+* [Used Librairies](./docs/librairies)
 * [Grunt plugins](./docs/grunt.md) 
 * [Yaml Configuration files](./app/data/README.md)
 * [Stylesheets](./app/styles/README.md)
 * [Angular app and js](./app/scripts/README.md)
-* [Jade templating](./app/jade/_global_ui/README.md) 
+* [Jade + yaml templating system](./app/jade/_global_ui/README.md) 

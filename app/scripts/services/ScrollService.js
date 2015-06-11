@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('holaApp')
-.service('ScrollService', function () {
+.service('ScrollService', function ($log, $location, $anchorScroll) {
 
   // http://stackoverflow.com/questions/4770025/how-to-disable-scrolling-temporarily
   var keys = [37, 38, 39, 40];
@@ -50,6 +50,7 @@ angular.module('holaApp')
    // http://stackoverflow.com/questions/14712223/how-to-handle-anchor-hash-linking-in-angularjs
    // https://docs.angularjs.org/api/ng/service/$anchorScroll
   var scrollTo = function(id) {
+    $log.debug('Asked to scroll to id: ' + id);
     $location.hash(id);
     $anchorScroll();
   };

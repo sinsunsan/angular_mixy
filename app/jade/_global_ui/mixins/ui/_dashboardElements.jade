@@ -1,0 +1,28 @@
+mixin cardStatWrapper(statId)
+  - var stat = gData.statGroup[statId];
+  - var statClass = stat.class || '';
+  ul(class="row #{statClass}")
+      each statInstance in stat.statInstances
+        li(class="col-lg-3 col-md-3 col-sm-6 col-xs-12")
+          +cardStatHeader(statInstance)
+
+
+mixin cardStatHeader(data)
+  - var stat = gData.statInstance[data];
+  div(class="dashboard-stat #{stat.class}")
+    div(class="visual")
+      i(class="#{stat.icon}")
+    div(class="details")
+      div(class="number", ng-bind=stat.number)
+      div(class="desc") #{stat.label}
+    if stat.uiSref
+      a(class="more" href="" ui-sref=stat.uiSref) View all
+        i(class="m-icon-swapright m-icon-white")
+    else
+      div(class="more empty")
+  +cardStatDetails(stat)
+
+
+mixin cardStatDetails(data)
+  div
+    +angularLists(data.listDetails)

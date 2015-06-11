@@ -10,9 +10,11 @@ mixin editHoverBtn(config)
 mixin angularParaBlock(data)
   div(ng-if="#{data.content.title} || #{data.content.body}")
     h4(ng-bind=data.content.title)
-    p(ng-bind=data.content.body)
+    p(ng-if="!#{data.content.bodyLink}", ng-bind=data.content.body)
+    a(ng-if="#{data.content.bodyLink}", ng-bind=data.content.body, href="{{#{data.content.bodyLink}}}")
+
   span(ng-if="!#{data.content.title} && !#{data.content.body}", class="text-muted")
-    i #{data.content.defaultTxt}
+    i(translate) #{data.content.defaultTxt}
     if (data.content.defaultButton)
       +defaultButton(data.content.defaultButton)
 
@@ -21,13 +23,13 @@ mixin angularParaBlock(data)
 mixin defaultTextngRepeat(data, condition)
   if data.defaultTxt
     span(ng-if='(#{condition}).length == 0', class="text-muted")
-      i=data.defaultTxt
+      i(translate)=data.defaultTxt
   if data.defaultButton
     +defaultButton(data)
 
 mixin defaultButton(data)
   - var buttons = gData.buttons[data]
 
-  button(class='#{buttons.class}', ng-show='#{buttons.ngShow}')
+  button(class='#{buttons.class}', ng-show='#{buttons.ngShow}', ui-sref='#{buttons.uiSref}')
     i(class=buttons.icon)
-    span(title=buttons.title)=buttons.label
+    span(title=buttons.title, translate)=buttons.label

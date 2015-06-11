@@ -24,21 +24,19 @@ mixin twbsDropdowns(data)
       li(class="btn-group ", dropdown)
         //- link to the visibleItem
         div(
-          class="button btn btn-danger",
-          type="button",
-          ng-bind=data.visibleItem.ngBind)
-
-          button( class="btn btn-danger dropdown-toggle",
+          class="dropdown",
+          type="button")
+          span(ng-bind=data.visibleItem.ngBind)
+          button( class="btn btn-danger dropdown-toggle",data-toggle="collapse", data-target="#orgSwitcher"
                   type="button",
-                  dropdown-toggle=""
-                  ng-if='(#{data.dropdownItems.ngRepeat}).length > 1')
-            span.caret
+                  ng-if="(#{data.dropdownItems.ngRepeat}).length > 0")
+            span.fa.fa-angle-down
             //- for screen reader
             span.sr-only Split button!
 
           //- Dropdown items (listed with a new repeat)
           if (data.dropdownItems.ngBind  && data.dropdownItems.ngRepeat)
-            ul(class="dropdown-menu", role="menu", ng-if='(#{data.dropdownItems.ngRepeat}).length > 1')
+            ul(id="orgSwitcher", class="dropdown-menu collapse", ng-if='(#{data.dropdownItems.ngRepeat}).length > 0')
               li(ng-repeat="item in #{data.dropdownItems.ngRepeat}")
                 a(
                   href="#",

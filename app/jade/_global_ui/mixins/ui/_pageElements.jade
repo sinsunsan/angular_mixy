@@ -1,37 +1,35 @@
-//- pageId: name of the page
-//-   title: "title of the page"
-//-   subtitle: "subtitle of the page"
-//-   parent: ""
-//-   favorites:
-//-     icon: ""
-//-     ngClick: action to be triggered to favorite
+mixin pageBlockText(data)
+  h3(class=data.titleClass, ng-bind=data.ngBind, translate)=data.title
 
-mixin pageWrapperHeader
-  div(class="page-header")
-    block
-
-mixin pageHeaderBar(data)
-  if data
-    div(class="page-bar")
-      +breadcrumb(data.breadcrumb)
-      div(class="page-toolbar")
-        +toolbar('toolbar')
-    div(class='headline')
-      h3(ng-bind=data.subtitle)
+mixin anchorLink(data)
+  if data.id
+    - data.scrollId = (data.idType === 'bind') ? '{{' + data.id + '}}' : "'" + data.id + "'";
+    - data.attrId = (data.idType === 'bind') ? '{{' + data.id + '}}' : data.id;
+    - data.attrHtmlId = (data.idType === 'bind') ? false : data.id;
+    a(ng-click="scrollTo(#{data.scrollId})",
+      ng-attr-id=data.attrId,
+      anchor-link,
+      id=data.attrHtmlId)
+      block
 
 //- repetitible page element
 //- portlet are a metronic theme class
 //- portlet or pageBLock is similar to twbs panels
 mixin pageBlock(data)
   if data
-    div(class="m1 block-#{data.id} portlet light")
+    div(class="mb1 block-#{data.id} portlet light")
       if data.title || data.toolbar
         div(class="portlet-title")
 
           //- title of the block
           if (data.title || data.ngBind)
             div(class="caption")
-              h3(class=data.titleClass, ng-bind=data.ngBind)=data.title
+              //- anchor links allow to scroll in the page (github style)
+              if data.anchorLink
+                +anchorLink(data.anchorLink)
+                  +pageBlockText(data)
+              else
+                +pageBlockText(data)
 
           //- top of the block toolbars (buttons)
           if data.toolbar
@@ -42,14 +40,31 @@ mixin pageBlock(data)
         block
 
 mixin pageTitle(data)
-  - console.log(data);
   if data
-    h1(class='page-title', ng-bind=data.ngBind)=data.title
+    h1(class='page-title', ng-bind=data.ngBind, translate)=data.title
+
+mixin pageSubtitle(data)
+  if data
+    h3(class='page-subtitle', ng-bind=data.subtitle, translate)
 
 mixin pageDynamicTitle(data)
   h1(class='page-title', ng-bind=data)
 
+mixin pageWrapperHeader
+  div(class="page-header")
+    block
+
+mixin pageHeaderBar(data)
+  if data
+    - var toolbar = data.toolbar || 'toolbar'
+    div(class="page-bar")
+      div(class="page-toolbar")
+        +toolbar(toolbar)
+      +breadcrumb(data.breadcrumb)
+    div(class='headline')
+      h3(ng-bind=data.subtitle)
+
 mixin pageHeader(data)
-  //+pageWrapper
   +pageWrapperHeader
     +pageTitle(data.header)
+    +pageSubtitle(data.header)

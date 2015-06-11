@@ -1,8 +1,13 @@
 # Data configuration files YAML
 
-* **[List of Yaml Files](./docs/filesList.md)**
 * **[Best practices](./docs/bestPractices.md)**
-* **[Overrides system & sub-blocks](./docs/overrides.md)**
-* **[Properties](./docs/properties.md)**
+* **[List of Yaml Files](./docs/filesList.md)**
+* **[Overrides system](./docs/overrides.md)**
+
+### Properties list
+* **[General properties](./docs/properties.md)**
+* **[Fields properties](./docs/properties_fields.md)**
+* **[Tables properties](./docs/properties_tables.md)**
+
 
 

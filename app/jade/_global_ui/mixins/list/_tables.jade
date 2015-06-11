@@ -40,7 +40,7 @@ mixin sortDescIcon(data)
         ng-click="#{data.fieldOrderModel} = '#{data.field}' ; #{data.sortOrderModel} = false")
 
 
-mixin cellWrapper(cell) 
+mixin cellWrapper(cell)
   div(class="cell-wrapper", ng-show=cell.ngShow, ng-hide=cell.ngHide)
     block
 
@@ -60,21 +60,23 @@ mixin angularTables(tableId)
   +defaultTextngRepeat(table, table.ngRepeatItems)
   table(
     datatable="",
-    class="table table-striped table-bordered table-hover table-#{tableId} ui-angular-tables",
+    class="table table-hover table-#{tableId} ui-angular-tables",
     ng-if!='(#{table.ngRepeatItems}).length > 0'
   )
 
-      if (typeof(table.noHeader) ==='undefined')
+      if (typeof(table.noHeader) === 'undefined')
         thead
           tr
             each colsInstance, i in table.colsInstances
               - col = util.setColumnsDefaults(colsInstance);
               - var translate = (col.header !== '') ? 'translate' : false;
+
               th(ng-show=col.ngShow)
-                span(translate=translate)=col.header
-                if col.sortable
-                  - sortObj = {'field': col.field, 'sortOrderModel': table.sortOrder, 'fieldOrderModel': table.fieldOrder};
-                  +sortIcon(sortObj)
+                if col.header
+                  span(translate=translate)=col.header
+                  if col.sortable
+                    - sortObj = {'field': col.field, 'sortOrderModel': table.sortOrder, 'fieldOrderModel': table.fieldOrder};
+                    +sortIcon(sortObj)
       tbody
         tr(ng-repeat="item in #{table.ngRepeatItems} | orderBy:main.is.filter.fieldOrder:main.is.filter.sortOrder ")
           if (table.colsInstances)
@@ -84,19 +86,20 @@ mixin angularTables(tableId)
               - colClass = (col.class) ? col.class : ''
               - col.tooltip = col.tooltip || {};
               - var thisValue = (col.value) ? '{{ ' + col.value + ' }}' : '';
+              - var thisValue = (col.text) ? col.text : thisValue;
               - var valueDetails = (col.valueDetails) ? '{{ ' + col.valueDetails + ' }}' : '';
               - var field = (col.field && !col.value) ? table.listItem+'.'+col.field : null;
 
-              if !col.actionsButtons && !col.rawHtml && !col.listInstance
+              if !col.actionsButtons && !col.rawHtml && !col.listInstance && !col.formField && !col.icon && !col.formInstance
                 //- Normal item
                 td(class=cssClass+colClass)
                     +cellWrapper(col)
                       //- just a link
-                      if(col.uiSref || col.ngClick || col.ngHref)
+                      if(col.uiSref || col.ngClick )
                         - console.log('the column ', col);
                         if(col.target === '_blank')
                           i(class="fa fa-external-link")
-                        a(ng-bind!=field, 
+                        a(ng-bind!=field,
                           target=col.target,
                           title=thisValue,
                           ng-href=col.ngHref,
@@ -105,12 +108,26 @@ mixin angularTables(tableId)
                           ng-class=col.ngClass,
                           tooltip-placement=col.tooltip.position,
                           tooltip=col.tooltip.value)=thisValue
+
+                      else if col.ngHref
+                        if(col.target === '_blank')
+                          i(class="fa fa-external-link")
+                        a(
+                          ng-bind!=field,
+                          target=col.target,
+                          title=thisValue,
+                          ng-href=col.ngHref,
+                          ng-class=col.ngClass,
+                          tooltip-placement=col.tooltip.position,
+                          tooltip=col.tooltip.value)=thisValue
+
                       else
                         span(ng-bind!=field, tooltip-placement=col.tooltip.position, tooltip=col.tooltip.value)=thisValue
 
                       //- special case with short version and detail
                       if(col.valueDetails)
-                        a(data-toggle="collapse",
+                        a(ng-if='#{col.valueDetails} != null',
+                          data-toggle="collapse",
                           data-target="#{{item.type}}{{$index}}",
                           ng-click="(class=='fa-rotate-180-p') ? class='' : class='fa-rotate-180-p'")
                           span(class="fa fa-caret-down", ng-class="class")
@@ -134,9 +151,33 @@ mixin angularTables(tableId)
                 //- Raw html item
                 td
                   +cellWrapper(col)!=col.rawHtml
-                    
+
               else if col.listInstance
-                // List in a table
+                //- List in a table
                 td
                   +cellWrapper(col)
                     +angularLists(col.listInstance)
+
+              else if col.formField
+                - var fields = gData.fields;
+                each fieldObj in col.formField
+                  - var field = fields[fieldObj];
+                  td(class=col.class)
+                    +fieldInTable(field)
+
+              else if col.formInstance
+                //- Do we need to embed complete form in a field ?
+
+              else if col.icon
+                td(class=col.class)
+                  if col.icon.true
+                    i(class=col.icon.true,
+                      ng-if="#{col.field} == true",
+                      tooltip-placement=col.tooltip.true.placement,
+                      tooltip=col.tooltip.true.value)
+
+                  if col.icon.false
+                    i(class=col.icon.false,
+                      ng-if="#{col.field} == false",
+                      tooltip-placement=col.tooltip.false.placement,
+                      tooltip=col.tooltip.false.value)

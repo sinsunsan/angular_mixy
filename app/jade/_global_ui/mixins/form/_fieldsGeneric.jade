@@ -9,14 +9,23 @@ mixin fieldInputTag(form, field)
           id=field.id
           placeholder=field.placeholder,
           class='input-#{fieldId} #{form.inputsClass} #{field.inputsClass}',
-          ng-model=field.ngModel,
-          ng-minlength="2",
-          ng-maxlength="50",
+          ng-model=field.ngModelField,
+          ng-model-options=field.ngModelOptions,
+          ng-minlength=field.ngMinLength,
+          ng-maxlength=field.ngMaxLength,
           ng-bind=field.id,
+          ng-show=field.ngShow,
           required=field.required,
           ng-change=field.ngChange,
           translate,
-          disabled=field.disabled)
+          disabled=field.disabled)&attributes(field.customAttributes)
+
+mixin fieldInputContent(form, field, fieldId, stateId)
+  +fieldInputTag(form, field)
+  if (form.ngMessages)
+    +errorNgMessages(formId, fieldId, field.errors, stateId)
+  else
+    +inputErrors(formId, fieldId, field.errors, stateId)
 
 //- Generic input field (types text, password, email...)
 mixin fieldInput(formId, fieldId, stateId)
@@ -24,7 +33,9 @@ mixin fieldInput(formId, fieldId, stateId)
   - var form = util.setFormDefaults(formId, stateId);
   - // The ng Model is automatically set if not defined
   - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
-  - field.ngModel = util.setDefaultNgModel(field, form);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelFieldRepeater = util.setNgModel(field, form);
+  - field.customAttributes = field.customAttributes || {};
   - // console.log('the field input form ///', form);
   +fieldGroup(field)
     //- a field label
@@ -32,34 +43,73 @@ mixin fieldInput(formId, fieldId, stateId)
       //- side label to configure (don't work yet)
       label(for=field.id, class="col-xs-3")=field.placeholder
       div(class="col-xs-9")
-        +fieldInputTag(form, field)
-        if (form.ngMessages)
-          +errorNgMessages(formId, fieldId, field.errors, stateId)
-        else
-          +inputErrors(formId, fieldId, field.errors, stateId)
+        +fieldInputContent(form, field, fieldId, stateId)
     else
-      +fieldInputTag(form, field)
-      if (form.ngMessages)
-        +errorNgMessages(formId, fieldId, field.errors, stateId)
-      else
-        +inputErrors(formId, fieldId, field.errors, stateId)
+      +fieldInputContent(form, field, fieldId, stateId)
 
 
 mixin fieldTextareaTag(form, field)
   textarea(
     name=field.id,
     placeholder=field.placeholder,
-    class='input-#{fieldId} #{form.inputsClass} #{field.inputsClass}',
-    ng-model=field.ngModel,
+    class='input-#{field.id} #{form.inputsClass} #{field.inputsClass}',
+    ng-model=field.ngModelField,
+    ng-model-options=field.ngModelOptions,
     rows="3",
     cols="30",
     ng-bind=field.id,
     required=field.required,
     ng-change=field.ngChange,
     ng-required=field.ngRequired,
+    ng-minlength=field.ngMinLength,
+    ng-maxlength=field.ngMaxLength,
     translate,
     disabled=field.disabled
-    )
+    )&attributes(field.customAttributes)
+
+// Special field to add a field
+mixin fieldAddField(form, field)
+  if (field.multipleAddField)
+    - var addField = field.multipleAddField;
+    - var addFieldNgModel = form.ngModel + '.' + field.ngModel + 'New';
+    - // We add 'create' argument to the ng-change function
+    div(class="add-field")
+      if (field.type === 'textarea')
+        textarea(
+          value="champs pour ajouter d'autre champs",
+          ng-model=addFieldNgModel,
+          ng-model-options=field.ngModelOptions,
+          ng-change!=addField.ngChange,
+          ng-minlength=field.ngMinLength,
+          ng-maxlength=field.ngMaxLength,
+          class=addField.class,
+          placeholder=addField.placeholder
+        )
+      if (field.type === 'text')
+        input(
+          type="text",
+          value="champs pour ajouter d'autre champs",
+          ng-model=addFieldNgModel,
+          ng-model-options=field.ngModelOptions,
+          ng-change=addField.ngChange,
+          ng-minlength=field.ngMinLength,
+          ng-maxlength=field.ngMaxLength,
+          class=addField.class,
+          placeholder=addField.placeholder
+        )
+
+mixin fieldTextAreaTagWrapper(form, field)
+  if (field.multiple)
+    div(ng-repeat="item in #{field.ngModelFieldRepeater} track by $index")
+      div(class="multiple-field multiple-field-#{i}")
+        // The ngModel if computed in the the set setDefaultNgModel() function
+        - if ((typeof(field.ngChange) !== 'undefined') && _.isString(field.ngChange)) { field.ngChange = field.ngChange.substring(0, field.ngChange.length - 1) + ", 'update', $index)"}
+        +fieldTextareaTag(form, field)
+    if (field.multipleAddField)
+      div(class="add-field-wrapper")
+        +fieldAddField(form, field)
+  else
+    +fieldTextareaTag(form, field)
 
 //- Generic textearea field
 mixin fieldTextarea(formId, fieldId, stateId)
@@ -67,20 +117,21 @@ mixin fieldTextarea(formId, fieldId, stateId)
   - var form = util.setFormDefaults(formId, stateId);
   - // The ng Model is automatically set if not defined
   - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
-  - field.ngModel = util.setDefaultNgModel(field, form);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelFieldRepeater = util.setNgModel(field, form);
+  - field.customAttributes = field.customAttributes || {};
   +fieldGroup(field)
     //- a field label
     if field.label.display
       label(for=field.id, class="col-xs-3")=field.placeholder
       div(class="col-xs-9")
-        +fieldTextareaTag(form, field)
+        +fieldTextAreaTagWrapper(form, field)
     else
-      +fieldTextareaTag(form, field)
+      +fieldTextAreaTagWrapper(form, field)
 
 //- generic select list
 //- http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/
 mixin fieldSelectTag(form, field)
-
   - field.ngOptions = field.ngOptions || '';
   - field.ngRepeat = field.ngRepeat || '';
   //- @todo clarify !!!
@@ -97,12 +148,13 @@ mixin fieldSelectTag(form, field)
       required=field.required,
       translate,
       disabled=field.disabled,
-      ng-model=field.ngModel,
+      ng-model=field.ngModelField,
       ng-change=field.ngChange,
+      ng-required=field.ngRequired
     )
       option(
         ng-repeat=field.ngRepeat,
-        value='{{ #{field.ngRepeatBind} }}',
+        value='{{ #{ field.ngRepeatValue || field.ngRepeatBind } }}',
         ng-bind=field.ngRepeatBind
       )
   else
@@ -114,9 +166,10 @@ mixin fieldSelectTag(form, field)
       required=field.required,
       translate,
       disabled=field.disabled,
-      ng-model=field.ngModel,
+      ng-disabled=field.ngDisabled,
+      ng-required=field.ngRequired
+      ng-model=field.ngModelField,
       ng-change=field.ngChange,
-
       ng-options=field.ngOptions,
     )
     //- other version found in origin/feature/addrole branch ? @todo check
@@ -130,7 +183,7 @@ mixin fieldSelect(formId, fieldId, stateId)
   - var form = util.setFormDefaults(formId, stateId);
   - // The ng Model is automatically set if not defined
   - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
-  - field.ngModel = util.setDefaultNgModel(field, form);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
   +fieldGroup(field)
     //- a field label
     if field.label.display
@@ -139,6 +192,144 @@ mixin fieldSelect(formId, fieldId, stateId)
         +fieldSelectTag(form, field)
     else
       +fieldSelectTag(form, field)
+
+
+//- ui select list
+mixin fieldUiSelectTag(form, field)
+  - field.ngOptions = field.ngOptions || '';
+  - field.ngRepeat = field.ngRepeat || '';
+  //- @todo clarify !!!
+  - if (field.ngBind) { field.ngOptions = 'item.id as item.' + field.ngBind  + ' for item in ' + field.options }
+  - if (field.ngRepeat) field.ngOptions = false;
+  - field.selectClass = "input-" + field.id + " " + form.inputsClass + " " + field.inputsClass;
+  - //console.log('\n\n\nour field !!!!!!', field )
+  if field.ngRepeat
+    // simple select with array of strings using ng-repeat with value #{field.ngRepeat}
+    select(
+      name=field.id,
+      placeholder=field.placeholder,
+      class=field.selectClass,
+      required=field.required,
+      translate,
+      disabled=field.disabled,
+      ng-disabled=field.ngDisabled,
+      ng-model=field.ngModel,
+      ng-change=field.ngChange,
+      ng-required=field.ngRequired
+    )
+      option(
+        ng-repeat=field.ngRepeat,
+        value='{{ #{field.ngRepeatBind} }}',
+        ng-bind=field.ngRepeatBind
+      )
+
+
+  else
+    //- UI SELECT element
+    //- Required properties
+    - field.onSelect = field.onSelect || field.ngChange;
+    ui-select(
+      ng-model=field.ngModel,
+      on-select= field.onSelect
+      ng-required=field.ngRequired,
+      theme="bootstrap",
+      disabled=field.disabled,
+      ng-disabled=field.ngDisabled,
+      reset-search-input="false")
+      if field.ngBind
+        ui-select-match(placeholder="#{field.placeholder}") {{$select.selected.#{field.ngBind}}}
+      else
+        ui-select-match(placeholder="#{field.placeholder}") {{$select.selected}}
+      ui-select-choices(repeat='item in #{field.options} track by $index',
+      group-by=field.groupBy)
+        if field.ngBind
+          div(ng-bind='item.#{field.ngBind}')
+        else
+          div(ng-bind='item')
+    //- other version found in origin/feature/addrole branch ? @todo check
+    //- ng-options='item.id as item.#{field.ngBind} for item in #{field.options}'
+
+//- ui select field
+//- we curently use select tag
+//- but can switch to a more advanced select list lib
+mixin fieldUiSelect(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModel = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldUiSelectTag(form, field)
+    else
+      +fieldUiSelectTag(form, field)
+
+
+mixin fieldMultiSelect(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModel = util.setDefaultNgModel(field, form);
+
+  +fieldGroup(field)
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldMultiSelectTag(form, field)
+    else
+      +fieldMultiSelectTag(form, field)
+
+mixin fieldMultiSelectTag(form, field)
+  ui-select(
+    multiple,
+    ng-model=field.ngModel,
+    ng-required=field.ngRequired,
+    theme="bootstrap",
+    ng-disabled="disabled",
+    sortable="true",
+    onkeypress="return false;"
+    close-on-select="false")
+    ui-select-match(placeholder="#{field.placeholder}") #{field.ngMatchBind}
+    ui-select-choices(repeat='item in #{field.ngRepeat} track by $index')
+      div(ng-bind=field.ngRepeatBind)
+
+mixin datepicker(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModel = util.setDefaultNgModel(field, form);
+
+  +fieldGroup(field)
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +datePickerTag(form, field)
+    else
+      +datePickerTag(form, field)
+
+mixin datePickerTag(form, field)
+  p(class="input-group datepickerTag")
+    input(
+      type="text",
+      class="form-control",
+      datepicker-popup=field.dateFormat,
+      ng-model=field.ngModel,
+      is-open="Opened",
+      min-date=field.minDate,
+      max-date=field.maxDate,
+      datepicker-options="dateOptions",
+      ng-disabled=field.ngDisabled,
+      ng-required="true",
+      close-text="Close")
+    span(class="input-group-btn")
+      button(type="button",
+            class="btn btn-default",
+            ng-disabled=field.ngDisabled,
+            ng-click="Opened=!Opened;$event.stopPropagation();"
+            )
+        i(class="glyphicon glyphicon-calendar")
+
 
 //- Generic button field (submit...)
 mixin formButton(formId, fieldId, stateId)
@@ -150,9 +341,26 @@ mixin formButton(formId, fieldId, stateId)
   //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
   +fieldGroup(field)
     button( type="submit",
-          class="btn-block btn btn-lg btn-default btn-primary button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
+          class="btn-block btn btn-lg btn-default btn-success button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
           ng-disabled=ngDisabled,
           ng-click=field.ngClick,
+          ng-bind=field.ngBind,
+          translate)=field.label
+
+mixin formButtonCancel(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - var formStateId = util.setFormStateId(formId, stateId);
+  - form.cssCommonClass = (util.checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
+  - var ngDisabled = !(field.ngDisabled) ? field.ngDisabled : formStateId + ".$invalid";
+  //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
+  +fieldGroup(field)
+    button(
+          class="btn-block btn btn-lg btn-default btn-danger button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
+          ng-disabled=ngDisabled,
+          ng-click=field.ngClick)
+      i(class=field.icon)
+      span(
           ng-bind=field.ngBind,
           translate)=field.label
 
@@ -167,7 +375,24 @@ mixin niceCheckbox(formId, fieldId, stateId)
   -  //console.log('\n the field in the input mixin ' , field);
   -  //console.log('\n the field disabled state is ///////', field.disabled);
   - }
-  - field.ngModel = util.setDefaultNgModel(field, form);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    checkbox(
+      ng-model=field.ngModelField,
+      name=field.name,
+      ng-true-value=field.ngTrueValue,
+      ng-false-value=field.ngFalseValue,
+      ng-change=field.ngChange,
+      ng-click=field.ngClick,
+      ng-disabled=field.ngDisabled,
+    )
+    span(class="ml0")=field.label
+
+//- @todo why a specicif field ?
+//- the fact that it is in a table don't change anything
+//- what library is used for that ?
+mixin checkboxTable(field)
+  - var tooltip = (field.tooltip) ? field.tooltip : '';
   +fieldGroup(field)
     checkbox(
       ng-model=field.ngModel,
@@ -175,8 +400,15 @@ mixin niceCheckbox(formId, fieldId, stateId)
       ng-true-value=field.ngTrueValue,
       ng-false-value=field.ngFalseValue,
       ng-change=field.ngChange,
+      ng-disabled=field.ngDisabled,
+      ng-init=field.ngInit,
+      ng-click=field.ngClick,
+      tooltip-placement=tooltip.position,
+      tooltip=tooltip.value
     )
-    span(class="ml0")=field.label
+    if (field.label)
+      span(class="ml0")=field.label
+
 
 //- simple image uploader
 mixin imageUploadWidget(field)
@@ -187,7 +419,7 @@ mixin imageUploadWidget(field)
             accept="image/*",
             ng-file-select,
             ng-file-change=field.ngFileChange,
-            ng-model=field.ngModel)=field.submit.label
+            ng-model=field.ngModelField)=field.submit.label
 
 //- Generic link
 mixin link(link)

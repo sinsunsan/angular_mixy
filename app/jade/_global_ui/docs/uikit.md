@@ -14,8 +14,23 @@
 Reusable elements that can be used several times on a single page 
 
 * **[pageBlock](../mixins/ui/_pageElements.jade)** Generic wrapper for page block 
-    Page block has the following configurable properties
-    * Title : the displayed title of the block
-    * Toolbar : a list of buttons (buttonsInstances)
-    
+    * **title** : the displayed title of the block
+    * **toolbar** : a list of buttons (buttonsInstances)
+    * **anchorLink**: 
+        - **id**: the id of the anchor, it could a string or an expression
+        - **idType**: 'bind' || 'string' Tell if we have an angular expression or a simple string
     Only the header is configurable, the content is wrapped
+
+* **pageHeader** Header of the page 
+    * **title** : Non angular binded title 
+    * **ngBind** : Angular binded title (that replace the title when the js is loaded)
+
+* **pageHeaderBar** Header of the page including toolbar
+    The same as pageHeader plus the following
+    * **subtitle** : Subtitle
+    * **toolbar**: id of toolbar instance
+    * **breadcrumb**: id of a breadcrumb
+
+* **pageTitle** Title of the page 
+    * **ngBind** : Angular binded value
+    * **title** : Static value (will be overriden by ngBind if provided)

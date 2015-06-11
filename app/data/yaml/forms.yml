@@ -20,7 +20,7 @@ forms:
       css:
         formErrors: "mb1 text-center"
         inputsClass: "form-control"
-        submitBtn: "btn-block btn btn-default btn-primary"
+        submitBtn: "btn-block btn btn-default btn-success"
         fieldGroup: "mb1"
         commonClass: "form-control mb1"
       ngModel: 'modal.item'
@@ -38,6 +38,8 @@ forms:
         position: "left" # The position of the label relative to the field
       inputsClass: "input-lg form-control"
       buttonsClass: "btn-lg"
+      ngMinLength: "2"
+      ngMaxLength: "250"
       css:
         group: "mb1"
 
