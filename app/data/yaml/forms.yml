@@ -16,7 +16,7 @@ forms:
       # Fields overrides
       # An object of all field whose default value should be overriden
       errors:
-        ngBind: "main.forms.errors"
+        ngBind: "forms.errors"
       css:
         formErrors: "mb1 text-center"
         inputsClass: "form-control"
@@ -38,8 +38,17 @@ forms:
         position: "left" # The position of the label relative to the field
       inputsClass: "input-lg form-control"
       buttonsClass: "btn-lg"
-      ngMinLength: "2"
-      ngMaxLength: "250"
       css:
         group: "mb1"
 
+  # Define the custom errors messages
+  errors:
+    # api validation overrides
+    email_not_unique: 'This email is already used.'
+    # Front end validation errors
+    required: 'This field is required.'
+    valid: 'This field is not valid.'
+    minlength: "This field is too short."
+    maxlength: "The field is too long."
+    # email is a strandard $validator or input[type="email"] fields
+    email: "This email is not valid."

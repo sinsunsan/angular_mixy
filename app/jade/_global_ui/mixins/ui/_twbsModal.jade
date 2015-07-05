@@ -3,7 +3,7 @@ mixin modalForm(data)
   - data.ngBinds = data.ngBinds || {};
   - data.ngBinds.title = data.ngBinds.title || 'modal.modal.title';
   - data.closeIcon = data.closeIcon || 'fa fa-times';
-  
+
   .modal-inner(class="p2 #{data.id}")
     .modal-header.row
       h3(class="modal-title text-center", ng-bind=data.ngBinds.title)
@@ -30,7 +30,7 @@ mixin modalCrud(formId)
     //- We output all cruds states
     each stateId in states
       - var formData = util.setFormDefaults(formId, stateId);
-      - console.log('\n the MODAL FORM DATA are', formData);
+      -// console.log('\n the MODAL FORM DATA are', formData);
       +modalStateWrapper(stateId)
         //- form state sub title disabled
         //- if (formData.title)

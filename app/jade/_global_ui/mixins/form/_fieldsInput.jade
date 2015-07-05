@@ -1,0 +1,128 @@
+//- generic field for textarea and text input field
+mixin fieldInputTag(form, field)
+  //- if (field.id === 'phone') {
+  //-  console.log('\n the field in the input mixin ' , field);
+  //-  console.log('\n the field disabled state is ///////', field.disabled);
+  //- }
+  input(  type=field.type,
+          name=field.id,
+          id=field.id
+          placeholder=field.placeholder,
+          class='input-#{fieldId} #{form.inputsClass} #{field.inputsClass}',
+          ng-model=field.ngModelField,
+          ng-model-options=field.ngModelOptions,
+          ng-minlength=field.ngMinlength,
+          ng-maxlength=field.ngMaxlength,
+          ng-bind=field.id,
+          ng-show=field.ngShow,
+          required=field.required,
+          ng-change=field.ngChange,
+          translate,
+          disabled=field.disabled)&attributes(field.customAttributes)
+
+mixin fieldInputContent(form, field, fieldId, stateId)
+  +fieldInputTag(form, field)
+
+//- Generic input field (types text, password, email...)
+mixin fieldInput(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelFieldRepeater = util.setNgModel(field, form);
+  - field.customAttributes = field.customAttributes || {};
+  - // console.log('the field input form ///', form);
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      //- side label to configure (don't work yet)
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldInputContent(form, field, fieldId, stateId)
+    else
+      +fieldInputContent(form, field, fieldId, stateId)
+
+
+mixin fieldTextareaTag(form, field)
+  textarea(
+    name=field.id,
+    placeholder=field.placeholder,
+    class='input-#{field.id} #{form.inputsClass} #{field.inputsClass}',
+    ng-model=field.ngModelField,
+    ng-model-options=field.ngModelOptions,
+    rows="3",
+    cols="30",
+    ng-bind=field.id,
+    required=field.required,
+    ng-change=field.ngChange,
+    ng-required=field.ngRequired,
+    ng-minlength=field.ngMinlength,
+    ng-maxlength=field.ngMaxlength,
+    translate,
+    disabled=field.disabled
+    )&attributes(field.customAttributes)
+
+//- Special field to add a field
+mixin fieldAddField(form, field)
+  - console.log('TTTT', field.multipleAddField);
+  if (field.multipleAddField)
+    - var addField = field.multipleAddField;
+    - var addFieldNgModel = form.ngModel + '.' + field.ngModel + 'New';
+    - // We add 'create' argument to the ng-change function
+    div(class="add-field")
+      if (field.type === 'textarea')
+        textarea(
+          value="champs pour ajouter d'autre champs",
+          ng-model=addFieldNgModel,
+          ng-model-options=field.ngModelOptions,
+          ng-change!=addField.ngChange,
+          ng-minlength=field.ngMinlength,
+          ng-maxlength=field.ngMaxlength,
+          class=addField.class,
+          placeholder=addField.placeholder
+        )
+      if (field.type === 'text')
+        input(
+          type="text",
+          value="champs pour ajouter d'autre champs",
+          ng-model=addFieldNgModel,
+          ng-model-options=field.ngModelOptions,
+          ng-change=addField.ngChange,
+          ng-minlength=field.ngMinlength,
+          ng-maxlength=field.ngMaxlength,
+          class=addField.class,
+          placeholder=addField.placeholder
+        )
+
+mixin fieldTextAreaTagWrapper(form, field)
+  if (field.multiple)
+    div(ng-repeat="item in #{field.ngModelFieldRepeater} track by $index")
+      div(class="multiple-field multiple-field-#{i}")
+        //- The ngModel if computed in the the set setDefaultNgModel() function
+        - if ((typeof(field.ngChange) !== 'undefined') && _.isString(field.ngChange)) { field.ngChange = field.ngChange.substring(0, field.ngChange.length - 1) + ", { action: 'update', subFieldIndex: $index } )"}
+        +fieldTextareaTag(form, field)
+    if (field.multipleAddField)
+      div(class="add-field-wrapper")
+        +fieldAddField(form, field)
+  else
+    +fieldTextareaTag(form, field)
+
+//- Generic textearea field
+mixin fieldTextarea(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelFieldRepeater = util.setNgModel(field, form);
+  - field.customAttributes = field.customAttributes || {};
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldTextAreaTagWrapper(form, field)
+    else
+      +fieldTextAreaTagWrapper(form, field)
+

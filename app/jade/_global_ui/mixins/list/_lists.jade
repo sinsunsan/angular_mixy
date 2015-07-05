@@ -6,16 +6,22 @@ mixin listsWrapper(listId)
 
 mixin toolbarButton(btnId, buttonClass)
   - var btnObj = util.setButtonsDefaults(btnId);
-  - buttonClass = buttonClass || '';
+  - buttonClass = buttonClass || '' ;
   - btnObj.title = btnObj.title || btnObj.label;
-  li( class='cpointer btn btn-fit-height #{buttonClass}',
-      ui-sref=btnObj.uiSref,
-      ng-click=btnObj.ngClick,
-      ng-show=btnObj.ngShow,
-      ng-hide=btnObj.ngHide)
-    i(class=btnObj.icon)
-    if (btnObj.label)
-      span(title=btnObj.title, translate)=btnObj.label
+  if ( btnObj.type )
+    li(ng-if="#{btnObj.type} === dropdownAddTask")
+      +dropdownAddTaskButton(btnObj)
+  else 
+    li( class='cpointer btn btn-fit-height #{buttonClass} #{btnObj.class}',
+        ui-sref=btnObj.uiSref,
+        ng-click=btnObj.ngClick,
+        ng-show=btnObj.ngShow,
+        ng-class=btnObj.ngClass,
+        ng-hide=btnObj.ngHide,
+        ng-if="#{btnObj.type} !== 'dropdownAddTask'")
+      i(class=btnObj.icon)
+      if (btnObj.label)
+        span(title=btnObj.title, translate)=btnObj.label
 
 //- list of buttons : toolbar
 mixin toolbarLists(listId)
@@ -28,7 +34,7 @@ mixin toolbarLists(listId)
 
 //- Angular ngRepeat based nestable lists
 mixin angularLists(listId)
-  - console.log('asking for list ' + listId);
+  -// console.log('asking for list ' + listId);
   - var list = util.setListDefaults(listId);
   if(list)
     - var listClass = list.class || '';
@@ -68,7 +74,8 @@ mixin angularLists(listId)
       else
         //- common list display
         +defaultTextngRepeat(list, list.ngRepeatItems)
-        li(ng-repeat='item in #{list.ngRepeatItems} track by $index')
+        - var item = list.item || 'item'
+        li(ng-repeat='#{item} in #{list.ngRepeatItems} track by $index')
           if (list.uiSref)
             a(ui-sref=list.uiSref)
               span(
@@ -81,6 +88,25 @@ mixin angularLists(listId)
               tooltip=list.tooltip.value,
               ng-bind=ngBind)=ngRepeatValue
 
+          if (list.actionsButtons)
+            span #{list.actionsButtons.text}
+            each btn, i in list.actionsButtons
+              if gData.buttons[btn.id]
+                a(  class="#{btn.class}",
+                    ng-click=btn.ngClick,
+                    ng-show=btn.ngShow,
+                    ng-hide=btn.ngHide,
+                    ui-sref=btn.uiSref,
+                    title=gData.buttons[btn.id].label)
+                  span(class=gData.buttons[btn.id].icon)
+
           if (list.listInstance)
             // sub list : another listInstance
             +angularLists(list.listInstance.id)
+
+        if (list.ngRepeatEnd)
+          li(ng-repeat-end,ng-show=list.ngRepeatEnd.ngShow)
+            //span(ng-bind="item.id")
+            a(ui-sref=list.ngRepeatEnd.uiSref,
+              class="#{list.ngRepeatEnd.class}",
+              translate) #{list.ngRepeatEnd.text}

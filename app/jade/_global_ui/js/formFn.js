@@ -54,6 +54,11 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // fields.yml / global field id settings : the settings for all fields of a given type
   fieldType = (fieldId && self.checkNested(fieldsData, fieldId)) ? fieldsData[fieldId] : {};
 
+  if (!(fieldId && self.checkNested(fieldsData, fieldId))) {
+    console.log('THE FIELD ' + fieldId + ' Has not been found in the fields settings ');
+    console.log('Double check your instance settings ! ');
+  };
+
   // forms.yml / global field settings (the lowest level default settings for all fields)
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
   var field = {};
@@ -63,14 +68,19 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   if (stateId === 'delete' && (typeof(field.disabled) === 'undefined'))  {
     field.disabled = true
   }
-  if (fieldId === 'email') {
-    console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
-    console.log('\nState settings', stateType);
-    console.log('\nForm settings', formType);
-    console.log('\nField settings', fieldType);
-    console.log('\nDefaults settings', defaults);
-    console.log('\nThe combined field settings are : ', field);
-  }
+  //  if (fieldId === 'addPolicyDomain') {
+  //    console.log('\n\nFields settings !!!! for formId : "' + formId + '", fieldId : "' + fieldId + '", stateId "' + stateId + '"');
+  //    console.log('\nState settings', stateType);
+  //    console.log('\nForm settings', formType);
+  //    console.log('\nField settings', fieldType);
+  //    console.log('\nDefaults settings', defaults);
+  //    console.log('\nThe combined field settings are : ', field);
+  //  }
+
+  // For convenience, we pass all useful ids in the field object
+  field.formId = formId;
+  field.fieldId = fieldId;
+  field.stateId = stateId;
   return field;
 };
 
@@ -201,8 +211,8 @@ exports.setListDefaults = function(listId) {
 exports.setInstancesDefaults = function(instanceId, instancesData) {
   var self = this;
   if (instancesData) {
-    console.log('\n\n\n we ask for instance ', instanceId);
-    console.log('\n\n\n the instanceData defs ', instancesData);
+    // console.log('\n\n\n we ask for instance ', instanceId);
+    // console.log('\n\n\n the instanceData defs ', instancesData);
 
     var instance = (instanceId && self.checkNested(instancesData, instanceId)) ? instancesData[instanceId] : {};
 
@@ -210,7 +220,7 @@ exports.setInstancesDefaults = function(instanceId, instancesData) {
     if (instance.parent) {
       var instanceParent = (self.checkNested(instancesData, instance.parent)) ? instancesData[instance.parent] : {};
       var returnDefaults = _.mergeDefaults(instance, instanceParent);
-      console.log('\n\n\n Instance combined properties for ' + instanceId + ' with parent ' + instanceParent + ' : ', returnDefaults);
+      // console.log('\n\n\n Instance combined properties for ' + instanceId + ' with parent ' + instanceParent + ' : ', returnDefaults);
       return returnDefaults;
     }
     else {
@@ -232,10 +242,68 @@ exports.setColumnsDefaults = function(columnId) {
   return self.setInstancesDefaults(columnId, columnsData);
 };
 
+// Some error messages like required, have special handling and even default values
+exports.setDefaultFieldErrors = function(fieldErrors, field, errorsGlobal, defErrorId, defErrorMsg) {
+
+  // Only add this message if manual errorsInstances has not been used
+  // manual errorsInstances can help set more precisely message order
+  if (!fieldErrors[defErrorId] && field[defErrorId] && !_.isEmpty(errorsGlobal[defErrorId])) {
+    fieldErrors[defErrorId] = errorsGlobal[defErrorId];
+  }
+  // Use the default message is not customization is provided in the yaml
+  else if (!fieldErrors[defErrorId] && field[defErrorId]) {
+    fieldErrors[defErrorId] = defErrorMsg;
+  }
+};
+
+// Set errors message globally and with field overrides
+exports.setFieldErrors = function(field) {
+
+  var errorsGlobal = gData.forms.errors;
+  var fieldErrors = {};
+  if (field.errorsInstances) {
+    _.each(field.errorsInstances, function(errorId) {
+      //- If the message is set at the field level, it win
+      if (field.errors && field.errors[errorId]) {
+        fieldErrors[errorId] = field.errors[errorId];
+      }
+      // If it is set at gobal all forms level, we take it
+      else {
+        fieldErrors[errorId] = (errorsGlobal[errorId]) ? errorsGlobal[errorId] : '';
+      }
+    });
+  }
+
+  if (field.type === 'email') {
+    field.email = true;
+  }
+
+  if (field.ngMinlength) {
+    field.minLength = field.minLength;
+  }
+
+  if (field.ngMaxlength) {
+    field.ngMaxlength = field.maxLength;
+  }
+
+  var defaultMessages = {
+    required: 'This field is required.',
+    minLength: 'This field is too short.',
+    maxLength: 'This field is too long.',
+    email: 'This email is not valid.'
+  };
+  _.each(defaultMessages, function(defErrorMsg, defErrorId) {
+
+    exports.setDefaultFieldErrors(fieldErrors, field, errorsGlobal, defErrorId, defErrorMsg);
+  });
+
+  return fieldErrors
+};
+
 exports.setNgModel = function(field, form) {
   var ngModel = '';
-  console.log('******* The field ', field.ngModel);
-  console.log('******* The form ', form.ngModel);
+  // console.log('******* The field ', field.ngModel);
+  // console.log('******* The form ', form.ngModel);
   if (!(field.ngModel === false)) {
     ngModel = form.ngModel + '.';
     ngModel += (field.ngModel) ? field.ngModel : field.id;
@@ -243,7 +311,7 @@ exports.setNgModel = function(field, form) {
   else {
     ngModel = false;
   }
-  console.log('******* The No Model is ', ngModel);
+  // console.log('******* The No Model is ', ngModel);
 
   return ngModel;
 };
@@ -281,7 +349,7 @@ exports.setFormStateId = function(formId, stateId) {
 
 // Centralized way to get form data giving the form Id
 exports.getFormData = function(formId) {
-  console.log('\n\n\n form data for formId dsdsds');
+  // console.log('\n\n\n form data for formId dsdsds');
   return formsInstancesData[formId];
 };
 

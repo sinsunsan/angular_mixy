@@ -17,7 +17,9 @@ mixin anchorLink(data)
 //- portlet or pageBLock is similar to twbs panels
 mixin pageBlock(data)
   if data
-    div(class="mb1 block-#{data.id} portlet light")
+    - var anchor = data.anchorId || '';
+    div(id="#{anchor}",
+      class="mb1 block-#{data.id} portlet light")
       if data.title || data.toolbar
         div(class="portlet-title")
 
@@ -45,13 +47,17 @@ mixin pageTitle(data)
 
 mixin pageSubtitle(data)
   if data
-    h3(class='page-subtitle', ng-bind=data.subtitle, translate)
+    h3(class='page-subtitle', translate)=data.subtitle
+
+mixin pageDynamicSubtitle(data)
+  if data
+    h2(class='page-subtitle', ng-bind=data.subtitle)
 
 mixin pageDynamicTitle(data)
   h1(class='page-title', ng-bind=data)
 
 mixin pageWrapperHeader
-  div(class="page-header")
+  div(class="page-header clearfix")
     block
 
 mixin pageHeaderBar(data)

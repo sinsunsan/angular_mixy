@@ -1,0 +1,165 @@
+//- generic select list
+//- http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/
+mixin fieldSelectTag(form, field)
+  - field.ngOptions = field.ngOptions || '';
+  - field.ngRepeat = field.ngRepeat || '';
+  //- @todo clarify !!!
+  - if (field.ngBind) { field.ngOptions = 'item.id as item.' + field.ngBind  + ' for item in ' + field.options }
+  - if (field.ngRepeat) field.ngOptions = false;
+  - field.selectClass = "input-" + field.id + " " + form.inputsClass + " " + field.inputsClass;
+  - console.log('\n\n\nour field !!!!!!', field )
+  if field.ngRepeat
+    // simple select with array of strings using ng-repeat with value #{field.ngRepeat}
+    select(
+      name=field.id,
+      placeholder=field.placeholder,
+      class=field.selectClass,
+      required=field.required,
+      translate,
+      disabled=field.disabled,
+      ng-model=field.ngModelField,
+      ng-change=field.ngChange,
+      ng-required=field.ngRequired
+    )
+      option(
+        ng-repeat=field.ngRepeat,
+        value='{{ #{ field.ngRepeatValue || field.ngRepeatBind } }}',
+        ng-bind=field.ngRepeatBind
+      )
+  else
+    // more complicated select using ng-options
+    select(
+      name=field.id,
+      placeholder=field.placeholder,
+      class=field.selectClass,
+      required=field.required,
+      translate,
+      disabled=field.disabled,
+      ng-disabled=field.ngDisabled,
+      ng-required=field.ngRequired
+      ng-model=field.ngModelField,
+      ng-change=field.ngChange,
+      ng-options=field.ngOptions,
+    )
+    //- other version found in origin/feature/addrole branch ? @todo check
+    //- ng-options='item.id as item.#{field.ngBind} for item in #{field.options}'
+
+//- Generic select field
+//- we curently use select tag
+//- but can switch to a more advanced select list lib
+mixin fieldSelect(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldSelectTag(form, field)
+    else
+      +fieldSelectTag(form, field)
+
+
+//- ui select list
+mixin fieldUiSelectTag(form, field)
+  - field.ngOptions = field.ngOptions || '';
+  - field.ngRepeat = field.ngRepeat || '';
+  //- @todo clarify !!!
+  - if (field.ngBind) { field.ngOptions = 'item.id as item.' + field.ngBind  + ' for item in ' + field.options }
+  - if (field.ngRepeat) field.ngOptions = false;
+  - field.selectClass = "input-" + field.id + " " + form.inputsClass + " " + field.inputsClass;
+
+  if field.ngRepeat
+    // simple select with array of strings using ng-repeat with value #{field.ngRepeat}
+    select(
+      name=field.id,
+      placeholder=field.placeholder,
+      class=field.selectClass,
+      required=field.required,
+      translate,
+      disabled=field.disabled,
+      ng-disabled=field.ngDisabled,
+      ng-model=field.ngModel,
+      ng-change=field.ngChange,
+      ng-required=field.ngRequired
+    )
+      option(
+        ng-repeat=field.ngRepeat,
+        value='{{ #{field.ngRepeatBind} }}',
+        ng-bind=field.ngRepeatBind
+      )
+
+
+  else
+    //- UI SELECT element
+    //- Required properties
+    - field.onSelect = field.onSelect || field.ngChange;
+    ui-select(
+      ng-model=field.ngModel,
+      on-select= field.onSelect
+      ng-required=field.ngRequired,
+      theme="bootstrap",
+      disabled=field.disabled,
+      ng-disabled=field.ngDisabled,
+      reset-search-input="false")
+      if field.ngBind
+        ui-select-match(placeholder=field.placeholder, allow-clear=field.allowClear) {{$select.selected.#{field.ngBind}}}
+      else
+        ui-select-match(placeholder=field.placeholder, allow-clear=field.allowClear) {{$select.selected}}
+      ui-select-choices(repeat='item in #{field.options}', group-by=field.groupBy)
+        if field.ngBind
+          div(ng-bind='item.#{field.ngBind}')
+        else
+          div(ng-bind='item')
+    //- other version found in origin/feature/addrole branch ? @todo check
+    //- ng-options='item.id as item.#{field.ngBind} for item in #{field.options}'
+
+//- ui select field
+//- we curently use select tag
+//- but can switch to a more advanced select list lib
+mixin fieldUiSelect(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - //- console.log('\n\n\nOUR field !!!!!!', field )
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModel = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    //- a field label
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldUiSelectTag(form, field)
+    else
+      +fieldUiSelectTag(form, field)
+
+
+mixin fieldMultiSelect(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModel = util.setDefaultNgModel(field, form);
+
+  +fieldGroup(field)
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +fieldMultiSelectTag(form, field)
+    else
+      +fieldMultiSelectTag(form, field)
+
+mixin fieldMultiSelectTag(form, field)
+  ui-select(
+    multiple,
+    ng-model=field.ngModel,
+    ng-required=field.ngRequired,
+    theme="bootstrap",
+    ng-disabled="disabled",
+    sortable="true",
+    onkeypress="return false;"
+    close-on-select="false")
+    ui-select-match(placeholder="#{field.placeholder}") #{field.ngMatchBind}
+    ui-select-choices(repeat='item in #{field.ngRepeat} track by $index')
+      div(ng-bind=field.ngRepeatBind)

@@ -1,0 +1,75 @@
+
+mixin niceCheckboxTag(field)
+  - //- console.log('FFFFF ', field);
+  - //- it seem that not giving true nor false trigger the ng-change at loading ?
+  - field.ngFalseValue = field.ngFalseValue || 'false';
+  - field.ngTrueValue = field.ngTrueValue || 'true';
+  checkbox(
+    ng-model=field.ngModelField,
+    name=field.name,
+    ng-true-value=field.ngTrueValue,
+    ng-false-value=field.ngFalseValue,
+    ng-change=field.ngChange,
+    ng-click=field.ngClick,
+    ng-disabled=field.ngDisabled,
+  )
+  if (field.ngRepeat && field.ngRepeatBind)
+    span(class="ml0", ng-bind='item.#{field.ngRepeatBind}')
+  else
+    span(class="ml0")=field.label
+
+//- https://github.com/sebastianha/angular-bootstrap-checkbox
+//- ngTrueValue displayed text if the checkbox is checked
+//- ngFalseValue displayed text if the checkbox is checked
+mixin niceCheckbox(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    +niceCheckboxTag(field)
+
+mixin selectAllActions(field)
+  if (field.selectAll || field.clearAll)
+    div(class="checkboxes-actions mb-1")
+      if (field.selectAll)
+        a(ng-click=field.selectAll, class="mr1", translate) Select All
+      if (field.clearAll)
+        a(ng-click=field.clearAll, class="mr1", translate) Clear All
+
+mixin niceCheckboxMultiple(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelField = field.ngModelField + '[$index]';
+  - var flexStyles = ' display: flex; justify-content: flex-start; align-items: flex-end; flex-flow: row wrap;'
+  - field.style = flexStyles;
+  - //console.log('the new awesome multiple checkbox field ', field);
+  div(class="multiple-checkbox-title", ng-show!=field.ngShow)
+    div(class="mb0", style="font-size: 1.6rem;")=field.label
+    +selectAllActions(field)
+
+  +fieldGroup(field)
+    div(ng-repeat="item in #{field.ngRepeat}",
+        class="pr1 mb1")
+      +niceCheckboxTag(field)
+
+//- @todo why a specific field ?
+//- the fact that it is in a table don't change anything
+//- what library is used for that ?
+mixin checkboxTable(field)
+  - var tooltip = (field.tooltip) ? field.tooltip : '';
+  +fieldGroup(field)
+    checkbox(
+      ng-model=field.ngModel,
+      name=field.name,
+      ng-true-value=field.ngTrueValue,
+      ng-false-value=field.ngFalseValue,
+      ng-change=field.ngChange,
+      ng-disabled=field.ngDisabled,
+      ng-init=field.ngInit,
+      ng-click=field.ngClick,
+      tooltip-placement=tooltip.position,
+      tooltip=tooltip.value
+    )
+    if (field.label)
+      span(class="ml0")=field.label

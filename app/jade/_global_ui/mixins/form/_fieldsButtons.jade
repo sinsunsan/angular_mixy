@@ -1,0 +1,32 @@
+//- Generic button field (submit...)
+mixin formButton(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - var formStateId = util.setFormStateId(formId, stateId);
+  - form.cssCommonClass = (util.checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
+  - var ngDisabled = !(field.ngDisabled) ? field.ngDisabled : formStateId + ".$invalid";
+  //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
+  +fieldGroup(field)
+    button( type="submit",
+          class="btn-block btn btn-lg btn-default btn-success button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
+          ng-disabled=ngDisabled,
+          ng-click=field.ngClick,
+          ng-bind=field.ngBind,
+          translate)=field.label
+
+mixin formButtonCancel(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - var formStateId = util.setFormStateId(formId, stateId);
+  - form.cssCommonClass = (util.checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
+  - var ngDisabled = !(field.ngDisabled) ? field.ngDisabled : formStateId + ".$invalid";
+  //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
+  +fieldGroup(field)
+    button(
+          class="btn-block btn btn-lg btn-default btn-danger button-#{fieldId} #{form.cssCommonClass} #{form.buttonsClass} #{field.class}",
+          ng-disabled=ngDisabled,
+          ng-click=field.ngClick)
+      i(class=field.icon)
+      span(
+          ng-bind=field.ngBind,
+          translate)=field.label

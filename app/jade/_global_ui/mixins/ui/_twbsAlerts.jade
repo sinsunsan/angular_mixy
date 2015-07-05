@@ -3,7 +3,7 @@
   alerts: "alerts" # the array that store all alerts message: # [{type: "sucess", message: "Well done, the page is saved !"}, {type: "error", message: "there was a problem"}]
   closeFn: "closeAlert" function to be called when closing the alert
 mixin twbsUiAlert(data)
-  - console.log('\n debuging twbs alerts !!! ', data);
+  - //console.log('\n debuging twbs alerts !!! ', data);
   if (data && data.alerts)
     - var closeFn = (data.closeFn) ? data.closeFn + '($index)' : null;
     //- @hack to remove

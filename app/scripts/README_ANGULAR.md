@@ -5,6 +5,7 @@
 * **[Js Data](./docs/jsData.md)**
 * **[Api](./docs/api.md)**
 * **[Events](./docs/events.md)**
+* **[Forms](.docs/forms.md)**
 * **[Debug](./docs/debug.md)**
 * **[Governance meeting](./docs/governance.md)**
 

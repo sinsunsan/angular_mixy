@@ -9,7 +9,7 @@ Holaspirit Frontend
 * [HOW TOS](./docs/howtos.md) List of how to Guide to do common tasks
 
 ## Architecture 
-* [Used Librairies](./docs/librairies)
+* [Used Librairies](./docs/librairies.md)
 * [Grunt plugins](./docs/grunt.md) 
 * [Yaml Configuration files](./app/data/README.md)
 * [Stylesheets](./app/styles/README.md)

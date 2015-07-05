@@ -1,0 +1,19 @@
+mixin radioButton(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModel = util.setDefaultNgModel(field, form);
+
+  +fieldGroup(field)
+    if field.label.display
+      label(for=field.id, class="col-xs-3")=field.placeholder
+      div(class="col-xs-9")
+        +radioButtonTag(form, field)
+    else
+      +radioButtonTag(form, field)
+
+mixin radioButtonTag(form, field)
+  - var fields = gData.fields
+  div(class="#{field.class}")
+    each radioButtonId in field.radioButtonInstances
+      - var radioBtn = fields[radioButtonId];
+      label(class="btn btn-primary #{radioBtn.class}", ng-model=field.ngModel, btn-radio="'#{radioBtn.btnRadio}'") #{radioBtn.label}

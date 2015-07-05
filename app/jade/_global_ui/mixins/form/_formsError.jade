@@ -1,3 +1,20 @@
+//- Errors messages using the ngMessages directives
+//- https://docs.angularjs.org/api/ngMessages
+mixin errorNgMessages(field)
+  - console.log('THE ERRORS ', field, formId, fieldId)
+  - var errors = util.setFieldErrors(field)
+  - console.log('\n\n the errors are ', errors);
+  //- we display message only if the form has been used $dirty
+  div(ng-messages="#{field.formId}.#{field.fieldId}.$error",
+      class="mt1",
+      ng-if='#{field.formId}.#{field.fieldId}.$dirty')
+    if errors
+      each errorMsg, errorId in errors
+        div(ng-message=errorId, class="mt1")=errorMsg
+
+
+//- ----- THE FOLLOWING MIXINS ARE DEPRECATED ----- /////
+
 //- generic field level validation message
 mixin errorMsgInvalid(config)
   //- config.msg the error message to display
@@ -26,11 +43,6 @@ mixin inputErrors(formId, fieldId, errors, stateId)
     if errors.minLength
       +errorMsgError({name: formfieldId, msg: errors.minLength, err: 'minlength'})
 
-//- Errors messages using the ngMessages directives
-//- https://docs.angularjs.org/api/ngMessages
-mixin errorNgMessages(formId, fieldId, errors)
-  - console.log('\n\n the errors are ', errors);
-  div(ng-messages="#{formId}.#{fieldId}.$error")
-    if errors
-      each errorMessage, errorId in errors
-        div(ng-message=errorId, class="mt1")=errorMessage
+//- ------ THE PREVIOUS MIXINS ARE DEPRECATED ----- /////
+
+

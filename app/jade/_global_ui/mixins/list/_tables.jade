@@ -47,7 +47,7 @@ mixin cellWrapper(cell)
 //- http://l-lin.github.io/angular-datatables/#/zeroConfig
 mixin angularTables(tableId)
   - var table = util.setTableDefaults(tableId);
-  - console.log('\n\n\n\n\n\n\nthe current table data is ', table);
+  - //console.log('\n\n\n\n\n\n\nthe current table data is ', table);
   - var itemName = (itemName) ? itemName : 'cell';
   - var ngRepeatItemsCur, cssClass, col = '';
   //- Where the columns info is stored
@@ -85,21 +85,26 @@ mixin angularTables(tableId)
               - cssClass = (col.textAlign) ? "text-" + col.textAlign : '';
               - colClass = (col.class) ? col.class : ''
               - col.tooltip = col.tooltip || {};
+              - col.ngShowDetails = col.ngShowDetails || col.ngShow;
+              //- col.ngShowParent = col.ngShowParent || "";
               - var thisValue = (col.value) ? '{{ ' + col.value + ' }}' : '';
               - var thisValue = (col.text) ? col.text : thisValue;
+              - var translateValue = (col.text) ? true : false;
               - var valueDetails = (col.valueDetails) ? '{{ ' + col.valueDetails + ' }}' : '';
               - var field = (col.field && !col.value) ? table.listItem+'.'+col.field : null;
 
               if !col.actionsButtons && !col.rawHtml && !col.listInstance && !col.formField && !col.icon && !col.formInstance
                 //- Normal item
-                td(class=cssClass+colClass)
+                td(class=cssClass+colClass,
+                  ng-show=col.ngShowParent)
                     +cellWrapper(col)
                       //- just a link
-                      if(col.uiSref || col.ngClick )
-                        - console.log('the column ', col);
+                      if (col.uiSref || col.ngClick )
+                        - //console.log('the column ', col);
                         if(col.target === '_blank')
                           i(class="fa fa-external-link")
-                        a(ng-bind!=field,
+                        a(ng-show=col.ngShowDetails,
+                          ng-bind!=field,
                           target=col.target,
                           title=thisValue,
                           ng-href=col.ngHref,
@@ -107,7 +112,8 @@ mixin angularTables(tableId)
                           ng-click=col.ngClick,
                           ng-class=col.ngClass,
                           tooltip-placement=col.tooltip.position,
-                          tooltip=col.tooltip.value)=thisValue
+                          tooltip=col.tooltip.value,
+                          translate=translateValue)=thisValue
 
                       else if col.ngHref
                         if(col.target === '_blank')
@@ -120,30 +126,50 @@ mixin angularTables(tableId)
                           ng-class=col.ngClass,
                           tooltip-placement=col.tooltip.position,
                           tooltip=col.tooltip.value)=thisValue
+                        //span(
+                          ng-hide=col.ngShowDetails,
+                          ng-bind!=field,
+                          title=thisValue,
+                          ng-class=col.ngClass,
+                          tooltip-placement=col.tooltip.position,
+                          tooltip=col.tooltip.value,
+                          translate=translateValue)=thisValue
+
+                      else if col.valueDetails 
+                        span(ng-if='#{col.valueDetails} === null',
+                          ng-bind!=field,
+                          tooltip-placement=col.tooltip.position,
+                          tooltip=col.tooltip.value)=thisValue
+                        a(ng-if='#{col.valueDetails} != null',
+                          data-toggle="collapse",
+                          data-target="#{{item.type}}{{$index}}",
+                          ng-click="(class=='fa-rotate-180-p') ? class='' : class='fa-rotate-180-p'",
+                          ng-bind!=field,
+                          title=thisValue,
+                          ng-class=col.ngClass,
+                          tooltip-placement=col.tooltip.position,
+                          tooltip=col.tooltip.value)=thisValue
+                          span(class="fa fa-caret-down", ng-class="class")
+                        p(id="{{ item.type }}{{$index}}", class="collapse")=valueDetails
 
                       else
                         span(ng-bind!=field, tooltip-placement=col.tooltip.position, tooltip=col.tooltip.value)=thisValue
 
-                      //- special case with short version and detail
-                      if(col.valueDetails)
-                        a(ng-if='#{col.valueDetails} != null',
-                          data-toggle="collapse",
-                          data-target="#{{item.type}}{{$index}}",
-                          ng-click="(class=='fa-rotate-180-p') ? class='' : class='fa-rotate-180-p'")
-                          span(class="fa fa-caret-down", ng-class="class")
-                        p(id="{{ item.type }}{{$index}}", class="collapse")=valueDetails
-
               else if col.actionsButtons
                 //- Action items
-                td(class="tableTools")
+                td(class="tableTools #{col.class}")
                   +cellWrapper(col)
                     each btn, i in col.actionsButtons
+                      - btn.tooltip = btn.tooltip || {};
                       if gData.buttons[btn.id]
                         a(  class="#{btn.class}",
+                            ng-class=btn.ngClass,
                             ng-click=btn.ngClick,
                             ng-show=btn.ngShow,
                             ng-hide=btn.ngHide,
                             ui-sref=btn.uiSref,
+                            tooltip-placement=btn.tooltip.position, 
+                            tooltip=btn.tooltip.value,
                             title=gData.buttons[btn.id].label)
                           span(class=gData.buttons[btn.id].icon)
 
@@ -154,7 +180,7 @@ mixin angularTables(tableId)
 
               else if col.listInstance
                 //- List in a table
-                td
+                td(class=cssClass+colClass)
                   +cellWrapper(col)
                     +angularLists(col.listInstance)
 
@@ -169,10 +195,11 @@ mixin angularTables(tableId)
                 //- Do we need to embed complete form in a field ?
 
               else if col.icon
-                td(class=col.class)
+                td(class=col.class,
+                  ng-show=col.ngShowParent)
                   if col.icon.true
                     i(class=col.icon.true,
-                      ng-if="#{col.field} == true",
+                      ng-if=col.ngIf,
                       tooltip-placement=col.tooltip.true.placement,
                       tooltip=col.tooltip.true.value)
 

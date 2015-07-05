@@ -16,3 +16,22 @@ mixin defaultButton(btnId)
 //- generic toolbar (list of buttons)
 mixin toolbar(toolbarId)
   +toolbarLists(toolbarId)
+
+
+mixin dropdownAddTaskButton(data)
+  div(class="btn-group" dropdown)
+    button(type="button",
+      class="btn dropdown-toggle #{data.class}",
+      data-toggle="collapse", data-target="#dropdownMenu")
+      i(class=data.icon)
+      span #{data.label}
+      span(class="caret")
+
+      span #{data.dropdownItems}
+    ul(id="dropdownMenu", class="dropdown-menu collapse")
+      li()
+        a(ui-sref="{{ $state.current.name }}({ mtype : 'actions', mstate : 'create' })", translate) Action
+      li()
+        a(ui-sref="{{ $state.current.name }}({ mtype : 'checklists', mstate : 'create' })", translate) Checklist
+      li()
+        a(ui-sref="{{ $state.current.name }}({ mtype : 'metrics', mstate : 'create' })", translate) Metric
