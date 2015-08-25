@@ -1,2 +1,25 @@
 # fields definition
 fields:
+  signinEmail:
+    id: "email"
+    type: "email"
+    placeholder: "Email"
+    required: true
+    errorsInstances:
+      - invalid
+    errors:
+      invalid: "The email is not valid"
+
+  signinPassword:
+    id: "password"
+    type: "password"
+    placeholder: "Password"
+    required: true
+    ngMinlength: 5
+    ngMaxlength: 12
+    errorsInstances:
+      - 'minlength'
+      - 'maxlength'
+    errors:
+      minlength: "The password is too short."
+      minlength: "The password is too long."
