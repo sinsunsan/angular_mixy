@@ -1,5 +1,10 @@
 # angular-mixy-start
 
+### Dependencies
+
+Lodash and merge-default are required libraries
+"merge-defaults": "^0.2.1"
+
 
 ### Include the main jade lib 
 

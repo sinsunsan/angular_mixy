@@ -1,14 +1,25 @@
 // Utility functions to be used in the context
 // of jade loaded by the grunt process
 var _ = require('lodash');
-
 // https://github.com/balderdashy/merge-defaults
 // Or you can add it as a new method
-_.mergeDefaults = require('merge-defaults');
 
+
+// AS the node module wasn't found we replaced by its content
+// @todo remove that bug
+//_.mergeDefaults = require('merge-defaults');
+_.mergeDefaults  =_.partialRight(_.merge, function recursiveDefaults (dest,src) {
+
+  // Ensure dates and arrays are not recursively merged
+  if (_.isArray(arguments[0]) || _.isDate(arguments[0])) {
+    return arguments[0];
+  }
+  return _.merge(dest, src, recursiveDefaults);
+});
 // var gData1 = require('gData');
 // @todo replace by a config to change that easily
-var gData = require('./../../../data/hola.json');
+//var gData = require('./../../../../../../app/views/bricks/datas/bricks.json');
+var gData = require('./bricks.json');
 var formsData = gData['forms'];
 var formsInstancesData = gData['formsInstances'];
 var fieldsData = gData['fields'];
