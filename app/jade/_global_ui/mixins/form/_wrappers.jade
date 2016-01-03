@@ -36,7 +36,9 @@ mixin formWrapper(formId, stateId)
   - //console.log('\nthe form data are !!!!!!! \n', formId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
   - //console.log('\nRTRT the form data are \n', form);
+  - form.wrapperClass = form.wrapperClass || '';
   - var formWrapperTypeClass = (form.type === 'twbsPanel') ? 'panel panel-default' : '';
+
   div(
       class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass}",
       ng-class=form.ngClass,
@@ -66,7 +68,7 @@ mixin formWrapper(formId, stateId)
 //- Build a form from the field instances sub keys
 mixin formBuilder(formId, stateId)
   - var formData = util.setFormDefaults(formId, stateId);
-  //- console.log('\n\n\n\nFormBuilder', formData)
+  - console.log('\n\n\n\nFormBuilder', formData)
   //- h1(class="form-title")=formData.title
   +formWrapper(formId, stateId)
     if formData.fieldsInstances

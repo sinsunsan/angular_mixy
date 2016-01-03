@@ -4,18 +4,6 @@ var _ = require('lodash');
 // https://github.com/balderdashy/merge-defaults
 // Or you can add it as a new method
 
-
-// AS the node module wasn't found we replaced by its content
-// @todo remove that bug
-//_.mergeDefaults = require('merge-defaults');
-_.mergeDefaults  =_.partialRight(_.merge, function recursiveDefaults (dest,src) {
-
-  // Ensure dates and arrays are not recursively merged
-  if (_.isArray(arguments[0]) || _.isDate(arguments[0])) {
-    return arguments[0];
-  }
-  return _.merge(dest, src, recursiveDefaults);
-});
 // To use this lib
 // we need to set gData using the exports.setGdata
 var gData;
@@ -77,7 +65,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
 
   // We first merge the current field and it's possible parent
   if (fieldType.parent && self.checkNested(fieldsData, fieldType.parent)) {
-    _.mergeDefaults(fieldType, fieldsData[fieldType.parent])
+    _.defaultsDeep(fieldType, fieldsData[fieldType.parent])
   }
 
   if (!(fieldId && self.checkNested(fieldsData, fieldId))) {
@@ -88,7 +76,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // forms.yml / global field settings (the lowest level default settings for all fields)
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
   var field = {};
-  _.mergeDefaults(field, stateType, formType, formTypeDefaults, fieldType, defaults);
+  _.defaultsDeep(field, stateType, formType, formTypeDefaults, fieldType, defaults);
 
   //  delete fields are disabled by default
   if (stateId === 'delete' && (typeof(field.disabled) === 'undefined'))  {
@@ -176,7 +164,7 @@ exports.setFormDefaults = function(formId, stateId) {
 
     // We first merge the current form and it's possible parent
     if (formType.parent && self.checkNested(formsInstancesData, formType.parent)) {
-      _.mergeDefaults(formType, formsInstancesData[formType.parent])
+      _.defaultsDeep(formType, formsInstancesData[formType.parent])
     }
 
     // Then we retrieve state and global form defaults
@@ -187,15 +175,15 @@ exports.setFormDefaults = function(formId, stateId) {
     // forms.yml / default form settings
     defaults = (self.checkNested(formsData, 'defaults', 'form')) ? formsData['defaults']['form'] : {};
 
-    _.mergeDefaults(formDefaults, stateType, formType, defaults);
+    console.log('\nForm Data >>>>>');
+    console.log('\nState settings', stateType);
+    console.log('\nForm settings', formType);
+    console.log('\nDefaults settings', defaults);
+    console.log('\n<<<< Form Data end');
 
-    // if (fieldId === 'email') {
-    //   console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
-    //   console.log('\nState settings', stateType);
-    //   console.log('\nForm settings', formType);
-    //   console.log('\nDefaults settings', defaults);
-    //   console.log('\nCombination settings', formDefaults);
-    // }
+    _.defaultsDeep(formDefaults, stateType, formType, defaults);
+
+    console.log('\n<<<< From final default data', formDefaults);
 
     self.setFormCache(formId, stateId, formDefaults);
     console.log('the form default', formDefaults);
@@ -248,7 +236,7 @@ exports.setInstancesDefaults = function(instanceId, instancesData) {
     // We use parent button as a default button
     if (instance.parent) {
       var instanceParent = (self.checkNested(instancesData, instance.parent)) ? instancesData[instance.parent] : {};
-      var returnDefaults = _.mergeDefaults(instance, instanceParent);
+      var returnDefaults = _.defaultsDeep(instance, instanceParent);
       // console.log('\n\n\n Instance combined properties for ' + instanceId + ' with parent ' + instanceParent + ' : ', returnDefaults);
       return returnDefaults;
     }

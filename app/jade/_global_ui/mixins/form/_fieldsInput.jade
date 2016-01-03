@@ -35,7 +35,7 @@ mixin fieldInput(formId, fieldId, stateId)
   - // console.log('the field input form ///', form);
   +fieldGroup(field)
     //- a field label
-    if field.label.display
+    if field.label && field.label.display
       //- side label to configure (don't work yet)
       label(for=field.id, class="col-xs-3")=field.placeholder
       div(class="col-xs-9")
