@@ -16,13 +16,23 @@ _.mergeDefaults  =_.partialRight(_.merge, function recursiveDefaults (dest,src) 
   }
   return _.merge(dest, src, recursiveDefaults);
 });
-// var gData1 = require('gData');
-// @todo replace by a config to change that easily
-//var gData = require('./../../../../../../app/views/bricks/datas/bricks.json');
-var gData = require('./bricks.json');
-var formsData = gData['forms'];
-var formsInstancesData = gData['formsInstances'];
-var fieldsData = gData['fields'];
+// To use this lib
+// we need to set gData using the exports.setGdata
+var gData;
+var formsData;
+var formsInstancesData;
+var fieldsData;
+
+// Set the Data to be done when importing the jade mixins
+// - util.setGdata(gData); Provided gData is available in jade mixins
+
+exports.setGdata = function(data) {
+  gData = data;
+  formsData = gData['forms'];
+  formsInstancesData = gData['formsInstances'];
+  fieldsData = gData['fields'];
+  console.log('the gData is being set > Exemple fieldData', data);
+};
 
 // ######
 // there is a potential problem with _.defaults, that don't merge nested object.
@@ -64,6 +74,11 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
 
   // fields.yml / global field id settings : the settings for all fields of a given type
   fieldType = (fieldId && self.checkNested(fieldsData, fieldId)) ? fieldsData[fieldId] : {};
+
+  // We first merge the current field and it's possible parent
+  if (fieldType.parent && self.checkNested(fieldsData, fieldType.parent)) {
+    _.mergeDefaults(fieldType, fieldsData[fieldType.parent])
+  }
 
   if (!(fieldId && self.checkNested(fieldsData, fieldId))) {
     console.log('THE FIELD ' + fieldId + ' Has not been found in the fields settings ');
@@ -147,19 +162,21 @@ exports.setFormDefaults = function(formId, stateId) {
   if (formDefaults) {
     //console.log('RETURN FROM CACHE for ', formId, stateId);
     return formDefaults;
-  } else {
-
+  }
+  else {
 
     //console.log('THE CACHE FOLDER IS ', gData.cache);
     formDefaults = {};
 
+    console.log('the form instance', formsInstancesData);
 
     formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
 
+    console.log('the form for ' + formId + ' is : ',  formType);
+
     // We first merge the current form and it's possible parent
     if (formType.parent && self.checkNested(formsInstancesData, formType.parent)) {
-      formTypeParent = formsInstancesData[formType.parent];
-      _.mergeDefaults(formType, formTypeParent)
+      _.mergeDefaults(formType, formsInstancesData[formType.parent])
     }
 
     // Then we retrieve state and global form defaults
@@ -173,14 +190,15 @@ exports.setFormDefaults = function(formId, stateId) {
     _.mergeDefaults(formDefaults, stateType, formType, defaults);
 
     // if (fieldId === 'email') {
-      // console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
-      // console.log('\nState settings', stateType);
-      // console.log('\nForm settings', formType);
-      // console.log('\nDefaults settings', defaults);
-      // console.log('\nCombination settings', formDefaults);
+    //   console.log('\nForm settings !!!! for formId : "' + formId + '", stateId "' + stateId + '"');
+    //   console.log('\nState settings', stateType);
+    //   console.log('\nForm settings', formType);
+    //   console.log('\nDefaults settings', defaults);
+    //   console.log('\nCombination settings', formDefaults);
     // }
 
     self.setFormCache(formId, stateId, formDefaults);
+    console.log('the form default', formDefaults);
     return formDefaults;
   }
 };
@@ -313,8 +331,6 @@ exports.setFieldErrors = function(field) {
 
 exports.setNgModel = function(field, form) {
   var ngModel = '';
-  // console.log('******* The field ', field.ngModel);
-  // console.log('******* The form ', form.ngModel);
   if (!(field.ngModel === false)) {
     ngModel = form.ngModel + '.';
     ngModel += (field.ngModel) ? field.ngModel : field.id;
@@ -322,8 +338,6 @@ exports.setNgModel = function(field, form) {
   else {
     ngModel = false;
   }
-  // console.log('******* The No Model is ', ngModel);
-
   return ngModel;
 };
 
