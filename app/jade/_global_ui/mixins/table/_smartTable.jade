@@ -1,0 +1,76 @@
+mixin colTd(id, data)
+  - data.class = data.class || '';
+  td(class="cell-#{id} cell cell-body #{data.class}")&attributes(attributes)
+    block
+
+mixin colTh(id, data)
+  - data.class = data.class || '';
+  th(class="cell-#{id} cell cell-header #{data.class}")&attributes(attributes)
+    block
+
+mixin colTableHead(data)
+  thead
+    tr(class="row-header")
+      each row, id in data.cols
+        if (row.sort)
+          +colTh(id, row)(st-sort=id)=row.label
+        else
+          +colTh(id, row)=row.label
+
+    if (data.rows && data.rows.search)
+      tr(class="row-search table-row")
+        each row, id in data.cols
+          if (row.search && id)
+            +colTh(id, row)
+              input.input-sm.form-control(st-search="'#{id}'", placeholder='#{row.label}', type='search')
+          else
+            +colTh(id, row)
+              | &nbsp;
+
+//- Cell content mixins
+mixin cellLink(cell)
+  a(ui-sref=cell.uiSref)&attributes(attributes)
+    block
+
+mixin cellText(id)
+  span {{ row.#{id} }}
+
+mixin cellImage(id)
+  img(src="{{ row.#{id} }}")
+
+mixin colTableBody(data)
+  tbody
+    tr(class="row-body", ng-repeat='row in table.rowCollection')
+      each row, id in data.cols
+
+        if row.type === 'image'
+          //- The cell is an image
+          +colTd(id, row)
+            div(class="image-wrapper")
+              if row.uiSref
+                +cellLink(row)
+                  +cellImage(id)
+              else
+                +cellImage(id)
+
+        else
+          //- Basic type text
+          +colTd(id, row)
+            if row.uiSref
+              +cellLink(row)
+                +cellText(id)
+            else
+              +cellText(id)
+
+mixin colTableFoot(data)
+  tfoot
+    tr
+      td.text-center(colspan=data.rows.length)
+        div(st-pagination='', st-items-by-page='25', st-displayed-pages='7')
+
+mixin colTable(dataTable)
+  +colMainContent(class="view-table")
+    table.table.table-striped(st-table='table.rowCollection')
+      +colTableHead(dataTable)
+      +colTableBody(dataTable)
+      +colTableFoot(dataTable)

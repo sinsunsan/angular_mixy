@@ -44,7 +44,7 @@ To use a field type just fill the type property with the correct type id
     * **type**: Predefined field type change the UI element  ("text" || "textarea"..) All available properties above 
     * **class**: classes to be added to the wrapper div
     * **placeholder**: Text to be shown when the field is not filled (Ex: "User name") 
-
+    * **suffix**: A text that display inline at the right of the field
     **Error Handling**
     Both properties are needed and no error message will be printed if only one is present. errorsInstance inform about the use of a message type, but also it's order in the dom, so it's priority according to ng-mesage behavior
     An exeption is required message, which can be outputed if required: true

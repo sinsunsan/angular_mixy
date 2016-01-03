@@ -1,0 +1,35 @@
+<table st-table="table.rowCollection" class="table table-striped">
+  <thead>
+  <tr>
+    <th st-sort="firstName">first name</th>
+    <th st-sort="lastName">last name</th>
+    <th st-sort="birthDate">birth date</th>
+    <th st-sort="balance">balance</th>
+    <th>email</th>
+  </tr>
+  <tr>
+    <th>
+      <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
+    </th>
+    <th colspan="4">
+      <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="row in table.rowCollection">
+    <td>{{row.firstName | uppercase}}</td>
+    <td>{{row.lastName}}</td>
+    <td>{{row.birthDate | date}}</td>
+    <td>{{row.balance | currency}}</td>
+    <td><a ng-href="mailto:{{row.email}}">email</a></td>
+  </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="5" class="text-center">
+        <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+      </td>
+    </tr>
+  </tfoot>
+</table>

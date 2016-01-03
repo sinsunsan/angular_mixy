@@ -1,14 +1,10 @@
 //- generic field for textarea and text input field
 mixin fieldInputTag(form, field)
-  //- if (field.id === 'phone') {
-  //-  console.log('\n the field in the input mixin ' , field);
-  //-  console.log('\n the field disabled state is ///////', field.disabled);
-  //- }
   input(  type=field.type,
           name=field.id,
           id=field.id
           placeholder=field.placeholder,
-          class='input-#{fieldId} #{form.inputsClass} #{field.inputsClass}',
+          class='input-#{field.id} #{form.inputsClass} #{field.inputsClass}',
           ng-model=field.ngModelField,
           ng-model-options=field.ngModelOptions,
           ng-minlength=field.ngMinlength,
@@ -19,6 +15,10 @@ mixin fieldInputTag(form, field)
           ng-change=field.ngChange,
           translate,
           disabled=field.disabled)&attributes(field.customAttributes)
+
+mixin fieldSuffix(suffix)
+  if suffix
+    div(class="text-left")&attributes(attributes)=suffix
 
 mixin fieldInputContent(form, field, fieldId, stateId)
   +fieldInputTag(form, field)
@@ -32,17 +32,9 @@ mixin fieldInput(formId, fieldId, stateId)
   - field.ngModelField = util.setDefaultNgModel(field, form);
   - field.ngModelFieldRepeater = util.setNgModel(field, form);
   - field.customAttributes = field.customAttributes || {};
-  - // console.log('the field input form ///', form);
+  - console.log('\n\nthe field input form >>>', form);
   +fieldGroup(field)
-    //- a field label
-    if field.label && field.label.display
-      //- side label to configure (don't work yet)
-      label(for=field.id, class="col-xs-3")=field.placeholder
-      div(class="col-xs-9")
-        +fieldInputContent(form, field, fieldId, stateId)
-    else
-      +fieldInputContent(form, field, fieldId, stateId)
-
+    +fieldInputContent(form, field, fieldId, stateId)
 
 mixin fieldTextareaTag(form, field)
   textarea(
@@ -65,7 +57,6 @@ mixin fieldTextareaTag(form, field)
 
 //- Special field to add a field
 mixin fieldAddField(form, field)
-  - console.log('TTTT', field.multipleAddField);
   if (field.multipleAddField)
     - var addField = field.multipleAddField;
     - var addFieldNgModel = form.ngModel + '.' + field.ngModel + 'New';
@@ -120,8 +111,8 @@ mixin fieldTextarea(formId, fieldId, stateId)
   +fieldGroup(field)
     //- a field label
     if field.label.display
-      label(for=field.id, class="col-xs-3")=field.placeholder
-      div(class="col-xs-9")
+      +fieldPre(field)
+      +fieldMain(field)
         +fieldTextAreaTagWrapper(form, field)
     else
       +fieldTextAreaTagWrapper(form, field)

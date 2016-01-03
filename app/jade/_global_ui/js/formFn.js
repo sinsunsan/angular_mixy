@@ -88,7 +88,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   //    console.log('\nForm settings', formType);
   //    console.log('\nField settings', fieldType);
   //    console.log('\nDefaults settings', defaults);
-  //    console.log('\nThe combined field settings are : ', field);
+  console.log('\n\nThe combined field settings are : ', field);
   //  }
 
   // For convenience, we pass all useful ids in the field object

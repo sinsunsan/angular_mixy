@@ -1,3 +1,4 @@
+
 mixin fieldGroup(field)
   - field = field || {};
   - field.css = field.css || {};
@@ -15,7 +16,18 @@ mixin fieldGroup(field)
       ng-show!=field.ngShow,
       ng-hide=field.ngHide
       )&attributes(wrapperCustomAttributes)
-    block
+
+    //- field label
+    label(for=field.id, class="col-xs-3 field-label")=field.label
+
+    //- field tag main
+    div(class="field-tag col-xs-6")
+      block
+
+    //- field suffix
+    div(class="field-suffix col-xs-2 text-left")=field.suffix
+
+    //- field errors
     if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
       +errorNgMessages(field)
 

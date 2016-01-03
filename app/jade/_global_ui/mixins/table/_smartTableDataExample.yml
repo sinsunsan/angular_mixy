@@ -1,0 +1,50 @@
+## Available cell settings
+cellId:
+  label: 'Title'  # Name of the label to be displayed in the table header
+  type: 'image' # type of cell to be handled by the mixins
+  sort: true # Do we activate sorting in the table header
+  search: true # Do we activate searching  for that cell / column
+  uiSref: 'collection' # Ui-sref syntax if the cell is a link
+
+### typical datas
+collectionsTables:
+  data: 'table.rowCollection'
+  rows:
+    search: false
+  cols:
+    image:
+      label: 'Image'
+      type: 'image'
+    id:
+      label: 'Id'
+      sort: true
+      search: true
+    title:
+      label: 'Title'
+      sort: true
+      search: true
+      uiSref: 'workedit'
+    artist:
+      label: 'Artiste'
+      sort: true
+      search: true
+    type:
+      label: 'Type'
+      sort: true
+      search: true
+      class: "hidden-xs hidden-sm"
+    year:
+      label: 'Year'
+      sort: true
+      search: true
+      class: "hidden-xs hidden-sm"
+    city:
+      label: 'Ville'
+      sort: true
+      search: true
+      class: "hidden-xs hidden-sm"
+    dim:
+      label: 'Dimensions'
+      sort: true
+      search: true
+      class: "hidden-xs hidden-sm"

@@ -1,0 +1,10 @@
+# Example of a field group
+# the field group is declared in the fields.yml file
+# and reference other fields, with a fieldInstances
+editCircleMoveOut:
+  id: 'editCircleMoveOut'
+  type: 'fieldGroup'
+  label: 'Move out of this sub-circle'
+  fieldsInstances:
+    - 'editCircleMoveOutRoles'
+    - 'editCircleMoveOutPolicies'

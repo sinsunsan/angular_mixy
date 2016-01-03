@@ -1,7 +1,5 @@
 
 mixin niceCheckboxTag(field)
-  - //- console.log('FFFFF ', field);
-  - //- it seem that not giving true nor false trigger the ng-change at loading ?
   - field.ngFalseValue = field.ngFalseValue || 'false';
   - field.ngTrueValue = field.ngTrueValue || 'true';
   checkbox(
@@ -18,6 +16,19 @@ mixin niceCheckboxTag(field)
   else
     span(class="ml0")=field.label
 
+mixin materialCheckboxTag(field)
+  - field.ngFalseValue = field.ngFalseValue || 'false';
+  - field.ngTrueValue = field.ngTrueValue || 'true';
+    md-checkbox(
+      ng-model=field.ngModelField,
+      name=field.name,
+      aria-label=field.label,
+      ng-change=field.ngChange,
+      ng-disabled=field.ngDisabled,
+      ng-true-value=field.ngTrueValue,
+      ng-false-value=field.ngFalseValue,
+    )
+
 //- https://github.com/sebastianha/angular-bootstrap-checkbox
 //- ngTrueValue displayed text if the checkbox is checked
 //- ngFalseValue displayed text if the checkbox is checked
@@ -27,6 +38,13 @@ mixin niceCheckbox(formId, fieldId, stateId)
   - field.ngModelField = util.setDefaultNgModel(field, form);
   +fieldGroup(field)
     +niceCheckboxTag(field)
+
+mixin materialCheckbox(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  +fieldGroup(field)
+    +materialCheckboxTag(field)
 
 mixin selectAllActions(field)
   if (field.selectAll || field.clearAll)
