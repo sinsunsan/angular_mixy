@@ -42,6 +42,7 @@ exports.checkNested = function(obj/*, level1, level2, ... levelN*/) {
 };
 
 //- 4 levels overrides for form fields : stateType, formType, fieldType, fieldsDefaults
+//- fieldType can be inherited from a similar field
 exports.setFieldDefaults = function(formId, fieldId, stateId) {
   var self = this;
 
@@ -95,6 +96,16 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   field.formId = formId;
   field.fieldId = fieldId;
   field.stateId = stateId;
+
+  // ng-model field is optional bby default it is the id of the field
+  if (!field.ngModel && fieldId) {
+    field.ngModel = fieldId;
+  }
+  // field.id is deprecated but used in some classes
+  if (!field.id) {
+    field.id = fieldId;
+  }
+
   return field;
 };
 

@@ -1,92 +1,9 @@
-
-mixin fieldGroup(field)
-  - field = field || {};
-  - field.css = field.css || {};
-  - field.class = field.class || '';
-  - field.style = field.style || null;
-  - var optClasses =+ (field.multiple) ? ' multiple ' : '';
-  - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
-  - //console.log('\nthe field data are \n', field);
-  //- display error style if one of the field is not valid inside
-  - if (field.errors && field.errorsInstances) { console.log('the FIELD with errors handlin are !!! ', field); }
-  div(
-      class="form-group #{field.css.group} #{field.class}",
-      style=field.style,
-      ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
-      ng-show!=field.ngShow,
-      ng-hide=field.ngHide
-      )&attributes(wrapperCustomAttributes)
-
-    //- field label
-    label(for=field.id, class="col-xs-3 field-label")=field.label
-
-    //- field tag main
-    div(class="field-tag col-xs-6")
-      block
-
-    //- field suffix
-    div(class="field-suffix col-xs-2 text-left")=field.suffix
-
-    //- field errors
-    if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
-      +errorNgMessages(field)
-
 mixin formTag(form, stateId)
   form(
       name="#{stateId}",
       ng-submit="#{form.ngSubmit}(#{stateId}, #{form.ngModel})",
       novalidate)
     block
-
-//- Form wrapper with the form tag
-//- Properties are set with a 3 levels order state specific > form specific > form default
-//- state specific example : edit, create, delete state
-//- form specific : member creation form, circle creation form
-//- form default : all form default settings
-mixin formWrapper(formId, stateId)
-  - var formStateId = util.setFormStateId(formId, stateId);
-  - //console.log('\nthe form data are !!!!!!! \n', formId, stateId);
-  - var form = util.setFormDefaults(formId, stateId);
-  - //console.log('\nRTRT the form data are \n', form);
-  - form.wrapperClass = form.wrapperClass || '';
-  - var formWrapperTypeClass = (form.type === 'twbsPanel') ? 'panel panel-default' : '';
-
-  div(
-      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass}",
-      ng-class=form.ngClass,
-      ng-show!=form.ngShow
-    )
-    //- global form error wrapper
-    if (form.errors && form.errors.ngBind)
-      div(class="form-errors #{form.css.formErrors}",
-          ng-bind=form.errors.ngBind,
-          ng-show=form.errors.ngBind)
-    if (form.confirm && form.confirm.ngBind)
-      div(class="form-confirm text-success text-center mb1",
-          ng-show=form.confirm.ngBind,
-          ng-bind-html=form.confirm.ngBind)
-
-    if (form.type === 'twbsPanel')
-      //- Twitter boostrap panel classes
-      div(class="panel-heading")=form.title
-      div(class="panel-body")
-        +formTag(form, formStateId)
-          block
-    else
-      //- No type
-      +formTag(form, formStateId)
-        block
-
-//- Build a form from the field instances sub keys
-mixin formBuilder(formId, stateId)
-  - var formData = util.setFormDefaults(formId, stateId);
-  - console.log('\n\n\n\nFormBuilder', formData)
-  //- h1(class="form-title")=formData.title
-  +formWrapper(formId, stateId)
-    if formData.fieldsInstances
-      //- we ouput all fields that belongs to this form
-      each fieldId in formData.fieldsInstances
-        +fieldById(formId, stateId, fieldId)
 
 //- standard wrapper of a block element
 //- don't use "block" as argument name

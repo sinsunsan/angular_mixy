@@ -1,0 +1,6 @@
+//- https://material.angularjs.org
+//- tooltip global settings should be set at form level
+mixin mdTooltip(tooltip)
+  div(class="md-tooltip-symbol inline")&attributes(attributes)
+    i(class="fa fa-question-circle")
+    md-tooltip=tooltip

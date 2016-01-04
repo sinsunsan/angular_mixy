@@ -39,12 +39,16 @@ To use a field type just fill the type property with the correct type id
 * **fields**
   * **fieldId**: this field id should be unique in fields.yml, used only by jade
     **Field basic properties**
+    >>> Deprecated : the index of the object will be used instead
     * **id**: html identifier used in class name... (ex: "username")
+    <<<< Deprecated
     * **apiId**: api id useful for example to deal with form error
     * **type**: Predefined field type change the UI element  ("text" || "textarea"..) All available properties above 
     * **class**: classes to be added to the wrapper div
     * **placeholder**: Text to be shown when the field is not filled (Ex: "User name") 
     * **suffix**: A text that display inline at the right of the field
+    * **tooltip**: A help button (question mark) and message to explain the field purpose
+
     **Error Handling**
     Both properties are needed and no error message will be printed if only one is present. errorsInstance inform about the use of a message type, but also it's order in the dom, so it's priority according to ng-mesage behavior
     An exeption is required message, which can be outputed if required: true
@@ -56,7 +60,7 @@ To use a field type just fill the type property with the correct type id
     * **ngMaxlength**: Set the maximal number of character in this field
     
     **Field data and validation**
-    * **ngModel**: The ngModel is where angular bind the jd model with the html form value. The true ngModel when a field is used in a form is a of a concatenation of formNgModel + fieldNgModel to force uniqueness.
+    * **ngModel**: The ngModel is where angular bind the jd model with the html form value. The true ngModel when a field is used in a form is a of a concatenation of formNgModel + fieldNgModel to force uniqueness. By default we use the id of the field as fieldNgModel. But it is possible to set a custom.
     * **ngModelOptions**: specify how the ng-model should update. Useful to set a delay between the moment we type and the api call especially with automatic update (ng-change). This settings can be made at the form level to prevent repeating it for all fields. [Angular Doc](https://docs.angularjs.org/api/ng/directive/ngModelOptions)
     * **ngChange**: Automatically trigger a fonction when the field change. Set ngModelOptions to fine tune the delay to process this update relative to user activity
     
@@ -64,7 +68,7 @@ To use a field type just fill the type property with the correct type id
     * **required**: (true || false (default) ) If required, the field trigger an error, and prevent the form to be submitted
     * **ngRequired**: angular version to be used preferably
     * **disabled**: The field appearance is greyed and it is not possible to type in it [deprecated]
-    * **ngDisabled**: Angular version of disabled to be used preferably
+    * **ngDisabled**: Angular version of disabled when the disabled state depend of some condition https://docs.angularjs.org/api/ng/directive/ngDisabled
     
     **Field visibility**
     * **ngShow**: Show when the expression is true
