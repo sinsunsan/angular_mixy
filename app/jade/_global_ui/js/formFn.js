@@ -12,14 +12,14 @@ var formsInstancesData;
 var fieldsData;
 
 // Set the Data to be done when importing the jade mixins
-// - util.setGdata(gData); Provided gData is available in jade mixins
+// util.setGdata(gData); Provided gData is available in jade mixins
 
 exports.setGdata = function(data) {
   gData = data;
   formsData = gData['forms'];
   formsInstancesData = gData['formsInstances'];
   fieldsData = gData['fields'];
-  console.log('the gData is being set > Exemple fieldData', data);
+  // console.log('the gData is being set > Exemple fieldData', data);
 };
 
 // ######
@@ -29,7 +29,7 @@ exports.setGdata = function(data) {
 // _.defaults(g, t) = {test: {blue: "road"}}
 // _.defaults(g.test, t.test) =  {blue: "road", red: "street", black: "candy"}
 
-//- http://stackoverflow.com/questions/2631001/javascript-test-for-existence-of-nested-object-key
+// http://stackoverflow.com/questions/2631001/javascript-test-for-existence-of-nested-object-key
 exports.checkNested = function(obj/*, level1, level2, ... levelN*/) {
    var args = Array.prototype.slice.call(arguments, 1);
    for (var i = 0; i < args.length; i++) {
@@ -89,7 +89,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   //    console.log('\nForm settings', formType);
   //    console.log('\nField settings', fieldType);
   //    console.log('\nDefaults settings', defaults);
-  console.log('\n\nThe combined field settings are : ', field);
+  // console.log('\n\nThe combined field settings are : ', field);
   //  }
 
   // For convenience, we pass all useful ids in the field object
@@ -167,11 +167,11 @@ exports.setFormDefaults = function(formId, stateId) {
     //console.log('THE CACHE FOLDER IS ', gData.cache);
     formDefaults = {};
 
-    console.log('the form instance', formsInstancesData);
+    // console.log('the form instance', formsInstancesData);
 
     formType = (formId && self.checkNested(formsInstancesData, formId)) ? formsInstancesData[formId] : {};
 
-    console.log('the form for ' + formId + ' is : ',  formType);
+    // console.log('the form for ' + formId + ' is : ',  formType);
 
     // We first merge the current form and it's possible parent
     if (formType.parent && self.checkNested(formsInstancesData, formType.parent)) {
@@ -186,18 +186,18 @@ exports.setFormDefaults = function(formId, stateId) {
     // forms.yml / default form settings
     defaults = (self.checkNested(formsData, 'defaults', 'form')) ? formsData['defaults']['form'] : {};
 
-    console.log('\nForm Data >>>>>');
-    console.log('\nState settings', stateType);
-    console.log('\nForm settings', formType);
-    console.log('\nDefaults settings', defaults);
-    console.log('\n<<<< Form Data end');
+    // console.log('\nForm Data >>>>>');
+    // console.log('\nState settings', stateType);
+    // console.log('\nForm settings', formType);
+    // console.log('\nDefaults settings', defaults);
+    // console.log('\n<<<< Form Data end');
 
     _.defaultsDeep(formDefaults, stateType, formType, defaults);
 
-    console.log('\n<<<< From final default data', formDefaults);
+    // console.log('\n<<<< From final default data', formDefaults);
 
     self.setFormCache(formId, stateId, formDefaults);
-    console.log('the form default', formDefaults);
+    // console.log('the form default', formDefaults);
     return formDefaults;
   }
 };

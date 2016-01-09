@@ -1,0 +1,50 @@
+//- Generic field insertion
+//- assign the specific mixin
+//- for each field type
+mixin fieldById(formId, stateId, fieldId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var formData = util.setFormDefaults(formId, stateId);
+  - console.log('\nForm builder : Field ', fieldId);
+
+  case field.type
+    when 'text'
+      +fieldInput(formId, fieldId, stateId)
+
+    when 'textarea'
+      +fieldTextarea(formId, fieldId, stateId)
+
+    when 'submit'
+      +formButton(formId, fieldId, stateId)
+
+    when 'cancel'
+      +formButtonCancel(formId, fieldId, stateId)
+
+    when 'select'
+      +fieldSelect(formId, fieldId, stateId)
+
+    when 'uiselect'
+      +fieldUiSelect(formId, fieldId, stateId)
+
+    when 'multiselect'
+      +fieldMultiSelect(formId, fieldId, stateId)
+
+    when 'niceCheckbox'
+      +niceCheckbox(formId, fieldId, stateId)
+
+    when 'materialCheckbox'
+      +materialCheckbox(formId, fieldId, stateId)
+
+    when 'niceCheckboxMultiple'
+      +niceCheckboxMultiple(formId, fieldId, stateId)
+
+    when 'datepicker'
+      +datepicker(formId, fieldId, stateId)
+
+    when 'radiobutton'
+      +radioButton(formId, fieldId, stateId)
+
+    when 'fieldGroup'
+      +fieldsWrapper(formId, fieldId, stateId, field)
+
+    default
+      +fieldInput(formId, fieldId, stateId)

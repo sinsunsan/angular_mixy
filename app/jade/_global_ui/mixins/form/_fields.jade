@@ -1,126 +1,35 @@
-//- Generic field insertion
-mixin fieldById(formId, stateId, fieldId)
-  - var field = util.setFieldDefaults(formId, fieldId, stateId);
-  - var formData = util.setFormDefaults(formId, stateId);
-  - //- console.log('field : ', field);
-  - //console.log('\nWORKING on the field ', field);
-  //- @todo complete the available types are only those in fieldsGeneric.jade
-  case field.type
-    when 'text'
-      +fieldInput(formId, fieldId, stateId)
+mixin fieldGroup(field)
+  - field = field || {};
+  - field.css = field.css || {};
+  - field.class = field.class || '';
+  - field.style = field.style || null;
+  - var optClasses =+ (field.multiple) ? ' multiple ' : '';
+  - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
 
-    when 'textarea'
-      +fieldTextarea(formId, fieldId, stateId)
+  div(
+      class="form-group #{field.css.group} #{field.class}",
+      style=field.style,
+      ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
+      ng-show!=field.ngShow,
+      ng-hide=field.ngHide
+      )&attributes(wrapperCustomAttributes)
 
-    when 'submit'
-      +formButton(formId, fieldId, stateId)
+    //- field label
+    if (field.label)
+      label(for=field.id, class="field-label #{field.width.label}")
+        span=field.label
+        if (field.tooltip)
+          //- set an option to have twbs tooltip or material design
+          +mdTooltip(field.tooltip)(class="m-l-xs")
 
-    when 'cancel'
-      +formButtonCancel(formId, fieldId, stateId)
+    //- field main html tag
+    div(class="field-tag #{field.width.tag}")
+      block
 
-    when 'select'
-      +fieldSelect(formId, fieldId, stateId)
+    //- field suffix (unites, prices currency....)
+    if (field.suffix)
+      div(class="field-suffix #{field.width.suffix} text-left")=field.suffix
 
-    when 'uiselect'
-      +fieldUiSelect(formId, fieldId, stateId)
-
-    when 'multiselect'
-      +fieldMultiSelect(formId, fieldId, stateId)
-
-    when 'niceCheckbox'
-      +niceCheckbox(formId, fieldId, stateId)
-
-    when 'materialCheckbox'
-      +materialCheckbox(formId, fieldId, stateId)
-
-    when 'niceCheckboxMultiple'
-      +niceCheckboxMultiple(formId, fieldId, stateId)
-
-    when 'datepicker'
-      +datepicker(formId, fieldId, stateId)
-
-    when 'radiobutton'
-      +radioButton(formId, fieldId, stateId)
-
-    when 'fieldGroup'
-      -  field.class = field.class || '';
-      div(class='clearfix #{field.class}', ng-show!=field.ngShow)
-        - //- label is inherited from global field label (used in another context)
-        - //- whereas in the new context label are set as a string
-        - //- so we use this quick and dirty way to prevent object label from applying
-        - //- @todo uniformise label handling between fields and toolbars
-        - field.label = (!_.isObject(field.label)) ? field.label : null;
-        if field.label
-          div(class="field-group-label fs1")=field.label
-        if field.fieldsInstances
-          each fieldId in field.fieldsInstances
-            +fieldById(formId, stateId, fieldId)
-
-    default
-      +fieldInput(formId, fieldId, stateId)
-
-mixin fieldInTable(field)
-  case field.type
-    when 'checkbox'
-      +checkboxTable(field)
-
-//- Reusable field type
-
-//- @todo use @default with lodash to allow partial overrides of forms settings
-- var fieldId = ""; //- unique identifier of the field
-
-//- photo that represent the user
-mixin avatarField1(formId, stateId)
-  - fieldId = "avatar";
-  - var field = setFieldDefaults(formId, fieldId, stateId);
-  - var form = setFormDefaults(formId, stateId);
-  div(class="avatar-field")
-    img(src="http://placehold.it/250x250",
-        class="img-responsive mb1")
-    button( class="btn btn-block",
-            ng-file-select,
-            ng-model=field.ngModelField)=field.submit.label
-
-//- generic upload file
-//- this file use the following angular lib
-//- https://github.com/danialfarid/ng-file-upload
-mixin avatarField(formId, stateId)
-  - fieldId = "avatar";
-  - var field = util.setFieldDefaults(formId, fieldId, stateId);
-  - var form = util.setFormDefaults(formId, stateId);
-  - field.ngModelField = util.setDefaultNgModel(field, form);
-  - // console.log('\n The image upload file ', field, ' from form ' + formId + ' and fieldId ' + fieldId + ' and stateId ' + stateId);
-  +fieldGroup(field)
-    //- placeholder user icon when no user icon has been uploaded
-    div(class="avatar-placeholder",
-      ng-hide=field.placeholderImg.ngHide)
-      i(class="fa fa-user fs5")
-
-    div(class="mt0",
-      ng-show=field.thumb.ngShow)
-      img(
-        class="img-responsive",
-        ng-src=field.ngSrc)
-  div(edit-hover-btn, edit-fn=field.edit.fn, edit-item=field.edit.item)
-  +imageUploadWidget(field)
-  //- on hover edit button > use a directive instead
-
-//- basic html select list
-//- http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/
-//- choice.id as choice.name for choice in #{field.choices}
-//- display choice.name but store as a model choice.id (eg lang.id)
-mixin langFieldSimple(formId, stateId, fieldId)
-  - fieldId = (fieldId) ? fieldId : 'lang';
-  - var field = util.setFieldDefaults(formId, fieldId, stateId);
-  +fieldGroup(field)
-    ui-select(
-      ng-model='modal.item.lang',
-      ng-required=field.ngRequired,
-      theme="bootstrap",
-      disabled=field.disabled,
-      ng-disabled=field.ngDisabled,
-      reset-search-input="false")
-      ui-select-match(placeholder="Select languages") {{$select.selected.name}}
-      ui-select-choices(repeat='choice.id as choice in #{field.choices}')
-          div(ng-bind='choice.name')
-
+    //- field errors : display validation errors for this field
+    if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
+      +errorNgMessages(field)
