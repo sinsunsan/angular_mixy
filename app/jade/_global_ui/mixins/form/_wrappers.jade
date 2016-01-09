@@ -12,3 +12,6 @@ mixin blockWrapper(blockData)
   - //console.log("received in the wrapper ", blockData);
   div(class="block block-#{blockData.id} #{blockData.wrapperClass}")
     block
+
+mixin separator
+  div(class="separator")

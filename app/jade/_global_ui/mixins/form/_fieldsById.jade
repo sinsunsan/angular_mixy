@@ -4,7 +4,8 @@
 mixin fieldById(formId, stateId, fieldId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var formData = util.setFormDefaults(formId, stateId);
-  - console.log('\nForm builder : Field ', fieldId);
+  - if (field.type === 'fieldGroup') { console.log('\n****************************', '\nGroup  ', fieldId);}
+  - else { console.log('\nForm builder : Field ', fieldId); }
 
   case field.type
     when 'text'
@@ -45,6 +46,9 @@ mixin fieldById(formId, stateId, fieldId)
 
     when 'fieldGroup'
       +fieldsWrapper(formId, fieldId, stateId, field)
+
+    when 'separator'
+      +separator
 
     default
       +fieldInput(formId, fieldId, stateId)
