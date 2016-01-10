@@ -108,6 +108,9 @@ To use a field type just fill the type property with the correct type id
     * **placeholder**: Placeholder works for this type of select list, so as you would expect, if no value is selected, it is what is displayed.
     * **allowClear**: true // If set, a checkbox will be available on select list to restore unselected state
 
+  * **fieldGroup**
+      * **labelClass** : Class to add to the label which is the field group title
+
   * **niceCheckbox**
     * **ngTrueValue**: Value of the ngModel when the checkbox is checked
     * **ngFalseValue**: Value of the ngModel when the checkbox is checked

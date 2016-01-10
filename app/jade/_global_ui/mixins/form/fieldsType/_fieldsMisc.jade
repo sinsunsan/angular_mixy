@@ -8,17 +8,6 @@ mixin fieldInTable(field)
 //- @todo use @default with lodash to allow partial overrides of forms settings
 - var fieldId = ""; //- unique identifier of the field
 
-//- photo that represent the user
-mixin avatarField1(formId, stateId)
-  - fieldId = "avatar";
-  - var field = setFieldDefaults(formId, fieldId, stateId);
-  - var form = setFormDefaults(formId, stateId);
-  div(class="avatar-field")
-    img(src="http://placehold.it/250x250",
-        class="img-responsive mb1")
-    button( class="btn btn-block",
-            ng-file-select,
-            ng-model=field.ngModelField)=field.submit.label
 
 //- generic upload file
 //- this file use the following angular lib

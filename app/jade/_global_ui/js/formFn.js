@@ -77,7 +77,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   // forms.yml / global field settings (the lowest level default settings for all fields)
   defaults = (self.checkNested(formsData, 'defaults', 'field')) ? formsData['defaults']['field'] : {};
   var field = {};
-  _.defaultsDeep(field, stateType, formType, formTypeDefaults, fieldType, defaults);
+  _.defaultsDeep(field, fieldType, stateType, formType, formTypeDefaults, defaults);
 
   //  delete fields are disabled by default
   if (stateId === 'delete' && (typeof(field.disabled) === 'undefined'))  {

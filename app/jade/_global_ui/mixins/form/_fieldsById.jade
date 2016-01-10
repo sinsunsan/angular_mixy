@@ -44,6 +44,9 @@ mixin fieldById(formId, stateId, fieldId)
     when 'radiobutton'
       +radioButton(formId, fieldId, stateId)
 
+    when 'image'
+      +imageField(formId, fieldId, stateId)
+
     when 'fieldGroup'
       +fieldsWrapper(formId, fieldId, stateId, field)
 

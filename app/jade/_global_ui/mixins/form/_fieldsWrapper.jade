@@ -6,9 +6,10 @@ mixin fieldsWrapper(formId, fieldId, stateId, field)
     - //- so we use this quick and dirty way to prevent object label from applying
     - //- @todo uniformise label handling between fields and toolbars
     - field.label = (!_.isObject(field.label)) ? field.label : null;
+    - field.labelClass = field.labelClass || '';
 
     if field.label
-      div(class="field-group-label fs1")=field.label
+      div(class="field-group-label fs1 #{field.labelClass}")=field.label
 
     if field.fieldsInstances
       each fieldId in field.fieldsInstances

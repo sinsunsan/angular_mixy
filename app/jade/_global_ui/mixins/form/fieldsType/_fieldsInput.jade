@@ -1,10 +1,12 @@
 //- generic field for textarea and text input field
 mixin fieldInputTag(form, field)
+  - var inputClass = form.inputsClass || '';
+  - inputClass += field.inputsClass ? ' ' + field.inputsClass: '';
   input(  type=field.type,
           name=field.id,
           id=field.id
           placeholder=field.placeholder,
-          class='input-#{field.id} #{form.inputsClass} #{field.inputsClass}',
+          class='input-#{field.id} #{inputClass}',
           ng-model=field.ngModelField,
           ng-model-options=field.ngModelOptions,
           ng-minlength=field.ngMinlength,
