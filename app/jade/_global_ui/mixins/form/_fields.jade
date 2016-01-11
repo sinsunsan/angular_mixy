@@ -20,8 +20,11 @@ mixin fieldGroup(field)
       label(for=field.id, class="field-label #{field.width.label}")
         span=field.label
         if (field.tooltip)
-          //- set an option to have twbs tooltip or material design
-          +mdTooltip(field.tooltip)(class="m-l-xs")
+          if (field.tooltipType && field.tooltipType === 'md')
+            //- set an option to have twbs tooltip or material design
+            +mdTooltip(field.tooltip)(class="m-l-xs")
+          else
+            +twbsTooltip(field.tooltip)(class="m-l-xs")
 
     //- field main html tag
     div(class="field-tag #{field.width.tag}")

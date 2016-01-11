@@ -48,6 +48,8 @@ To use a field type just fill the type property with the correct type id
     * **placeholder**: Text to be shown when the field is not filled (Ex: "User name") 
     * **suffix**: A text that display inline at the right of the field
     * **tooltip**: A help button (question mark) and message to explain the field purpose
+    * **tooltipType** 'twbs' or 'md' default is twbs > twitter boostrap
+    md is angular material 
 
     **Error Handling**
     Both properties are needed and no error message will be printed if only one is present. errorsInstance inform about the use of a message type, but also it's order in the dom, so it's priority according to ng-mesage behavior
