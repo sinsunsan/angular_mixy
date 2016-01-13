@@ -97,15 +97,16 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   field.fieldId = fieldId;
   field.stateId = stateId;
 
-  // ng-model field is optional bby default it is the id of the field
-  if (!field.ngModel && fieldId) {
-    field.ngModel = fieldId;
+  // ng-model field is optional by default it is the id of the field
+  // the key of the field is explicit field.id is not given
+  if (!field.ngModel) {
+    field.ngModel = (field.id) ? field.id : fieldId;
   }
   // field.id is deprecated but used in some classes
   if (!field.id) {
     field.id = fieldId;
   }
-
+  console.log('\n\nthe field content is ', field)
   return field;
 };
 
@@ -328,6 +329,7 @@ exports.setFieldErrors = function(field) {
   return fieldErrors
 };
 
+// The ngModel field is a combination of the form ngModel + the field ngModel (or id if not provided)
 exports.setNgModel = function(field, form) {
   var ngModel = '';
   if (!(field.ngModel === false)) {
