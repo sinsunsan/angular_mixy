@@ -1,3 +1,10 @@
+# Angular Mixy : A collection of jade mixins to setup angular forms more quickly
+
+Angular mixy is a collection of jade mixins to set up forms with Angular and Jade and Yaml
+- set up forms form a yaml file that define the field content 
+- fields definition can be inherited from other fields 
+- fields are compiled with jade
+
 # angular-mixy-start
 
 ### Dependencies
