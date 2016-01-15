@@ -5,6 +5,11 @@ Angular mixy is a collection of jade mixins to set up forms with Angular and Jad
 - fields definition can be inherited from other fields 
 - fields are compiled with jade
 
+
+# Main parts 
+
+* (A library of jade forms mixins)[https://github.com/sinsunsan/angular_mixy/tree/master/app/jade/_global_ui/mixins/form]
+
 # angular-mixy-start
 
 ### Dependencies
