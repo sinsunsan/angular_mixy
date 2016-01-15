@@ -9,6 +9,8 @@ Angular mixy is a collection of jade mixins to set up forms with Angular and Jad
 # Main parts 
 
 * [A library of jade forms mixins](https://github.com/sinsunsan/angular_mixy/tree/master/app/jade/_global_ui/mixins/form)
+* [Example YAML files](https://github.com/sinsunsan/angular_mixy/tree/master/app/data/yaml)
+
 
 # angular-mixy-start
 
