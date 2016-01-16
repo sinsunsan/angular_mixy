@@ -1,0 +1,11 @@
+mixin contact(data)
+  //- contact text
+  div(class="col-xs-6")
+    div(class="contact-title")=data.title
+    div(class"contact-twitter")
+      a(href=data.twitter.href)=data.twitter.text
+    div(class"contact-facebook")
+      a(href=data.facebook.href)=data.facebook.text
+
+  // contact form
+  div(class="col-xs-6")

@@ -1,0 +1,20 @@
+mixin subheader
+  div(class="subheader")&attributes(attributes)
+    block
+
+//- just under the header
+mixin arsSubheader(data)
+  +subheader(class="container")
+    h1=data.title
+
+mixin breadcrumb
+  div(class="breadcrumb")&attributes(attributes)
+    block
+
+mixin filters
+  div(class="filters")&attributes(attributes)
+    block
+
+mixin filter(data)
+  div(class="filter")&attributes(attributes)
+    +formSelect(data)
