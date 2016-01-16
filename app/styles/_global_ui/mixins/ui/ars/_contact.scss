@@ -1,3 +1,25 @@
-.contact {
+.contact-block {
+  font-size: 2rem;
+  .contact-title {
+    color: $col-gold;
+    font-size: 3rem;
+    margin-left: $rounded-icon-size + ($rounded-icon-size / 2)
+  }
 
+}
+
+.rounded-icon {
+  width: $rounded-icon-size;
+  height: $rounded-icon-size;
+  background: $rounded-icon-bk-color;
+  border-radius: $rounded-icon-size;
+  margin-right: $rounded-icon-size / 2;
+  // icon is supposed to be applied on this element
+  // .fa.fa-facebook
+  &:before {
+    line-height: $rounded-icon-size;
+    text-align: center;
+    display: block;
+    color: $rounded-icon-color;
+  }
 }

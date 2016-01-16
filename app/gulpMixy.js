@@ -13,12 +13,14 @@ var mixyDestNameSpace  = "ars";
 var componentsDir = {
   jade: app + "jade/mixins/ui/",
   scss: app + "styles/arsultima/ui/",
+  scssVar: app + "styles/arsultima/variables/",
   yml: app + "data/yaml/",
 };
 // locate the component directory in the destination library
 var componentsDest = {
   jade: mixyDest + "jade/_global_ui/mixins/ui/" + mixyDestNameSpace,
   scss: mixyDest + "styles/_global_ui/mixins/ui/" + mixyDestNameSpace,
+  scssVar: mixyDest + "styles/_global_ui/mixins/vars/" + mixyDestNameSpace,
   yml: mixyDest + "data/yaml/" + mixyDestNameSpace,
 };
 
@@ -31,7 +33,8 @@ var componentsFiles = {
 var componentsName = [
   'subheader',
   'contact',
-  'footer'
+  'footer',
+  'block'
 ];
 // the part should match the file extension
 var componentsParts = [
@@ -84,6 +87,13 @@ gulp.task('mixy:gulp', function() {
   .pipe(gulp.dest(mixyDest));
 });
 
+// Auto copy the gulp file it self for further componentisation!
+gulp.task('mixy:scssVar', function() {
+  gulp.src(componentsDir.scssVar + '_ui.scss')
+  .pipe(debug())
+  .pipe(gulp.dest(componentsDest.scssVar));
+});
+
 gulp.task('mixy', function() {
-  runSequence(['mixy:yml', 'mixy:scss', 'mixy:jade', 'mixy:gulp'])
+  runSequence(['mixy:yml', 'mixy:scss', 'mixy:jade', 'mixy:gulp','mixy:scssVar'])
 });
