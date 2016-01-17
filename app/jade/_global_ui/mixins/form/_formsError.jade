@@ -7,11 +7,11 @@ mixin errorNgMessages(field)
   //- we display message only if the form has been used $dirty
   //- @todo to fix as the message validation don't work
   div(ng-messages="#{field.formId}.#{field.ngModel}.$error",
-      class="mt1",
+      class="m-t-xs",
       ng-if='#{field.formId}.#{field.ngModel}.$dirty')
     if errors
       each errorMsg, errorId in errors
-        div(ng-message=errorId, class="mt1")=errorMsg
+        div(ng-message=errorId, class="m-t-xs")=errorMsg
 
 
 //- ----- THE FOLLOWING MIXINS ARE DEPRECATED ----- /////

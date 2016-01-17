@@ -300,6 +300,7 @@ exports.setDefaultFieldErrors = function(fieldErrors, field, errorsGlobal, defEr
 // Set errors message globally and with field overrides
 exports.setFieldErrors = function(field) {
 
+  // Get the global erros definition (to apply message...)
   var errorsGlobal = gData.forms.errors;
   var fieldErrors = {};
   if (field.errorsInstances) {
