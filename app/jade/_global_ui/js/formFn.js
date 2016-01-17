@@ -6,7 +6,8 @@ var _ = require('lodash');
 
 // To use this lib
 // we need to set gData using the exports.setGdata
-var gData;
+// @todo to remove when bug fixed
+var gData = require('./bricks.json');
 var formsData;
 var formsInstancesData;
 var fieldsData;
@@ -20,6 +21,17 @@ exports.setGdata = function(data) {
   formsInstancesData = gData['formsInstances'];
   fieldsData = gData['fields'];
   // console.log('the gData is being set > Exemple fieldData', data);
+};
+// @todo to remove when bug fixed (as all jade processing will call setGdata)
+exports.setGdata(gData);
+
+exports.testGdata = function(data) {
+  console.log('is gData is defined ? ');
+  console.log('the type of gData is ' + typeof(gData));
+  if (!gData) {
+    gData = data;
+  }
+  console.log(gData);
 };
 
 // ######
@@ -97,15 +109,16 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   field.fieldId = fieldId;
   field.stateId = stateId;
 
-  // ng-model field is optional bby default it is the id of the field
-  if (!field.ngModel && fieldId) {
-    field.ngModel = fieldId;
+  // ng-model field is optional by default it is the id of the field
+  // the key of the field is explicit field.id is not given
+  if (!field.ngModel) {
+    field.ngModel = (field.id) ? field.id : fieldId;
   }
   // field.id is deprecated but used in some classes
   if (!field.id) {
     field.id = fieldId;
   }
-
+  console.log('\n\nthe field content is ', field)
   return field;
 };
 
@@ -126,7 +139,7 @@ exports.setFormCache = function(formId, stateId, formData) {
   if (!gData.cache.forms[formId]) {
     gData.cache.forms[formId] = {};
   }
-  gData.cache.forms[formId][stateId] = formData;
+  // gData.cache.forms[formId][stateId] = formData;
   //console.log('the CACHE is SAVED !!! ', gData.cache);
 };
 
@@ -157,12 +170,12 @@ exports.setFormDefaults = function(formId, stateId) {
   var stateType, formType, fieldType, defaults = {};
   var formDefaults = {};
 
-  formDefaults = self.getFormCache(formId, stateId);
-  if (formDefaults) {
-    //console.log('RETURN FROM CACHE for ', formId, stateId);
-    return formDefaults;
-  }
-  else {
+  // formDefaults = self.getFormCache(formId, stateId);
+  // if (formDefaults) {
+  //   //console.log('RETURN FROM CACHE for ', formId, stateId);
+  //   return formDefaults;
+  // }
+  // else {
 
     //console.log('THE CACHE FOLDER IS ', gData.cache);
     formDefaults = {};
@@ -196,10 +209,10 @@ exports.setFormDefaults = function(formId, stateId) {
 
     // console.log('\n<<<< From final default data', formDefaults);
 
-    self.setFormCache(formId, stateId, formDefaults);
+    // self.setFormCache(formId, stateId, formDefaults);
     // console.log('the form default', formDefaults);
     return formDefaults;
-  }
+  // }
 };
 
 //- 2 levels override for global tables : tableType, default
@@ -287,6 +300,7 @@ exports.setDefaultFieldErrors = function(fieldErrors, field, errorsGlobal, defEr
 // Set errors message globally and with field overrides
 exports.setFieldErrors = function(field) {
 
+  // Get the global erros definition (to apply message...)
   var errorsGlobal = gData.forms.errors;
   var fieldErrors = {};
   if (field.errorsInstances) {
@@ -328,6 +342,7 @@ exports.setFieldErrors = function(field) {
   return fieldErrors
 };
 
+// The ngModel field is a combination of the form ngModel + the field ngModel (or id if not provided)
 exports.setNgModel = function(field, form) {
   var ngModel = '';
   if (!(field.ngModel === false)) {

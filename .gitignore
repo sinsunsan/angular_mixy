@@ -4,3 +4,4 @@ node_modules
 bower_components
 .DS_Store
 bricks.json
+npm-debug.log

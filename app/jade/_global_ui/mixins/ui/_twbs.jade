@@ -3,5 +3,9 @@
 mixin twbsTooltip(tooltip, options)
   - options = options || {};
   - options.popupDelay = options.popupDelay || 500;
+  - // default placement is top
   div(class="twbs-tooltip-symbol inline")&attributes(attributes)
-    i(class="fa fa-question-circle", uib-tooltip=tooltip, tooltip-popup-delay=options.popupDelay)
+    i(class="fa fa-question-circle",
+      uib-tooltip=tooltip,
+      tooltip-popup-delay=options.popupDelay,
+      tooltip-placement=options.placement)

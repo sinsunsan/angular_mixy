@@ -17,17 +17,21 @@ mixin fieldGroup(field)
 
     //- field label
     if (field.label)
-      label(for=field.id, class="field-label #{field.width.label}")
-        //- submit field need to be aligned with main tag
-        //- and cannot have label
-        if (field.type !== 'submit')
+      //- submit field need to be aligned with main tag
+      //- and cannot have label
+      if (field.type !== 'submit')
+        label(for=field.id, class="field-label #{field.width.label}")
           span=field.label
+
+          //- tooltip to explain the purpose of the field
           if (field.tooltip)
             if (field.tooltipType && field.tooltipType === 'md')
               //- set an option to have twbs tooltip or material design
               +mdTooltip(field.tooltip)(class="m-l-xs")
             else
-              +twbsTooltip(field.tooltip)(class="m-l-xs")
+              - field.tooltipOptionDefault = { placement: 'right', popupDelay: 500 };
+              - field.tooltipOptions = field.tooltipOptions || field.tooltipOptionDefault;
+              +twbsTooltip(field.tooltip, field.tooltipOptions)(class="m-l-xs")
 
     //- field main html tag
     div(class="field-tag #{field.width.tag}")
@@ -37,6 +41,9 @@ mixin fieldGroup(field)
     if (field.suffix)
       div(class="field-suffix #{field.width.suffix} text-left")=field.suffix
 
-    //- field errors : display validation errors for this field
-    if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
-      +errorNgMessages(field)
+    - console.log(field.errors && field.errorsInstances);
+    //- we display the field-errors zone always so that the layout don't move when the errors are displayed
+    div(class="field-errors")
+      //- field errors : display validation errors for this field
+      if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
+        +errorNgMessages(field)
