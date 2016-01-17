@@ -7,7 +7,7 @@ var _ = require('lodash');
 // To use this lib
 // we need to set gData using the exports.setGdata
 // @todo to remove when bug fixed
-var gData = require('./bricks.json');
+var gData;
 var formsData;
 var formsInstancesData;
 var fieldsData;
@@ -23,7 +23,7 @@ exports.setGdata = function(data) {
   // console.log('the gData is being set > Exemple fieldData', data);
 };
 // @todo to remove when bug fixed (as all jade processing will call setGdata)
-exports.setGdata(gData);
+// exports.setGdata(gData);
 
 exports.testGdata = function(data) {
   console.log('is gData is defined ? ');
