@@ -1,0 +1,22 @@
+# Forms fields
+fields:
+  contactEmail:
+    type: "email"
+    required: true
+    placeholder: "Email"
+
+  contactName:
+    type: "text"
+    placeholder: "Votre nom"
+    required: true
+
+  contactMessage:
+    type: "textarea"
+    placeholder: "Votre Message"
+    required: true
+
+  contactSubmit:
+    submitCommon:
+    type: "submit"
+    label: "Soumettre"
+    defaultFieldClass: "btn-block btn btn-lg btn-default btn-primary"

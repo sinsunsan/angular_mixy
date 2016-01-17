@@ -10,12 +10,14 @@ var mixyDestNameSpace  = "ars";
 
 
 // locate the component directory in the current app
+// Allow the file to be located in a sub directory
 var componentsDir = {
-  jade: app + "jade/mixins/ui/",
-  scss: app + "styles/arsultima/ui/",
-  scssVar: app + "styles/arsultima/variables/",
-  yml: app + "data/yaml/",
+  jade: app + "jade/mixins/ui/**/",
+  scss: app + "styles/arsultima/ui/**/",
+  scssVar: app + "styles/arsultima/variables/**/",
+  yml: app + "data/yaml/**/",
 };
+
 // locate the component directory in the destination library
 var componentsDest = {
   jade: mixyDest + "jade/_global_ui/mixins/ui/" + mixyDestNameSpace,
@@ -30,9 +32,10 @@ var componentsFiles = {
   scss: []
 };
 
+// For partial matching add a * at the end of the begining of the file name
 var componentsName = [
   'subheader',
-  'contact',
+  'contact*',
   'footer',
   'block'
 ];
@@ -42,6 +45,7 @@ var componentsParts = [
   'scss',
   'yml'
 ];
+
 var componentsPartsOpts = {
   jade: {
     prefix: '_',
@@ -55,22 +59,19 @@ var componentsPartsOpts = {
   yml: {
     prefix: '',
     ext: 'yml',
-    name: 'contactBlock',
+    name: 'contactBlock*', // Alow partial file matching
   }
 };
 
+// Prepare file object
 _.each(componentsName, function(name) {
   _.each(componentsParts, function(part) {
-    var fileName = name;
-    if (componentsPartsOpts[part].name)  {
-      fileName  = componentsPartsOpts[part].name;
-    }
-    componentsFiles[part].push(componentsDir[part] + componentsPartsOpts[part].prefix + fileName + '.' + componentsPartsOpts[part].ext);
+
+    componentsFiles[part].push(componentsDir[part] + componentsPartsOpts[part].prefix + name + '.' + componentsPartsOpts[part].ext);
   });
 });
-// Copy paste element in mixy library
 
-// List all yaml files to sync
+// Generate dynamic gulp task one per component part
 _.each(componentsParts, function(part) {
   gulp.task('mixy:' + part, function() {
     console.log('The list of files of type ' + part + ':', componentsFiles[part]);
@@ -87,12 +88,13 @@ gulp.task('mixy:gulp', function() {
   .pipe(gulp.dest(mixyDest));
 });
 
-// Auto copy the gulp file it self for further componentisation!
+// The scss variables
 gulp.task('mixy:scssVar', function() {
   gulp.src(componentsDir.scssVar + '_ui.scss')
   .pipe(debug())
   .pipe(gulp.dest(componentsDest.scssVar));
 });
+
 
 gulp.task('mixy', function() {
   runSequence(['mixy:yml', 'mixy:scss', 'mixy:jade', 'mixy:gulp','mixy:scssVar'])
