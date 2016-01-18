@@ -1,16 +1,19 @@
 # Forms fields
 fields:
   contactEmail:
+    ngModel: 'email'
     type: "email"
     required: true
     placeholder: "Email"
 
   contactName:
+    ngModel: 'name'
     type: "text"
     placeholder: "Votre nom"
     required: true
 
   contactMessage:
+    ngModel: 'message'
     type: "textarea"
     placeholder: "Votre Message"
     required: true
