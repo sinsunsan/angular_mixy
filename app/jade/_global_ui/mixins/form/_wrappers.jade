@@ -1,7 +1,8 @@
 mixin formTag(form, stateId)
+  - form.ngModelAppend = form.ngModelAppend || '';
   form(
       name="#{stateId}",
-      ng-submit="#{form.ngSubmit}(#{stateId}, #{form.ngModel})",
+      ng-submit="#{form.ngSubmit}(#{stateId}, #{form.ngModel} #{form.ngModelAppend})",
       novalidate)
     block
 

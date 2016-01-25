@@ -1,0 +1,6 @@
+mixin arsBlock(id, data)
+  - var data = data || {};
+  - var containerClass = (data.fluid) ? 'container-fluid' : 'container';
+  - var page = data.page || 'home'
+  div(class="#{containerClass} #{page}-#{id}-block #{id}-block")&attributes(attributes)
+    block

@@ -1,7 +1,9 @@
 //- Build a form from the field instances sub keys
 mixin formBuilder(formId, stateId)
+  - console.log('\n\n Getting form data for formId ' + formId + ' and stateId ' + stateId);
   - var formData = util.setFormDefaults(formId, stateId);
   - console.log('\n\nFormBuilder formId : ', formId);
+  - console.log('the form Data is ', formData)
   //- h1(class="form-title")=formData.title
   +formWrapper(formId, stateId)
     if formData.fieldsInstances

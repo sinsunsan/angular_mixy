@@ -1,0 +1,17 @@
+formsInstances:
+  contact:
+    title: "Contact"
+    ngModel: "contact"
+    ngSubmit: "fn.sendContact"
+    field:
+      width:
+        label: 'col-xs-4'
+        tag: 'col-xs-7'
+        suffix: 'col-xs-1'
+
+    # Field instances
+    fieldsInstances:
+      - 'contactEmail'
+      - 'contactName'
+      - 'contactMessage'
+      - 'contactSubmit'

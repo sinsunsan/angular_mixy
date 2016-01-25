@@ -1,0 +1,17 @@
+//- +uibAccordion_wrapper
+//-   +uibAccordion_heading
+//-     div(class="heading-content")
+//-   div(class="panel-content")
+
+//- https://angular-ui.github.io/bootstrap/#/accordion
+mixin uibAccordion_wrapper(data)
+  - data.closeOthers = data.closeOthers || 'oneAtATime';
+  - data.isOpen = data.isOpen || 'status.open';
+  uib-accordion(close-others=data.closeOthers)
+    //- each accordion group made with of a heading and a panel
+    uib-accordion-group(is-open=data.isOpen)
+      block
+
+mixin uibAccordion_heading
+  uib-accordion-heading
+    block

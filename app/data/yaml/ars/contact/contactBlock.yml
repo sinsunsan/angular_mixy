@@ -1,0 +1,11 @@
+contactBlock:
+  title: "Ars Ultima"
+  adress: "6, rue Pache - 75011 PARIS"
+  twitter:
+    href: "http://www.twitter.com/arsultima"
+    text: "@arsultima"
+  facebook:
+    href: "http://www.facebook.com/arsultima"
+    text: "Arsultima"
+  phone: "+33 (0)1 45 67 55 78"
+  email: "contact@arsultima.com"

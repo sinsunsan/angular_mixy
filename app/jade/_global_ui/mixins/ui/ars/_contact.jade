@@ -1,0 +1,29 @@
+mixin contact(data)
+  //- contact text
+  div(class="col-sm-6")
+    div(class="contact-title m-b-md")=data.title
+
+    div(class="contact-adress m-b-md")
+      i(class="fa fa-home rounded-icon")
+      span=data.adress
+
+    div(class="contact-twitter m-b-md")
+      i(class="fa fa-twitter rounded-icon")
+      a(href=data.twitter.href)=data.twitter.text
+
+    div(class="contact-facebook m-b-md")
+      i(class="fa fa-facebook rounded-icon")
+      a(href=data.facebook.href)=data.facebook.text
+
+    div(class="contact-phone m-b-md")
+      i(class="fa fa-phone rounded-icon")
+      span=data.phone
+
+    div(class="contact-email m-b-md")
+      - data.emailUrl = (data.email) ? 'mailto:' + data.email : '';
+      i(class="fa fa-at rounded-icon")
+      a(href=data.facebook.href)=data.email
+
+  // contact form
+  div(class="col-sm-6")
+    +formBuilder('contact')

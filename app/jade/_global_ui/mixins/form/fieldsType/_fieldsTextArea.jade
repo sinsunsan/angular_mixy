@@ -73,7 +73,7 @@ mixin fieldTextarea(formId, fieldId, stateId)
   - field.customAttributes = field.customAttributes || {};
   +fieldGroup(field)
     //- a field label
-    if field.label.display
+    if field.label && field.label.display
       +fieldPre(field)
       +fieldMain(field)
         +fieldTextAreaTagWrapper(form, field)

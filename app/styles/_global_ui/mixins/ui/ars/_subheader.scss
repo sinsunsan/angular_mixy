@@ -1,0 +1,8 @@
+.subheader-block {
+  height: $subheader-height;
+  @include bs-query('xs') {
+    height: $subheader-height-mobile;
+  }
+  background-size: cover;
+  position: relative;
+}
