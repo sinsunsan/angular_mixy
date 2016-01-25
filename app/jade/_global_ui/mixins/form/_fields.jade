@@ -1,3 +1,30 @@
+mixin fieldLabelCommon(field)
+  - var label = (field.type === 'submit') ? '' : field.label;
+  - label = (!_.isString(label)) ? '' : label;
+  label(for=field.id, class="field-label #{field.width.label}")&attributes(attributes)
+    span=label
+    block
+
+//- a field object
+//- tooltipType: 'twbs' or 'md'
+mixin fieldLabel(field, tooltipType)
+  - console.log('\n\nfield label ', field, tooltipType);
+  if (tooltipType === 'twbs')
+    - field.tooltipOptionDefault = { placement: 'right', popupDelay: 500 };
+    - field.tooltipOptions = field.tooltipOptions || field.tooltipOptionDefault;
+    +fieldLabelCommon(field)(
+      uib-tooltip=field.tooltip,
+      tooltip-popup-delay=field.tooltipOptions.popupDelay,
+      tooltip-placement=field.tooltipOptions.placement)
+      i(class="m-l-xs fa fa-question-circle")
+
+  else if (tooltipType === 'md')
+    +fieldLabelCommon(field)
+    +mdTooltip
+
+  else
+    +fieldLabelCommon(field)
+
 mixin fieldGroup(field)
   - field = field || {};
   - field.css = field.css || {};
@@ -8,7 +35,7 @@ mixin fieldGroup(field)
   - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
 
   div(
-      class="form-group #{field.css.group} #{field.class}",
+      class="form-group m-b-lg #{field.css.group} #{field.class}",
       style=field.style,
       ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
       ng-show!=field.ngShow,
@@ -17,21 +44,18 @@ mixin fieldGroup(field)
 
     //- field label
     if (field.label)
-      //- submit field need to be aligned with main tag
-      //- and cannot have label
-      if (field.type !== 'submit')
-        label(for=field.id, class="field-label #{field.width.label}")
-          span=field.label
+      if field.tooltip
+        if (field.tooltipType === 'md')
+          //- with angular material version
+          +fieldLabel(field, 'md')
 
-          //- tooltip to explain the purpose of the field
-          if (field.tooltip)
-            if (field.tooltipType && field.tooltipType === 'md')
-              //- set an option to have twbs tooltip or material design
-              +mdTooltip(field.tooltip)(class="m-l-xs")
-            else
-              - field.tooltipOptionDefault = { placement: 'right', popupDelay: 500 };
-              - field.tooltipOptions = field.tooltipOptions || field.tooltipOptionDefault;
-              +twbsTooltip(field.tooltip, field.tooltipOptions)(class="m-l-xs")
+        else
+          //- with twitter boostrap version
+          +fieldLabel(field, 'twbs')
+
+      else
+        //- without tooltip
+        +fieldLabel(field)
 
     //- field main html tag
     div(class="field-tag #{field.width.tag}")

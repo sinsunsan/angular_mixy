@@ -1,7 +1,6 @@
 .form-wrapper {
   .field-errors {
-    //- to prevent form layout to move when the form inline errors display
-    height: 30px;
-    overflow: hidden;
+    //- in absolute the input do not change
+    position: absolute;
   }
 }
