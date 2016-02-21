@@ -35,7 +35,7 @@ mixin fieldGroup(field)
   - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
 
   div(
-      class="form-group m-b-lg #{field.css.group} #{field.class}",
+      class="form-group #{field.css.group} #{field.class}",
       style=field.style,
       ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
       ng-show!=field.ngShow,
