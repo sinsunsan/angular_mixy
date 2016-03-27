@@ -40,7 +40,7 @@ mixin cellImage(id)
 
 mixin colTableBody(data)
   tbody
-    tr(class="row-body", ng-repeat='row in table.rowCollection')
+    tr(class="row-body", ng-repeat='row in table.rowCollection', ui-sref=data.uiSref)
       each row, id in data.cols
 
         if row.type === 'image'
@@ -52,6 +52,10 @@ mixin colTableBody(data)
                   +cellImage(id)
               else
                 +cellImage(id)
+
+        else if row.type === 'mixin' && row.mixin
+          +colTd(id, row)
+            +#{row.mixin}(row)
 
         else
           //- Basic type text
