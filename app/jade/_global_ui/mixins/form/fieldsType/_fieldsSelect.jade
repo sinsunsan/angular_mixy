@@ -1,3 +1,5 @@
+
+
 //- generic select list
 //- http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/
 mixin fieldSelectTag(form, field)
@@ -43,6 +45,19 @@ mixin fieldSelectTag(form, field)
     )
     //- other version found in origin/feature/addrole branch ? @todo check
     //- ng-options='item.id as item.#{field.ngBind} for item in #{field.options}'
+
+//- https://material.angularjs.org/latest/api/directive/mdSelect
+mixin fieldSelectMd(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - var options = (field.options) ? 'opt in ' + field.options : false;
+  +fieldGroup(field)
+    md-input-container
+      md-select(
+        ng-model=field.ngModelField,
+        placeholder=field.placeholder)
+        md-option(ng-value='opt', ng-repeat=options) {{ opt }}
 
 //- Generic select field
 //- we curently use select tag

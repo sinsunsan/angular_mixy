@@ -1,11 +1,28 @@
-//- photo that represent the user
+//- Image and uploader
+//- use simple image uploader https://github.com/danialfarid/ng-file-upload
 mixin imageField(formId, fieldId, stateId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
-  - console.log('\nthe field is ', field);
+  - field.ngModelField = util.setDefaultNgModel(field, form);
   +fieldGroup(field)
-    img(src=field.src,
-        class="img-responsive mb1")
-    //- button( class="btn btn-block",
-    //-         ng-file-select,
-    //-         ng-model=field.ngModelField)=field.submit.label
+    //- if there is an image
+    img(ng-if=field.ngIf,
+        src=field.src,
+        class="img-responsive")
+
+    if field.ngIf
+      //- upload an image
+      - var ngIfOpposite = '!' + field.ngIf;
+      div(ng-if=ngIfOpposite, class="image-uploader")
+        button(class="btn btn-default") Upload an image
+
+    //- re-upload an image to change it
+    div(class="image-changer col-xs-12 m-t-xs")
+      div(class="col-xs-2", tooltip="Change the image")
+        i(class="fa fa-edit")
+      div(class="col-xs-10")
+        input(
+          type="text",
+          ng-model=field.ngIf,
+          disabled="disabled",
+          class="input-md form-control")

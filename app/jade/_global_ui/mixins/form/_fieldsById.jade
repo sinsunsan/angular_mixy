@@ -20,6 +20,9 @@ mixin fieldById(formId, stateId, fieldId)
     when 'cancel'
       +formButtonCancel(formId, fieldId, stateId)
 
+    when 'mdSelect'
+      +fieldSelectMd(formId, fieldId, stateId)
+
     when 'select'
       +fieldSelect(formId, fieldId, stateId)
 
