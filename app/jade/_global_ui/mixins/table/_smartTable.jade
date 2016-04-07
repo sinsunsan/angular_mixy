@@ -39,19 +39,20 @@ mixin cellImage(id)
   img(src="{{ row.#{id} }}")
 
 mixin colTableBody(data)
+  - data.data = data.data || 'table.rowCollection';
   tbody
-    tr(class="row-body", ng-repeat='row in table.rowCollection', ui-sref=data.uiSref)
+    tr(class="row-body", ng-repeat='row in #{data.data}', ui-sref=data.uiSref)
       each row, id in data.cols
-
+        - var ngBind = row.ngBind || id;
         if row.type === 'image'
           //- The cell is an image
           +colTd(id, row)
             div(class="image-wrapper")
               if row.uiSref
                 +cellLink(row)
-                  +cellImage(id)
+                  +cellImage(ngBind)
               else
-                +cellImage(id)
+                +cellImage(ngBind)
 
         else if row.type === 'mixin' && row.mixin
           +colTd(id, row)
@@ -62,9 +63,9 @@ mixin colTableBody(data)
           +colTd(id, row)
             if row.uiSref
               +cellLink(row)
-                +cellText(id)
+                +cellText(ngBind)
             else
-              +cellText(id)
+              +cellText(ngBind)
 
 mixin colTableFoot(data)
   tfoot
@@ -73,8 +74,9 @@ mixin colTableFoot(data)
         div(st-pagination='', st-items-by-page='25', st-displayed-pages='7')
 
 mixin colTable(dataTable)
+  - dataTable.data = dataTable.data || 'table.rowCollection';
   +colMainContent(class="view-table")
-    table.table.table-striped(st-table='table.rowCollection')
+    table.table.table-striped(st-table=dataTable.data)
       +colTableHead(dataTable)
       +colTableBody(dataTable)
       +colTableFoot(dataTable)
