@@ -1,0 +1,10 @@
+mixin fieldMixin(formId, fieldId, stateId)
+  - var field = util.setFieldDefaults(formId, fieldId, stateId);
+  - var form = util.setFormDefaults(formId, stateId);
+  - // The ng Model is automatically set if not defined
+  - // and the attribute can be removed entirely if set to false (for fields that are read only (password Confirm...))
+  - field.ngModelField = util.setDefaultNgModel(field, form);
+  - field.ngModelFieldRepeater = util.setNgModel(field, form);
+  - field.customAttributes = field.customAttributes || {};
+  +fieldGroup(field)
+    +#{field.mixin}

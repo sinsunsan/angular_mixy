@@ -8,7 +8,13 @@ mixin fieldById(formId, stateId, fieldId)
   - else { console.log('\nForm builder : Field ', fieldId); }
 
   case field.type
+    when 'mixin'
+      +fieldMixin(formId, fieldId, stateId)
+
     when 'text'
+      +fieldInput(formId, fieldId, stateId)
+
+    when 'number'
       +fieldInput(formId, fieldId, stateId)
 
     when 'textarea'

@@ -10,3 +10,4 @@ mixin formBuilder(formId, stateId)
       //- we ouput all fields that belongs to this form
       each fieldId in formData.fieldsInstances
         +fieldById(formId, stateId, fieldId)
+    block
