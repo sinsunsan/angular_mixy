@@ -6,10 +6,17 @@ mixin fieldInputTag(form, field)
           name=field.id,
           id=field.id
           placeholder=field.placeholder,
+
+          step=field.step,
+          min=field.min,
+          max=field.max,
+
           class='input-#{field.id} #{inputClass}',
           ng-model=field.ngModelField,
           ng-model-options=field.ngModelOptions,
+
           ng-minlength=field.ngMinlength,
+
           ng-maxlength=field.ngMaxlength,
           ng-bind=field.id,
           ng-show=field.ngShow,
