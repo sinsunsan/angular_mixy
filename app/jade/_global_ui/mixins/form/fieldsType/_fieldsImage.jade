@@ -1,3 +1,10 @@
+mixin imageTag(field)
+  img(ng-if=field.ngIf,
+      src=field.src,
+      id=field.id,
+      fullscreen=field.fullscreen,
+      class="img-responsive")&attributes(attributes)
+
 //- Image and uploader
 //- use simple image uploader https://github.com/danialfarid/ng-file-upload
 mixin imageField(formId, fieldId, stateId)
@@ -5,10 +12,10 @@ mixin imageField(formId, fieldId, stateId)
   - var form = util.setFormDefaults(formId, stateId);
   - field.ngModelField = util.setDefaultNgModel(field, form);
   +fieldGroup(field)
-    //- if there is an image
-    img(ng-if=field.ngIf,
-        src=field.src,
-        class="img-responsive")
+    if field.fullscreen
+      +imageTag(field)(fullscreen)
+    else
+      +imageTag(field)
 
     if field.ngIf
       //- upload an image
