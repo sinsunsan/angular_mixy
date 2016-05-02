@@ -19,9 +19,17 @@ mixin imageField(formId, fieldId, stateId)
 
     if field.ngIf
       //- upload an image
+      //- http://jsfiddle.net/danialfarid/0mz6ff9o/135/
       - var ngIfOpposite = '!' + field.ngIf;
+      - field.ngfMaxSize = field.ngfMaxSize || "5MB";
+      - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
+      - field.ngfLabel = field.ngfLabel || 'Upload an image';
       div(ng-if=ngIfOpposite, class="image-uploader")
-        button(class="btn btn-default") Upload an image
+        button( class="btn btn-default",
+                type="file",
+                ngf-select=field.ngfSelect,
+                accept="image/*",
+              )=field.ngfLabel
 
     //- re-upload an image to change it
     div(class="image-changer col-xs-12 m-t-xs")
