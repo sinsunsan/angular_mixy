@@ -4,7 +4,7 @@ mixin formButton(formId, fieldId, stateId)
   - var form = util.setFormDefaults(formId, stateId);
   - var formStateId = util.setFormStateId(formId, stateId);
   - form.cssCommonClass = (util.checkNested(gData, 'forms', 'css', 'commonClass')) ? gData.forms.css.commonClass : '';
-  - var ngDisabled = !(field.ngDisabled) ? field.ngDisabled : formStateId + ".$invalid";
+  - var ngDisabled = field.ngDisabled || formStateId + ".$invalid";
   - var defaultFieldClass = field.defaultFieldClass || 'btn-block btn btn-lg btn-default btn-success';
   //- console.log('\nthe button field settings for ' + formId + '/' + fieldId + '/' + stateId + ' is \n', field, 'ngDisabled', ngDisabled);
   +fieldGroup(field)

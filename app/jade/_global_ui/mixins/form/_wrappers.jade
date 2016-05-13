@@ -1,8 +1,10 @@
 mixin formTag(form, stateId)
   - form.ngModelAppend = form.ngModelAppend || '';
+  //- http://stackoverflow.com/questions/16263158/angularjs-prevent-form-submission-when-input-validation-fails
+  //- disable submission if the form validation is not valid
   form(
       name="#{stateId}",
-      ng-submit="#{form.ngSubmit}(#{stateId}, #{form.ngModel} #{form.ngModelAppend})",
+      ng-submit="#{stateId}.$valid && #{form.ngSubmit}(#{stateId}, #{form.ngModel} #{form.ngModelAppend})",
       novalidate)
     block
 
