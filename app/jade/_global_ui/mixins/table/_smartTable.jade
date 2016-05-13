@@ -29,7 +29,10 @@ mixin colTableHead(data)
 
 //- Cell content mixins
 mixin cellLink(cell)
-  a(ui-sref=cell.uiSref)&attributes(attributes)
+  a(ui-sref=cell.uiSref,
+    ui-sref-opts=cell.uiSrefOpts,
+    ng-href=cell.ngHref,
+    ng-click=data.ngClick)&attributes(attributes)
     block
 
 mixin cellText(id)
@@ -41,7 +44,12 @@ mixin cellImage(id)
 mixin colTableBody(data)
   - data.data = data.data || 'table.rowCollection';
   tbody
-    tr(class="row-body", ng-repeat='row in #{data.data}', ui-sref=data.uiSref)
+    tr(class="row-body", ng-repeat='row in #{data.data}',
+      ui-sref=data.uiSref,
+      ui-sref-opts=data.uiSrefOpts,
+      ng-href=data.ngHref,
+      ng-click=data.ngClick,
+      )
       each row, id in data.cols
         - var ngBind = row.ngBind || id;
         if row.type === 'image'
