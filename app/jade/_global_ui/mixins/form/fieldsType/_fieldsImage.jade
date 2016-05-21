@@ -1,5 +1,5 @@
 mixin imageTag(field)
-  img(ng-if=field.ngIf,
+  img(ng-if=field.imageDisplayCondition,
       src=field.src,
       id=field.id,
       fullscreen=field.fullscreen,
@@ -11,6 +11,11 @@ mixin imageField(formId, fieldId, stateId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
   - field.ngModelField = util.setDefaultNgModel(field, form);
+
+  if field.ngIf
+    - field.imageChanger = field.ngIf + 'ChangeImage';
+    - field.imageDisplayCondition = field.ngIf + ' && !' + field.imageChanger;
+
   +fieldGroup(field)
     if field.fullscreen
       +imageTag(field)(fullscreen)
@@ -20,24 +25,29 @@ mixin imageField(formId, fieldId, stateId)
     if field.ngIf
       //- upload an image
       //- http://jsfiddle.net/danialfarid/0mz6ff9o/135/
-      - var ngIfOpposite = '!' + field.ngIf;
+
+      - var ngIfOpposite = '!' + field.ngIf + ' || ' + field.imageChanger;
       - field.ngfMaxSize = field.ngfMaxSize || "5MB";
       - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
       - field.ngfLabel = field.ngfLabel || 'Upload an image';
       div(ng-if=ngIfOpposite, class="image-uploader")
-        button( class="btn btn-default",
+        button( class="btn btn-success m-r-md",
                 type="file",
                 ngf-select=field.ngfSelect,
                 accept="image/*",
               )=field.ngfLabel
+        button(
+          class="btn btn-link",
+          ng-click="#{field.imageChanger} = false") Cancel
 
-    //- re-upload an image to change it
-    div(class="image-changer col-xs-12 m-t-xs")
-      div(class="col-xs-2", tooltip="Change the image")
-        i(class="fa fa-edit")
-      div(class="col-xs-10")
-        input(
-          type="text",
-          ng-model=field.ngIf,
-          disabled="disabled",
-          class="input-md form-control")
+    if field.ngIf
+      //- re-upload an image to change it
+      div(class="image-changer col-xs-12 m-t-xs")
+        a(class="col-xs-2", tooltip="Change the image", ng-click="#{field.imageChanger} = true")
+          i(class="fa fa-edit")
+        div(class="col-xs-10")
+          input(
+            type="text",
+            ng-model=field.ngIf,
+            disabled="disabled",
+            class="input-md form-control")
