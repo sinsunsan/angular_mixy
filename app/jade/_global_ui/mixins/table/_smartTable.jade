@@ -12,7 +12,16 @@ mixin colTableHead(data)
   thead
     tr(class="row-header")
       each row, id in data.cols
-        if (row.sort)
+        //- If the sort id done through a callback from the server
+        if (data.sortRemote)
+          +colTh(id, row)(ng-click="#{data.sortRemote.callback}(#{data.sortRemote.bind}, '#{id}')")
+            span=row.label
+            if (data.sortRemote.bind)
+              span( class="m-l-xs",
+                    ng-class="{ 'fa fa-caret-up': #{data.sortRemote.bind}.#{id},'fa fa-caret-down': !#{data.sortRemote.bind}.#{id} }")
+
+
+        else if (row.sort)
           +colTh(id, row)(st-sort=id)=row.label
         else
           +colTh(id, row)=row.label
