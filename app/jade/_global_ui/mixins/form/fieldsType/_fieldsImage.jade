@@ -31,18 +31,21 @@ mixin imageField(formId, fieldId, stateId)
       - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
       - field.ngfLabel = field.ngfLabel || 'Upload an image';
       div(ng-if=ngIfOpposite, class="image-uploader")
-        button( class="btn btn-success m-r-md",
+        button(
+                class="btn btn-success m-r-md ",
                 type="file",
                 ngf-select=field.ngfSelect,
                 accept="image/*",
               )=field.ngfLabel
+        //- display only if there is an image
         button(
+          ng-if=field.ngIf,
           class="btn btn-link",
           ng-click="#{field.imageChanger} = false") Cancel
-
     if field.ngIf
       //- re-upload an image to change it
-      div(class="image-changer col-xs-12 m-t-xs")
+      //- display only if there is an image
+      div(class="image-changer col-xs-12 m-t-xs", ng-if=field.ngIf)
         a(class="col-xs-2", tooltip="Change the image", ng-click="#{field.imageChanger} = true")
           i(class="fa fa-edit")
         div(class="col-xs-10")

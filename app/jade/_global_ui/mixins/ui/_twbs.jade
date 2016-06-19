@@ -7,5 +7,5 @@ mixin twbsTooltip(tooltip, options)
   div(class="twbs-tooltip-symbol inline")&attributes(attributes)
     i(class="fa fa-question-circle",
       uib-tooltip=tooltip,
-      tooltip-popup-delay=options.popupDelay,
+      uib-tooltip-popup-delay=options.popupDelay,
       tooltip-placement=options.placement)

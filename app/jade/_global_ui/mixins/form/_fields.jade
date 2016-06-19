@@ -14,7 +14,7 @@ mixin fieldLabel(field, tooltipType)
     - field.tooltipOptions = field.tooltipOptions || field.tooltipOptionDefault;
     +fieldLabelCommon(field)(
       uib-tooltip=field.tooltip,
-      tooltip-popup-delay=field.tooltipOptions.popupDelay,
+      uib-tooltip-popup-delay=field.tooltipOptions.popupDelay,
       tooltip-placement=field.tooltipOptions.placement)
       i(class="m-l-xs fa fa-question-circle")
 
