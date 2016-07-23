@@ -271,6 +271,15 @@ exports.setInstancesDefaults = function(instanceId, instancesData) {
   return {};
 };
 
+// Allow the use of parent properties to defaultize a table
+exports.setTableData = function(tableData) {
+  if (tableData.parent) {
+    var parentData = gData[tableData.parent]
+    var returnData = _.defaultsDeep(tableData, parentData);
+  }
+  return tableData;
+};
+
 exports.setButtonsDefaults = function(buttonId) {
   var self = this;
   var buttonsData = gData['buttons'];

@@ -91,6 +91,7 @@ mixin colTableFoot(data)
         div(st-pagination='', st-items-by-page='25', st-displayed-pages='7')
 
 mixin colTable(dataTable)
+  - if (dataTable.parent) { dataTable = util.setTableData(dataTable); }
   - dataTable.data = dataTable.data || 'table.rowCollection';
   +colMainContent(class="view-table")
     table.table.table-striped(st-table=dataTable.data)
