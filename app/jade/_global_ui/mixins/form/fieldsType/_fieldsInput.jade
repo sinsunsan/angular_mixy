@@ -1,4 +1,6 @@
 //- generic field for textarea and text input field
+//- http://www.html5rocks.com/en/tutorials/forms/html5forms/
+//- https://docs.angularjs.org/api/ng/directive/ngPattern
 mixin fieldInputTag(form, field)
   - var inputClass = form.inputsClass || '';
   - inputClass += field.inputsClass ? ' ' + field.inputsClass: '';
@@ -10,6 +12,8 @@ mixin fieldInputTag(form, field)
           step=field.step,
           min=field.min,
           max=field.max,
+
+          ng-pattern=field.ngPattern,
 
           class='input-#{field.id} #{inputClass}',
           ng-model=field.ngModelField,
