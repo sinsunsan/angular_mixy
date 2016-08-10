@@ -12,7 +12,7 @@ mixin formWrapper(formId, stateId)
   - var formWrapperTypeClass = (form.type === 'twbsPanel') ? 'panel panel-default' : '';
 
   div(
-      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass}",
+      class="form-wrapper form-#{formStateId} form-group #{form.wrapperClass} #{formWrapperTypeClass} mixy-form",
       ng-class=form.ngClass,
       ng-show!=form.ngShow
     )

@@ -9,7 +9,7 @@ mixin fieldsWrapper(formId, fieldId, stateId, field)
     - field.labelClass = field.labelClass || '';
 
     if field.label
-      div(class="field-group-label fs1 #{field.labelClass}")=field.label
+      div(class="field-group-label fs1 #{field.labelClass} field-type-#{field.type}")=field.label
 
     if field.fieldsInstances
       each fieldId in field.fieldsInstances

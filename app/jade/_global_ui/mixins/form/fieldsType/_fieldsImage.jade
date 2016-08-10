@@ -5,15 +5,66 @@ mixin imageTag(field)
       fullscreen=field.fullscreen,
       class="img-responsive")&attributes(attributes)
 
+mixin imagePlaceHolder
+  div(class="image-placeholder text-center m-b-md")
+    div(class="upload-icon mdi-image-photo-library")
+
+mixin imageUploadBtn(field)
+  //- upload an image
+  //- http://jsfiddle.net/danialfarid/0mz6ff9o/135/
+
+  - var ngIfOpposite = '!' + field.ngIf + ' || ' + field.imageChanger;
+  - field.ngfMaxSize = field.ngfMaxSize || "5MB";
+  - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
+  - field.ngfLabel = field.ngfLabel || 'Upload an image';
+  div(ng-if=ngIfOpposite, class="image-uploader m-t-xs m-b-lg")
+
+    +imagePlaceHolder(field)
+
+    button(
+      class="btn btn-success m-r-md",
+      type="file",
+      ngf-select=field.ngfSelect,
+      accept="image/*",
+    )=field.ngfLabel
+
+    //- display only if there is an image
+    button(
+      ng-if=field.ngIf,
+      class="btn btn-link",
+      ng-click="#{field.imageChanger} = false") Cancel
+
+//- re-upload an image to change it
+//- display only if there is an image
+mixin imageChangerBtn(field)
+  div(class="image-changer col-xs-12 m-t-xs",
+      ng-if=field.imageDisplayCondition,
+      tooltip="Change the image",
+      style= ""
+      ng-click="#{field.imageChanger} = true")
+    a(
+      class="col-xs-2")
+      i(class="fa fa-edit")
+
+    div(class="col-xs-10")
+      input(
+        type="text",
+        style="cursor: pointer;",
+        ng-model=field.ngIf,
+        class="input-md form-control")
+
 //- Image and uploader
 //- use simple image uploader https://github.com/danialfarid/ng-file-upload
 mixin imageField(formId, fieldId, stateId)
   - var field = util.setFieldDefaults(formId, fieldId, stateId);
   - var form = util.setFormDefaults(formId, stateId);
+  - field.class="m-b-lg"
   - field.ngModelField = util.setDefaultNgModel(field, form);
 
   if field.ngIf
     - field.imageChanger = field.ngIf + 'ChangeImage';
+    //- the confition to display the image : we are not in the changing image process
+    //- but there is an image
     - field.imageDisplayCondition = field.ngIf + ' && !' + field.imageChanger;
 
   +fieldGroup(field)
@@ -23,34 +74,7 @@ mixin imageField(formId, fieldId, stateId)
       +imageTag(field)
 
     if field.ngIf
-      //- upload an image
-      //- http://jsfiddle.net/danialfarid/0mz6ff9o/135/
+      +imageUploadBtn(field)
 
-      - var ngIfOpposite = '!' + field.ngIf + ' || ' + field.imageChanger;
-      - field.ngfMaxSize = field.ngfMaxSize || "5MB";
-      - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
-      - field.ngfLabel = field.ngfLabel || 'Upload an image';
-      div(ng-if=ngIfOpposite, class="image-uploader")
-        button(
-                class="btn btn-success m-r-md ",
-                type="file",
-                ngf-select=field.ngfSelect,
-                accept="image/*",
-              )=field.ngfLabel
-        //- display only if there is an image
-        button(
-          ng-if=field.ngIf,
-          class="btn btn-link",
-          ng-click="#{field.imageChanger} = false") Cancel
     if field.ngIf
-      //- re-upload an image to change it
-      //- display only if there is an image
-      div(class="image-changer col-xs-12 m-t-xs", ng-if=field.ngIf)
-        a(class="col-xs-2", tooltip="Change the image", ng-click="#{field.imageChanger} = true")
-          i(class="fa fa-edit")
-        div(class="col-xs-10")
-          input(
-            type="text",
-            ng-model=field.ngIf,
-            disabled="disabled",
-            class="input-md form-control")
+      +imageChangerBtn(field)
