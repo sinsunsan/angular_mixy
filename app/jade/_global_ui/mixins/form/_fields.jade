@@ -25,6 +25,24 @@ mixin fieldLabel(field, tooltipType)
   else
     +fieldLabelCommon(field)
 
+// links to edit the field or more
+mixin fieldlinks(data)
+  - data = data || [];
+  div(class="field-links")
+    each link in data
+      - var iconClass = link.icon || '';
+      a(
+        class="inline",
+        ui-sref=link.uiSref,
+        ngHref=link.ngHref,
+        uib-tooltip=link.tooltip,
+        ng-hide=link.ngHide,
+        ui-sref-opts="{inherit: false}",
+      )
+        if (link.icon)
+          i(class="#{iconClass} m-r-xs")
+        span=link.label
+
 mixin fieldGroup(field)
   - field = field || {};
   - field.css = field.css || {};
@@ -62,8 +80,14 @@ mixin fieldGroup(field)
       block
 
     //- field suffix (unites, prices currency....)
-    if (field.suffix)
-      div(class="field-suffix #{field.width.suffix} text-left")=field.suffix
+    if (field.suffix || field.links)
+      div(class="field-suffix #{field.width.suffix} text-left")
+
+        if field.suffix
+          span=field.suffix
+
+        if field.links
+          +fieldlinks(field.links)
 
     - console.log(field.errors && field.errorsInstances);
     //- we display the field-errors zone always so that the layout don't move when the errors are displayed

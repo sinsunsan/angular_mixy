@@ -1,6 +1,6 @@
 mixin fieldsWrapper(formId, fieldId, stateId, field)
   -  field.class = field.class || '';
-  div(class='clearfix #{field.class} group-#{fieldId}', ng-show!=field.ngShow)
+  div(class='clearfix #{field.class} group-#{fieldId} field-group', ng-show!=field.ngShow)
     - //- label is inherited from global field label (used in another context)
     - //- whereas in the new context label are set as a string
     - //- so we use this quick and dirty way to prevent object label from applying
