@@ -8,8 +8,17 @@ mixin colTh(id, data)
   th(class="cell-#{id} cell cell-header #{data.class}")&attributes(attributes)
     block
 
+mixin colTableHeadWrapper(data)
+  //- https://github.com/daniel-nagy/fixed-table-header
+  if data.theadFixed
+    thead(fix-head)
+      block
+  else
+    thead
+      block
+
 mixin colTableHead(data)
-  thead
+  +colTableHeadWrapper(data)
     tr(class="row-header")
       each row, id in data.cols
         //- If the sort id done through a callback from the server
@@ -95,7 +104,7 @@ mixin colTable(dataTable)
   - if (dataTable.parent) { dataTable = util.setTableData(dataTable); }
   - dataTable.data = dataTable.data || 'table.rowCollection';
   +colMainContent(class="view-table")
-    table.table.table-striped(st-table=dataTable.data)
+    table.table.table-striped(st-table=dataTable.data)&attributes(attributes)
       +colTableHead(dataTable)
       +colTableBody(dataTable)
       +colTableFoot(dataTable)

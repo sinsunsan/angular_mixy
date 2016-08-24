@@ -1,0 +1,11 @@
+@mixin mixy_form_theadFixed {
+  .ui-scrollpoint {
+    position: fixed;
+    top: 0;
+  }
+}
+
+
+@mixin mixy_form {
+  @include mixy_form_theadFixed;
+}
