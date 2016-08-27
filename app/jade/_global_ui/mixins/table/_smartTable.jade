@@ -23,7 +23,9 @@ mixin colTableHead(data)
       each row, id in data.cols
         //- If the sort id done through a callback from the server
         if (data.sortRemote)
-          +colTh(id, row)(ng-click="#{data.sortRemote.callback}(#{data.sortRemote.bind}, '#{id}')")
+          //- Allow to set an active class to current sorte header column
+          - data.isCurrentSortNgClass = (data.sortRemote.isCurrentSort) ? "{'active': " + data.sortRemote.isCurrentSort + "('" + id + "')}" : false;
+          +colTh(id, row)(class="c-pointer", ng-click="#{data.sortRemote.callback}(#{data.sortRemote.bind}, '#{id}')", ng-class=data.isCurrentSortNgClass)
             span=row.label
             if (data.sortRemote.bind)
               span( class="m-l-xs",
