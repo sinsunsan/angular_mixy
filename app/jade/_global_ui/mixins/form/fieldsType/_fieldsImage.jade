@@ -1,6 +1,7 @@
 mixin imageTag(field)
   img(ng-if=field.imageDisplayCondition,
       ng-src=field.src,
+      ng-click=field.ngClick,
       id=field.id,
       fullscreen=field.fullscreen,
       class="img-responsive")&attributes(attributes)
