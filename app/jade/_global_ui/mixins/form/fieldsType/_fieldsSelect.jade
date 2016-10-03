@@ -9,9 +9,9 @@ mixin fieldSelectTag(form, field)
   - if (field.ngBind) { field.ngOptions = 'item.id as item.' + field.ngBind  + ' for item in ' + field.options }
   - if (field.ngRepeat) field.ngOptions = false;
   - field.selectClass = "input-" + field.id + " " + form.inputsClass + " " + field.inputsClass;
-  - console.log('\n\n\nour field !!!!!!', field )
+  -// console.log('\n\n\nour field !!!!!!', field )
   if field.ngRepeat
-    // simple select with array of strings using ng-repeat with value #{field.ngRepeat}
+    //- simple select with array of strings using ng-repeat with value #{field.ngRepeat}
     select(
       name=field.id,
       placeholder=field.placeholder,

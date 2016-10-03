@@ -1,49 +1,22 @@
+//- errorsInstances Store the message id 
+//- errors store the message to be show per instance type 
+//- errorsInstances:
+//-       - 'minlength'
+//-       - 'maxlength'
+//-     errors:
+//-       minlength: "The password is too short."
+//-       minlength: "The password is too long."
+
 //- Errors messages using the ngMessages directives
 //- https://docs.angularjs.org/api/ngMessages
 mixin errorNgMessages(field)
-  - console.log('THE ERRORS ', field, formId, fieldId)
+  - console.log('THE ERRORS ')
   - var errors = util.setFieldErrors(field)
   - console.log('\n\n the errors are ', errors);
-  //- we display message only if the form has been used $dirty
-  //- @todo to fix as the message validation don't work
+  //- we display message only if the form has been used $dirty property
   div(ng-messages="#{field.formId}.#{field.ngModel}.$error",
       class="m-t-xs",
       ng-if='#{field.formId}.#{field.ngModel}.$dirty')
     if errors
       each errorMsg, errorId in errors
         div(ng-message=errorId, class="m-t-xs")=errorMsg
-
-
-//- ----- THE FOLLOWING MIXINS ARE DEPRECATED ----- /////
-
-//- generic field level validation message
-mixin errorMsgInvalid(config)
-  //- config.msg the error message to display
-  //- config.name the identifier of the field with the syntax formId.fieldId
-  //- pristine = false > the user has already touched the input
-  //- invalid = true >  One of the form validation has failed
-  p(ng-show!="#{config.name}.$invalid && !#{config.name}.$pristine",
-    class="help-block",
-    translate)=config.msg
-
-//- err is the angular error form error code
-mixin errorMsgError(config)
-  p(ng-show="#{config.name}.$error.#{config.err}",
-    class="help-block",
-    translate)=config.msg
-
-//- Check the usage of the message type per field
-mixin inputErrors(formId, fieldId, errors, stateId)
-  - var formStateId = util.setFormStateId(formId, stateId);
-  - var formfieldId = formId + '.' + fieldId;
-  if (errors)
-    if errors.invalid
-      +errorMsgInvalid({name: formfieldId, msg: errors.invalid })
-    if errors.maxLength
-      +errorMsgError({name: formfieldId, msg: errors.maxLength, err: 'maxlength'})
-    if errors.minLength
-      +errorMsgError({name: formfieldId, msg: errors.minLength, err: 'minlength'})
-
-//- ------ THE PREVIOUS MIXINS ARE DEPRECATED ----- /////
-
-

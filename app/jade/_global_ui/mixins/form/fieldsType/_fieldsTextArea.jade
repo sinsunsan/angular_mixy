@@ -14,6 +14,7 @@ mixin fieldTextareaTag(form, field)
     ng-required=field.ngRequired,
     ng-minlength=field.ngMinlength,
     ng-maxlength=field.ngMaxlength,
+    ng-pattern= field.ngPattern,
     translate,
     disabled=field.disabled
     )&attributes(field.customAttributes)

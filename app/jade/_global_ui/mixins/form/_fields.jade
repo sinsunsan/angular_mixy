@@ -8,7 +8,7 @@ mixin fieldLabelCommon(field)
 //- a field object
 //- tooltipType: 'twbs' or 'md'
 mixin fieldLabel(field, tooltipType)
-  - console.log('\n\nfield label ', field, tooltipType);
+  -// console.log('\n\nfield label ', field, tooltipType);
   if (tooltipType === 'twbs')
     - field.tooltipOptionDefault = { placement: 'right', popupDelay: 500 };
     - field.tooltipOptions = field.tooltipOptions || field.tooltipOptionDefault;
@@ -25,7 +25,7 @@ mixin fieldLabel(field, tooltipType)
   else
     +fieldLabelCommon(field)
 
-// links to edit the field or more
+//- links to edit the field or more
 mixin fieldlinks(data)
   - data = data || [];
   div(class="field-links")
@@ -34,7 +34,8 @@ mixin fieldlinks(data)
       a(
         class="inline",
         ui-sref=link.uiSref,
-        ngHref=link.ngHref,
+        ng-href=link.ngHref,
+        ng-click=link.ngClick,
         uib-tooltip=link.tooltip,
         ng-hide=link.ngHide,
         ui-sref-opts="{inherit: false}",
@@ -53,9 +54,9 @@ mixin fieldGroup(field)
   - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
 
   div(
-      class="form-group #{field.css.group} #{field.class}",
+      class="form-group #{field.css.group} #{field.class} field-#{field.id}",
       style=field.style,
-      ng-class!="{ 'has-error' : #{field.id}.$invalid && !#{field.id}.$pristine }",
+      ng-class!="{ 'has-error' : #{field.ngModel}.$invalid && !#{field.ngModel}.$pristine }",
       ng-show!=field.ngShow,
       ng-hide=field.ngHide
       )&attributes(wrapperCustomAttributes)
@@ -89,9 +90,10 @@ mixin fieldGroup(field)
         if field.links
           +fieldlinks(field.links)
 
-    - console.log(field.errors && field.errorsInstances);
+    //- console.log(field.errors && field.errorsInstances);
     //- we display the field-errors zone always so that the layout don't move when the errors are displayed
     div(class="field-errors")
+      - console.log('\n\n the errors are ', field.errors, field.errorsInstances);
       //- field errors : display validation errors for this field
-      if (field.errors && field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
+      if (field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
         +errorNgMessages(field)

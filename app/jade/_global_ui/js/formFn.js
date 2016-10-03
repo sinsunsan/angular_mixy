@@ -26,12 +26,12 @@ exports.setGdata = function(data) {
 // exports.setGdata(gData);
 
 exports.testGdata = function(data) {
-  console.log('is gData is defined ? ');
-  console.log('the type of gData is ' + typeof(gData));
+  //console.log('is gData is defined ? ');
+  //console.log('the type of gData is ' + typeof(gData));
   if (!gData) {
     gData = data;
   }
-  console.log(gData);
+  // console.log(gData);
 };
 
 // ######
@@ -82,8 +82,8 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   }
 
   if (!(fieldId && self.checkNested(fieldsData, fieldId))) {
-    console.log('THE FIELD ' + fieldId + ' Has not been found in the fields settings ');
-    console.log('Double check your instance settings ! ');
+    // console.log('THE FIELD ' + fieldId + ' Has not been found in the fields settings ');
+    // console.log('Double check your instance settings ! ');
   };
 
   // forms.yml / global field settings (the lowest level default settings for all fields)
@@ -118,7 +118,7 @@ exports.setFieldDefaults = function(formId, fieldId, stateId) {
   if (!field.id) {
     field.id = fieldId;
   }
-  console.log('\n\nthe field content is ', field)
+  // console.log('\n\nthe field content is ', field)
   return field;
 };
 
@@ -307,6 +307,14 @@ exports.setDefaultFieldErrors = function(fieldErrors, field, errorsGlobal, defEr
 };
 
 // Set errors message globally and with field overrides
+// errorsInstances Store the message id 
+// errors store the message to be show per instance type 
+// errorsInstances:
+//       - 'minlength'
+//       - 'maxlength'
+//     errors:
+//       minlength: "The password is too short."
+//       minlength: "The password is too long."
 exports.setFieldErrors = function(field) {
 
   // Get the global erros definition (to apply message...)
@@ -329,6 +337,10 @@ exports.setFieldErrors = function(field) {
     field.email = true;
   }
 
+  if (field.type === 'url') {
+    field.url = true;
+  }
+
   if (field.ngMinlength) {
     field.minLength = field.minLength;
   }
@@ -337,14 +349,24 @@ exports.setFieldErrors = function(field) {
     field.ngMaxlength = field.maxLength;
   }
 
+  if (field.max) {
+    field.max = field.max;
+  }
+
+  if (field.min) {
+    field.min = field.min;
+  }
+
   var defaultMessages = {
-    required: 'This field is required.',
-    minLength: 'This field is too short.',
-    maxLength: 'This field is too long.',
-    email: 'This email is not valid.'
+    required:   'This field is required.',
+    minLength:  'This field is too short.',
+    min:        'This number is too small.',
+    max:        'This number is too big.',
+    maxLength:  'This field is too long.',
+    email:      'This email is not valid.',
+    url:        'This url is not valid.',
   };
   _.each(defaultMessages, function(defErrorMsg, defErrorId) {
-
     exports.setDefaultFieldErrors(fieldErrors, field, errorsGlobal, defErrorId, defErrorMsg);
   });
 
