@@ -1,7 +1,7 @@
 {
   "name": "angular-mixy",
   "description": "a collection of jade mixins to set up forms with Angular, Jade and Yaml",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "dependencies": {},
   "repository": {
     "type": "git",
