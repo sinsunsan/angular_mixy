@@ -14,9 +14,9 @@ mixin errorNgMessages(field)
   - var errors = util.setFieldErrors(field)
   - console.log('\n\n the errors are ', errors);
   //- we display message only if the form has been used $dirty property
-  div(ng-messages="#{field.formId}.#{field.ngModel}.$error",
+  div(ng-messages="#{field.formId}.#{field.id}.$error",
       class="m-t-xs",
-      ng-if='#{field.formId}.#{field.ngModel}.$dirty')
+      ng-if='#{field.formId}.#{field.id}.$dirty')
     if errors
       each errorMsg, errorId in errors
         div(ng-message=errorId, class="m-t-xs")=errorMsg
