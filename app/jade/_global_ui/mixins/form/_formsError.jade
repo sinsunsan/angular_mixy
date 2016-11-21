@@ -15,8 +15,7 @@ mixin errorNgMessages(field)
   - console.log('\n\n the errors are ', errors);
   //- we display message only if the form has been used $dirty property
   div(ng-messages="#{field.formId}.#{field.id}.$error",
-      class="m-t-xs errors-messages-wrapper",
-      ng-if='#{field.formId}.#{field.id}.$dirty')
+      class="m-t-xs errors-messages-wrapper")
     - if (field.required == true && !errors.required) { errors.required = "This field is required."; }
     - if (field.ngPattern && field.ngPatternMsg && !errors.pattern) { errors.pattern =  field.ngPatternMsg; }
     - if (field.ngPattern && !field.ngPatternMsg && !errors.pattern) { errors.pattern =  "This field is not valid." }

@@ -95,7 +95,8 @@ mixin fieldGroup(field)
           +fieldlinks(field.links)
 
     //- console.log(field.errors && field.errorsInstances);
-    div(class="field-errors")
+    div(class="field-errors #{field.width.errors}", 
+        ng-if='#{field.formId}.#{field.id}.$dirty || #{field.formId}.#{field.id}.$modelValue.length > 0')
       - console.log('\n\n the errors are ', field.errors, field.errorsInstances);
       //- field errors : display validation errors for this field
       if (field.errorsInstances || field.required || field.ngMinlength || field.ngMaxlength)
