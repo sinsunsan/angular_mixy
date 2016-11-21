@@ -53,10 +53,14 @@ mixin fieldGroup(field)
   - var optClasses =+ (field.multiple) ? ' multiple ' : '';
   - var wrapperCustomAttributes = field.wrapperCustomAttributes || {};
 
+  //- errors display if 
+  //- the field is unvalid 
+  //- have beend touched (to prevent to display an error on required field at form start)
+  //- or have already a value  (to display errors on previously saved forms)
   div(
       class="form-group #{field.css.group} #{field.class} field-#{field.id}",
       style=field.style,
-      ng-class!="{ 'has-error' : #{field.ngModel}.$invalid && !#{field.ngModel}.$pristine }",
+      ng-class!="{ 'has-error' : #{field.formId}.#{field.id}.$invalid && (!#{field.formId}.#{field.id}.$pristine || #{field.formId}.#{field.id}.$modelValue.length > 0) }",
       ng-show!=field.ngShow,
       ng-hide=field.ngHide
       )&attributes(wrapperCustomAttributes)
@@ -91,7 +95,6 @@ mixin fieldGroup(field)
           +fieldlinks(field.links)
 
     //- console.log(field.errors && field.errorsInstances);
-    //- we display the field-errors zone always so that the layout don't move when the errors are displayed
     div(class="field-errors")
       - console.log('\n\n the errors are ', field.errors, field.errorsInstances);
       //- field errors : display validation errors for this field

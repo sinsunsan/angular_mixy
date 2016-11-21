@@ -15,8 +15,15 @@ mixin errorNgMessages(field)
   - console.log('\n\n the errors are ', errors);
   //- we display message only if the form has been used $dirty property
   div(ng-messages="#{field.formId}.#{field.id}.$error",
-      class="m-t-xs",
+      class="m-t-xs errors-messages-wrapper",
       ng-if='#{field.formId}.#{field.id}.$dirty')
+    - if (field.required == true && !errors.required) { errors.required = "This field is required."; }
+    - if (field.ngPattern && field.ngPatternMsg && !errors.pattern) { errors.pattern =  field.ngPatternMsg; }
+    - if (field.ngPattern && !field.ngPatternMsg && !errors.pattern) { errors.pattern =  "This field is not valid." }
+    - if (field.ngMaxLength && !errors.ngMaxLength) { errors.ngMaxLength = 'This field is too long.'}
+    - if (field.ngMinLength && !errors.ngMinlength) { errors.ngMinLength = 'This field is too short.'}
+    - if (field.type === 'email' && !errors.email) { errors.email = 'This email is not valid.'}
+    - if (field.type === 'url' && !errors.url) { errors.url = 'This url is not valid'; }
     if errors
       each errorMsg, errorId in errors
-        div(ng-message=errorId, class="m-t-xs")=errorMsg
+        div(ng-message=errorId, class="m-t-xs error-message")=errorMsg
