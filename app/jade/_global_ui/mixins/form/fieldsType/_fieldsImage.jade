@@ -18,6 +18,7 @@ mixin imageUploadBtn(field)
   - field.ngfMaxSize = field.ngfMaxSize || "5MB";
   - field.ngfSelect = field.ngfSelect || "uploadFiles($file, $invalidFiles)";
   - field.ngfLabel = field.ngfLabel || 'Upload an image';
+  - field.ngClick = (field.uploadBtn && field.uploadBtn.ngClick) ? field.uploadBtn.ngClick : null;
   div(ng-if=ngIfOpposite, class="image-uploader m-t-xs m-b-lg")
 
     +imagePlaceHolder(field)
@@ -25,6 +26,7 @@ mixin imageUploadBtn(field)
     button(
       class="btn btn-success m-r-md",
       type="file",
+      ng-click=field.ngClick,
       ngf-select=field.ngfSelect,
       accept="image/*",
     )=field.ngfLabel
