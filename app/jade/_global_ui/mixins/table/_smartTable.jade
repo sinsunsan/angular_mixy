@@ -55,8 +55,14 @@ mixin cellLink(cell)
     ng-click=data.ngClick)&attributes(attributes)
     block
 
-mixin cellText(id)
-  span {{ row.#{id} }}
+mixin cellText(id, options)
+  if options.ngBindHtml
+    span(ng-bind-html="row.#{id}")
+  
+  else
+    
+    span(ng-bind="row.#{id}")
+    //- {{ row.#{id} }}
 
 mixin cellImage(id)
   img(src="{{ row.#{id} }}")
@@ -71,7 +77,10 @@ mixin colTableBody(data)
       ng-click=data.ngClick,
       )
       each row, id in data.cols
-        - var ngBind = row.ngBind || id;
+        - console.log(row);
+        - var ngBind = row.ngBind || row.ngBindHtml || id;
+        - var cellOptions = {}; 
+        - if (row.ngBindHtml) { cellOptions.ngBindHtml = true; }
         if row.type === 'image'
           //- The cell is an image
           +colTd(id, row)
@@ -87,13 +96,14 @@ mixin colTableBody(data)
             +#{row.mixin}(row)
 
         else
+          
           //- Basic type text
           +colTd(id, row)
             if row.uiSref
               +cellLink(row)
-                +cellText(ngBind)
+                +cellText(ngBind, cellOptions)
             else
-              +cellText(ngBind)
+              +cellText(ngBind, cellOptions)
 
 mixin colTableFoot(data)
   tfoot
