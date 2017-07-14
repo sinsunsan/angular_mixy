@@ -40,21 +40,33 @@ mixin imageUploadBtn(field)
 //- re-upload an image to change it
 //- display only if there is an image
 mixin imageChangerBtn(field)
-  div(class="image-changer col-xs-12 m-t-xs",
-      ng-if=field.imageDisplayCondition,
-      tooltip="Change the image",
-      style= ""
-      ng-click="#{field.imageChanger} = true")
+  div(class="image-changer col-xs-12 m-t-xs row",
+      ng-if=field.imageDisplayCondition)      
     a(
-      class="col-xs-2")
+      class="col-xs-2 row",
+      style="text-align: center; font-size:18px;", 
+      tooltip="Change",
+      tooltip-placement="top",
+      ng-click="#{field.imageChanger} = true")
       i(class="fa fa-edit")
-
-    div(class="col-xs-10")
+    
+    if field.imageDeleteClick
+      a(
+        class="col-xs-2", 
+        tooltip="Delete",
+        tooltip-placement="top",
+        style="text-align: center; font-size:18px;", 
+        ng-click=field.imageDeleteClick)
+        i(class="fa fa-trash")
+              
+    div(class="col-xs-6")
       input(
         type="text",
         style="cursor: pointer;",
         ng-model=field.ngIf,
         class="input-md form-control")
+    
+    
 
 //- Image and uploader
 //- use simple image uploader https://github.com/danialfarid/ng-file-upload
