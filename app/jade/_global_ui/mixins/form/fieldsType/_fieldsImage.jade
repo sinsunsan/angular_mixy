@@ -26,6 +26,7 @@ mixin imageUploadBtn(field)
     div(class="button-uploader-wrapper", ng-click=field.ngClick)
       div(
         class="button btn btn-success m-r-md",
+        id="uploadbutton",
         ngf-select-disabled=field.ngfSelectDisabled,
         ngf-select=field.ngfSelect,
         accept="image/*",
