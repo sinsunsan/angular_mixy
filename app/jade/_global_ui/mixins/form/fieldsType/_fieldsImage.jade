@@ -22,7 +22,7 @@ mixin imageUploadBtn(field)
   div(ng-if=ngIfOpposite, class="image-uploader m-t-xs m-b-lg")
 
     +imagePlaceHolder(field)
-    
+
     div(class="button-uploader-wrapper", ng-click=field.ngClick)
       div(
         class="button btn btn-success m-r-md",
@@ -31,7 +31,7 @@ mixin imageUploadBtn(field)
         ngf-select=field.ngfSelect,
         accept="image/*",
       )=field.ngfLabel
-      
+
       //- display only if there is an image
       div(
         ng-if=field.ngIf,
@@ -42,32 +42,31 @@ mixin imageUploadBtn(field)
 //- display only if there is an image
 mixin imageChangerBtn(field)
   div(class="image-changer col-xs-12 m-t-xs row",
-      ng-if=field.imageDisplayCondition)      
+      ng-if=field.imageDisplayCondition)
     a(
       class="col-xs-2 row",
-      style="text-align: center; font-size:18px;", 
+      style="text-align: center; font-size:18px;",
       tooltip="Change",
       tooltip-placement="top",
       ng-click="#{field.imageChanger} = true")
       i(class="fa fa-edit")
-    
+
     if field.imageDeleteClick
       a(
-        class="col-xs-2", 
+        class="col-xs-2",
         tooltip="Delete",
         tooltip-placement="top",
-        style="text-align: center; font-size:18px;", 
+        style="text-align: center; font-size:18px;",
         ng-click=field.imageDeleteClick)
         i(class="fa fa-trash")
-              
+
     div(class="col-xs-6")
       input(
         type="text",
-        style="cursor: pointer;",
         ng-model=field.ngIf,
         class="input-md form-control")
-    
-    
+
+
 
 //- Image and uploader
 //- use simple image uploader https://github.com/danialfarid/ng-file-upload
