@@ -61,10 +61,8 @@ mixin imageChangerBtn(field)
         i(class="fa fa-trash")
 
     div(class="col-xs-6")
-      input(
-        type="text",
-        ng-model=field.ngIf,
-        class="input-md form-control")
+      span(
+        ng-bind=field.ngIf)
 
 
 
